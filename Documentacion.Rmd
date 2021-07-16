@@ -20,7 +20,7 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 ## 1. Identificación del problema
 
 En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y
-Cajamarca (INDECI, 2013; El Comercio, 2018) debido en gran parte a que el Perú no está en condiciones para afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
+Cajamarca (INDECI, 2013; El Comercio, 2018), siendo muy perjudicial para un Perú que no está en condiciones de afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
 
 ### 1.1. Planteamiento del problema
 ### 1.2. Objetivos
@@ -44,9 +44,12 @@ de las políticas de Estado para atenderlo, desde una
 
 ## 2. Antecedentes
 
-Desde el año 2017 se han desarrollado presentaciones referidas a los avances en la metodología para determinar las condiciones favorables de incendios. Para el año
-2018, se afino la metodología y a mitad de año se inició con los reportes mensuales y posteriormente con los reportes quincenales del registro de incendios, finalizando
-el año con el servicio de las Condiciones Favorables de Ocurrrencia de Incendios (CFOI). 
+[MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+
+[Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
+
+[Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
+
 
 ## 3. Marco Teórico
 
