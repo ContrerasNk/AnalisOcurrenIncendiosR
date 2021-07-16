@@ -13,42 +13,64 @@ mainfont: Times New Roman
 ---
 
 # Introducción
-Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013). Se estima que cada año se producen entre 60 000 y 80 000 incendios forestales, los cuales tienen una gran capacidad destructiva, ya que devastan entre 3 y 10 millones de hectáreas (Bisbal, 2019). En este análisis se evaluará el comportamiento del registro de incendios, así como las variables que condicionan su propagación.
+Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013) como es el caso del Perú (FAO, 2004). 
+El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (MINAM, 2019)
+En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios.
 
 ## 1. Identificación del problema
 
-El Perú es un País con una gran biodiversidad, presenta más de un 75% del total del planeta con este potencial, posee una gran extensión del recurso forestal, ubicándose en el segundo lugar, a nivel de Sudamérica en bosques naturales, y noveno lugar a nivel mundial. (FAO, 2004). De acuerdo a la clasificación de tierras, por su capacidad de uso mayor se tiene al recurso forestal y pastos ocupando la mayor extensión del territorio nacional; el recurso forestal está formado por tierras de producción forestal y tierras de protección donde las tierras de producción están cubiertas de bosques generalmente heterogéneos dedicados a la producción permanente de madera y otros productos forestales y las tierras de protección en la mayoría de casos se encuentran en terrenos montañosos, con pendientes moderadamente empinadas a altas.
-
+En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y
+Cajamarca (INDECI, 2013; El Comercio, 2018) debido en gran parte a que el Perú no está en condiciones para afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
 
 ### 1.1. Planteamiento del problema
-### 1.2. Objetivo Principal
-Generar una metodología para el análisis predictivo de los incendios forestales sobre la cobertura vegetal, a través del análisis de variables que condicionan las características físicas y meteorológicas del territorio nacional. 
-
+### 1.2. Objetivos
+#### 1.2.1. Objetivo General
 Analizar la estacionalidad de variables bioclimáticas en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).
 
-#### 1.2.1. Objetivo General
-
 #### 1.2.2. Objetivos Específicos
+* Analizar las variables climáticas (calidad de vegatción, temperatura y preciptación) de forma interestacional en las zonas CFOI
+* Analizar el comportamiento estacional de las variables bioclimáticas con respecto a la altitud en las zonas CFOI.
+
 ### 1.3. Justificación
+Las graves consecuencias que a todos los niveles (ecológico, económico, social y humano) pueden derivarse de un incendio forestal son razones suficientes para dedicar una atención especial a este fenómeno. El hombre ha desarrollado numerosos instrumentos y puesto en práctica diversos procedimientos para combatirlos. 
+Este proyecto de investigación se justifica en la carencia de datos estadísticos relacionados al registro histórico de
+incendios y su distribución espacial, así como su
+relación con las condiciones favorables que se
+encuentran presentes en el momento de la aparición
+del incendio, aspecto que debe ser la base para el
+entendimiento de este fenómeno y de la generación
+de las políticas de Estado para atenderlo, desde una
+óptica de prevención y reducción del riesgo.
 
 ## 2. Antecedentes
+
+Desde el año 2017 se han desarrollado presentaciones referidas a los avances en la metodología para determinar las condiciones favorables de incendios. Para el año
+2018, se afino la metodología y a mitad de año se inició con los reportes mensuales y posteriormente con los reportes quincenales del registro de incendios, finalizando
+el año con el servicio de las Condiciones Favorables de Ocurrrencia de Incendios (CFOI). 
 
 ## 3. Marco Teórico
 
 ## 4. Área de estudio
 
 ## 5. Metodología
+Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:
 
-### 5.1 Datos a utilizar
+```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+knitr::include_graphics('Img/metodologia_4etapas.jpg')
+```
 
-#### 5.1.1 Registro de incendios
-Este registro abarca los años 2000 a 2019, descargados desde el geoservidor del Ministerio del Ambiente (MINAM).
 
-#### 5.1.2 Precipitación y Temperatura Máxima
+### 5.1 Materiales
+
+#### 5.1.1 Data histórica de incendios 2000-2018
+Este registro abarca los años 2000 a 2018, descargados del {r}[geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/).
+
+#### 5.1.2 Precipitación acumulada y Temperatura Máxima
 Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI)
 
-#### 5.1.3 Producto NDVI
-Este se obtendrá del producto del sensor MODIS (MOD13Q1), 2000 - 2019
+#### 5.1.3 Índice de Vegetación Normalizado (NDVI)
+Este se obtendrá del producto del sensor MODIS (MOD13Q1), 2000 - 2018.
+
 ## 6. Resultados
 
 ## 7. Análisis 
