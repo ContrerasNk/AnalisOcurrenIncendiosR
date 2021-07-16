@@ -20,8 +20,18 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 
 ## 1. Identificación del problema
 
-En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y
-Cajamarca (INDECI, 2013; El Comercio, 2018), siendo muy perjudicial para un Perú que no está en condiciones de afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
+En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018).
+En el caso del Cuzco, los incendios que se presentan anualmente  entre los meses de junio a setiembre, debido principalmente al uso irresponsable del fuego por personas que desarrollan es agrícolas, ganaderas y forestales gracias a los cuales, la calidad de las personas se ve gravemente afectada. 
+
+```{r echo = FALSE, fig.align='center'}
+knitr::include_graphics('Img/evidencia.jpg')
+```
+Según el diario Gestión, 2020, el MINAM y el Gobierno Regional del Cusco a través de la zonificación del CFOI advirtieron que en este departamento todas las provincias presentan condiciones medias a muy altas para la ocurrencia de incendios.
+Las provincias de Paruro, Canas, Chumbivilcas,  Quipicachi, Acomayo y Espinar son provincias que tienen más de un 90 % de su territorio en condiciones proclives a los incendios. En tanto, Cusco, Calca, Canchis, Anta y Urubamba, tienen más del 70 % de su territorio con altas condiciones; al igual que más del 40% del territorio de las provincias de Paucartambo, Quispicanchis y La Convención. 
+
+```{r echo = FALSE, fig.align='center'}
+knitr::include_graphics('Img/incendios_provocados.jpg')
+```
 
 ### 1.1. Planteamiento del problema
 ### 1.2. Objetivos
@@ -46,6 +56,8 @@ de las políticas de Estado para atenderlo, desde una
 ## 2. Antecedentes
 
 [MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+
+[En Cusco todas las provincias tienen condiciones de media a muy alta para ocurrencia de incendios](https://gestion.pe/peru/en-cusco-todas-las-provincias-tienen-condiciones-de-medias-a-muy-altas-para-ocurrencia-de-incendios-noticia/)
 
 [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
 
@@ -136,6 +148,7 @@ knitr::include_graphics('Img/histograma_incendios.jpg')
 Se estima la función de densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores
 
 ```{r, include=FALSE}
+shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp)
 peru <- read_sf('Materiales/Peru.gpkg')
 Departamentos <- st_read('Materiales/Departamentos.gpkg')
