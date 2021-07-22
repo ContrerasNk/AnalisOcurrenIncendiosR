@@ -148,6 +148,8 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 
 ```
+Dos de eventos de los que vamos a inspeccionar coinciden con eventos extremos, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).
+
 #### 5.1.2 Histograma de la acumulación de incendios a lo largo del tiempo
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
@@ -276,7 +278,7 @@ m
 
 
 
-#### 5.1.2 Elección del área de estudio
+#### 5.1.4 Elección del área de estudio
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 Provincias <- st_read('Materiales/Provincias.gpkg')
@@ -308,6 +310,77 @@ leaflet() %>%
               color = "#54278f",
               group = "Anta")
 ```
+
+#### 5.1.5 Variabilidad estacional de la ocurrecia de incendios
+
+Se verá el comportamiento estacional promeido y máximo, para un registro de incendios 2000 - 2018.
+
+```{r}
+
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
+
+yr <- 2016
+
+# CREACI?N Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
+  summarise(nfires = length(Date)) %>% 
+  group_by(MES = substr(Date,6,7)) %>% 
+  summarise(fires_mean = mean(nfires, na.rm = T), fires_max  = max(nfires, na.rm = T)) %>%
+  mutate(MES = as.numeric(MES)) %>% arrange(MES) %>% as.data.frame() %>% dplyr::select(-geom)
+
+b <- fires %>% filter(`AñO`== yr) %>%
+  mutate(MES = MES_N) %>%
+  group_by(MES) %>% 
+  summarise(fires_anom = length(MES)) %>%
+  as.data.frame() %>% dplyr::select(-geom)
+
+
+df <- data.frame(MES = c(1:12)) %>% 
+  full_join(a, by = 'MES') %>% 
+  full_join(b, by = 'MES') %>% 
+  dplyr::select(-MES) %>%
+  mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
+         fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
+         fires_max  = ifelse(is.na(fires_max), 0, fires_max),
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
+         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+
+# CAMBIO DE IDIOMA
+Sys.setlocale(category = "LC_ALL", locale = "english")
+
+# PLOTEO  
+X <- ggplot(df) +
+  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
+           stat="identity", fill='blue', colour='blue', alpha=0.4) +
+  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
+           stat="identity", fill='gray', colour='black', alpha=0.4) +
+  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
+           stat="identity", colour='red', alpha=0) +
+  ggtitle('Comportamiento Mensual de Incendios', subtitle = paste0('Desde 2000 to 2018\nAño ', as.character(yr))) +
+  theme_bw() + labs(y = 'Number of fires', x = '') +
+  theme(plot.title    = element_text(size=20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size=12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size=12, hjust = 1),
+        axis.text.y   = element_text(size=12),
+        axis.title.y  = element_text(size=15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+  scale_x_date(date_labels = "%b", breaks = '1 month') +
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
+  theme(legend.position = "none")
+X
+
+  # ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
+  # theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15),
+  #       axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
+  #       axis.text.y  = element_text(size=11),
+  #       axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5)) 
+# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Bar_Fires_2016.png',
+#        width = 15, height = 15, units = "cm", dpi = 500)
+
+```
+
+
+En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre.
+
 
 
 ### 5.2 Materiales
