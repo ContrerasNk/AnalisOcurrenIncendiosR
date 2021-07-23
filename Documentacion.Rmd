@@ -234,6 +234,7 @@ names(fires_df) <- c('lon','lat')#here
 # Aplicación de la estimación
 kde <- kde2d(fires_df$lon, fires_df$lat, n = 250, h = .5, lims = c(-86, -65, -19, 0))
 kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru)
+kde_raster <- kde_raster * 100
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
@@ -257,33 +258,31 @@ Seguimos con...
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 Provincias <- st_read('Materiales/Provincias.gpkg')
-Anta <- st_read('Materiales/Anta.gpkg')
+Cutervo <- st_read('Materiales/Cutervo.gpkg')
 names(Provincias)
 kde_raster_clas <- kde_raster
-kde_raster_clas[kde_raster < 0.05] = NA
-kde_raster_clas[kde_raster >= 0.05] = 1
+kde_raster_clas[kde_raster < 8] = NA
+kde_raster_clas[kde_raster >= 8] = 1
 # writeRaster(kde_raster, 'raster2.tif')
 
+# Posicion para el ploteo
+centroid <- st_centroid(Cutervo)
+X <- (st_coordinates(centroid))[,"X"]
+Y <- (st_coordinates(centroid))[,"Y"]
 
-leaflet() %>%
-  addTiles() %>%
-  addRasterImage(kde_raster_clas,
-                 colors = "#f03b20") %>%
+# Interactivo
+leaflet() %>% 
+  addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", group = "Dark") %>%
+  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", group = "Satellite") %>%
+  setView(lng = X, lat = Y, zoom = 6.5) %>%
+  addRasterImage(kde_raster_clas, colors = "#f03b20", group = "Density") %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
-  addPolygons(data = Provincias,
-              fillOpacity = 0,
-              weight = 2,
-              opacity = 1,
-              label = ~PROVINCIA,
-              color = "#000000",
-              group = "Provincias") %>%
-  addPolygons(data = Anta,
-              fillOpacity = 0,
-              weight = 4,
-              opacity = 1,
-              label = ~PROVINCIA,
-              color = "#54278f",
-              group = "Anta")
+  addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
+              label = ~PROVINCIA, color = "#ffff33", group = "Provincias") %>%
+  addPolygons(data = Anta, fillOpacity = 0, weight = 4, opacity = 1,
+              label = ~PROVINCIA, color = "#54278f",group = "Anta") %>%
+  addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
+                   options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
 
 #### 5.1.5 Variabilidad estacional de la ocurrecia de incendios
@@ -295,7 +294,7 @@ fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 
 yr <- 2016
 
-# CREACI?N Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
 a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(nfires = length(Date)) %>% 
   group_by(MES = substr(Date,6,7)) %>% 
@@ -387,12 +386,9 @@ Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI y EV
 
 Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
 
-<<<<<<< HEAD
 
-```{r, warning=FALSE, cache=FALSE}
-=======
 ```{r, warning=FALSE, cache=FALSE, eval=FALSE}
->>>>>>> 3c46b77b668eecf6b85a756bd402c5dce987702c
+
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
   # Convert binary (character) to decimal (little endian)
@@ -423,14 +419,14 @@ mod13A2_clean <- function(img) {
 ```{r, eval=TRUE, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
-Anta <- st_read('Materiales/Anta.gpkg')
+Cutervo <- st_read('Materiales/Cutervo.gpkg')
 
 # Generamos el centroide para la correcta visualizacion
-centroid <- st_centroid(Anta)
+centroid <- st_centroid(Cutervo)
 X <- (st_coordinates(centroid))[,"X"]
 Y <- (st_coordinates(centroid))[,"Y"]
 
-ee_roi <- Anta %>%
+ee_roi <- Cutervo %>%
   st_geometry() %>%
   sf_as_ee()
 
