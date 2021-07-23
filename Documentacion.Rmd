@@ -94,9 +94,14 @@ library(MASS)
 library(dplyr)
 library(tidyverse)
 library(rgee)
+library(ncdf4)
+library(velox)
+library(devtools)
+library(velox)
 ```
 
 ```{r , eval=TRUE, echo=FALSE}
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
 # Inicializando sesion en GEE
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
@@ -374,6 +379,107 @@ Este registro abarca los años 2000 a 2018, descargados del [geoservidor del Min
 #### 5.2.2 Precipitación acumulada y Temperatura Máxima
 Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI)
 
+##### Precipitacion acumulada mensual
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+
+```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+pp_velox <- velox("RasterData/PISCO/Prec_monthly/PISCOp_v2.1.1.nc")                 
+region <- read_sf("Materiales/Cutervo.gpkg")
+
+data <- pp_velox$extract(sp=region, fun = function(x){mean(x,na.rm=T)}) %>%
+        as.vector()
+date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'),by='month')
+
+pp <- data.frame(date,data) %>% mutate(mes=substr(date,6,7)) %>% group_by(mes) %>%
+      summarise(ppmean= mean(data, na.rm = T),
+                ppmax= max(data, na.rm = T),
+                ppmin= min(data, na.rm=T))  
+
+pp2000 <- data.frame(date, pp2000 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
+pp2005 <- data.frame(date, pp2005 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
+pp2010 <- data.frame(date, pp2010 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
+pp2016 <- data.frame(date, pp2016 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
+
+df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by =             'month'), pp) %>% full_join(pp2000) %>% full_join(pp2005) %>%                        full_join(pp2010) %>% full_join(pp2016)
+
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+X <-  ggplot(df, aes(date, ppmean)) +
+      geom_line(colour = 'black', size=.8) + 
+      theme_bw() + ylab(label = '[mm]') +  xlab(label = '') +
+      ggtitle('Precipitacion acumulada mensual', 
+              subtitle = 'De 1981 hasta 2018') + 
+      theme(plot.title    = element_text(size = 16, hjust = 0.5, face = 'bold'),
+            plot.subtitle = element_text(size=15, hjust=0.5, face = 'italic'),
+            axis.text.x   = element_text(size=12),
+            axis.text.y   = element_text(size=12),
+            axis.title    = element_text(size=20),
+            axis.title.y =  element_text(size=12, face='bold')) +
+            scale_x_date(date_labels = '%b', breaks = '1 month') +
+            scale_y_continuous(breaks = seq(0,325,50), limits = c(0, 325)) +
+      geom_line(aes(date, ppmax),  colour = 'red', linetype = 'dashed', size=.8) +
+      geom_line(aes(date, ppmin),  colour = 'red', linetype = 'dashed', size=.8) +
+      geom_line(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=.8) +
+      geom_line(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=.8) +
+      geom_line(aes(date, pp2010), colour = 'snow3'       , size=.8) +
+      geom_line(aes(date, pp2016), colour = 'springgreen3', size=.8) +
+      geom_point(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+      geom_point(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+      geom_point(aes(date, pp2010), colour = 'snow3'       , size=2) +
+      geom_point(aes(date, pp2016), colour = 'springgreen3', size=2)
+
+X
+```
+
+##### Temperatura maxima mensual
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+
+```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+temp_velox <- velox("RasterData/PISCO/tmax_monthly/PISCOmtx_v1.1.nc")                 
+region <- read_sf("Materiales/Cutervo.gpkg")
+
+data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
+date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = 'month')
+
+
+temp <- data.frame(date, data) %>% mutate(mes = substr(date,6,7)) %>% group_by(mes) %>% summarise(tempmean = mean(data, na.rm = T),                                                    tempmax  = max(data, na.rm = T),                                                     tempmin  = min(data, na.rm = T))
+
+temp2000 <- data.frame(date, temp2000 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
+temp2005 <- data.frame(date, temp2005 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
+temp2010 <- data.frame(date, temp2010 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
+temp2016 <- data.frame(date, temp2016 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
+
+df <- data.frame(date = seq(as.Date('2016-01-01'), as.Date('2016-12-01'), by = 'month'), temp) %>% full_join(temp2000) %>% full_join(temp2005) %>% 
+                                                                                                   full_join(temp2010) %>% full_join(temp2016)
+
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+
+X <- ggplot(df, aes(date, tempmean)) +
+     geom_line(colour = 'black', size=.8) + 
+     theme_bw() + ylab(label = '[°C]') +  xlab(label = '') +
+     ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2016') + 
+     theme(plot.title    = element_text(size = 16, hjust = 0.5, face = 'bold'),
+           plot.subtitle = element_text(size=15, hjust=0.5, face = 'italic'),
+           axis.text.x   = element_text(size=12),
+           axis.text.y   = element_text(size=12),
+           axis.title    = element_text(size=12, face='bold'))+
+     scale_x_date(date_labels = '%b', breaks = '1 month') +
+     scale_y_continuous(breaks = seq(20,28,1), limits = c(20, 28)) +
+     geom_line(aes(date, tempmax),  colour = 'red', linetype = 'dashed', size=.8) +
+     geom_line(aes(date, tempmin),  colour = 'red', linetype = 'dashed', size=.8) +
+     geom_line(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=.8) +
+     geom_line(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=.8) +
+     geom_line(aes(date, temp2010), colour = 'snow3'       , size=.8) +
+     geom_line(aes(date, temp2016), colour = 'springgreen3', size=.8) +
+     geom_point(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+     geom_point(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+     geom_point(aes(date, temp2010), colour = 'snow3'       , size=2) +
+     geom_point(aes(date, temp2016), colour = 'springgreen3', size=2)
+
+X
+```
+
 #### 5.2.3 Índice de Vegetación Normalizado (NDVI)
 Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m
 
@@ -385,14 +491,9 @@ Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI y EV
 
 ##### Filtro por la banda de calidad
 
-Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
+Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro 
 
-<<<<<<< HEAD
-
-```{r, warning=FALSE, cache=FALSE}
-=======
 ```{r, warning=FALSE, cache=FALSE, eval=FALSE}
->>>>>>> 3c46b77b668eecf6b85a756bd402c5dce987702c
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
   # Convert binary (character) to decimal (little endian)
