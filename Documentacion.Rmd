@@ -18,8 +18,17 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 
 ## 1. Identificación del problema
 
-En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y
-Cajamarca (INDECI, 2013; El Comercio, 2018), siendo muy perjudicial para un Perú que no está en condiciones de afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
+La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
+
+Segun los registros historicos del CFOI se puede afirmar que
+los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno, Apurímac, Amazonas, Ayacucho y Piura, en estos departamentos todos los años se van a presentar estos eventos entre los meses de junio a enero. 
+
+En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. 
+
+```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.'}
+knitr::include_graphics('Img/evidencia_2.jpg')
+```
+
 
 ### 1.1. Planteamiento del problema
 ### 1.2. Objetivos
@@ -31,14 +40,20 @@ Analizar la estacionalidad de variables bioclimáticas en el marco del estudio d
 * Analizar el comportamiento estacional de las variables bioclimáticas con respecto a la altitud en las zonas CFOI.
 
 ### 1.3. Justificación
-Las graves consecuencias que a todos los niveles (ecológico, económico, social y humano) pueden derivarse de un incendio forestal son razones suficientes para dedicar una atención especial a este fenómeno. El hombre ha desarrollado numerosos instrumentos y puesto en práctica diversos procedimientos para combatirlos. 
-Este proyecto de investigación se justifica en la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.
+
+Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.
+
 
 ## 2. Antecedentes
 
 [MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+[Cajamarca: incendio forestal afectó a zona boscosa de Cerro Negro](https://andina.pe/agencia/noticia-cajamarca-incendio-forestal-afecto-a-zona-boscosa-cerro-negro-640629.aspx)
 
 [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
+
+[ANÁLISE ESPACIAL DE EVENTOS](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
+
+[Evaluacion de algoritmos para estimar la derivada de presion en pruebas de pozos](https://dialnet.unirioja.es/descarga/articulo/5432182.pdf)
 
 [Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
 
@@ -48,14 +63,19 @@ Este proyecto de investigación se justifica en la carencia de datos estadístic
 
 ## 3. Marco Teórico
 
+
+
 ### 3.1 Función Kernel
+
+Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
 * Un kernel, a su vez, es una funcion no negativa (no dijimos qué forma
 aun)
-* Usaremos un parametro de suavizacion o bandwidth (h) -més alto, mas
+* Usaremos un parametro de suavizacion o bandwidth (h) mientras mas alto, mas
 suavizamos.
+* Tanto el n como el h nos determinar el area de influencia de los puntos a ser interpolados. 
 
 Estimación de la densidad para un punto $x$ :
 
@@ -66,6 +86,9 @@ Donde
 * $h:$ Ancho de banda.
 * $K:$ Es la función kernel.
 
+
+### 3.2. Filtro Digital Savitzky-Golay 
+Tiene como objetivo la disminucion del ruido de una curva, esta optimizacion se baso incialmente en una tabla de terminos que suavizaban puntos a partir de la simplificacion del metodo de minimos cuadrados (puntos equisdistantes al eje X), posteriormente el metodo incorporo otros metodos de auto-optimizacion subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio optimo.
 
 ## 4. Área de estudio
 
@@ -491,7 +514,6 @@ Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006
 
 ##### Filtro por la banda de calidad
 
-<<<<<<< HEAD
 Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro 
 
 ```{r, warning=FALSE, cache=FALSE, eval=FALSE}
@@ -501,7 +523,6 @@ Para entender como se interpreta un banda de calidad no dirigimos a la página d
 
 ```{r, warning=FALSE, cache=FALSE, eval=FALSE}
 
->>>>>>> 979fd4383183ae977f196020d92bfcc8b63468d2
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
   # Convert binary (character) to decimal (little endian)
