@@ -1,13 +1,11 @@
 ---
-title: Análisis de las condiciones favorables para la ocurrencia de incendios en el
-  Perú para los años 2000 -2018
+title: Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 -2018
 author: "Contreras y Flores"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
     toc: yes
     toc_depth: 5
-    fig_caption: yes
     toc_float:
       collapsed: false
       smooth_scroll: false
@@ -256,7 +254,6 @@ kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru)
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
-
 m <- leaflet() %>%
   addTiles() %>%
   addRasterImage(kde_raster, colors = pal) %>%
@@ -406,7 +403,7 @@ Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI y EV
 ##### Filtro por la banda de calidad
 Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
 
-```{r, warning=FALSE, cache=FALSE}
+```{r, warning=FALSE, cache=FALSE, eval=FALSE}
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
   # Convert binary (character) to decimal (little endian)
@@ -435,7 +432,7 @@ mod13A2_clean <- function(img) {
 
 #### Filtro del producto NDVI mediante las fechas con mas incendios
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+```{r, eval=TRUE, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
 Anta <- st_read('Materiales/Anta.gpkg')
