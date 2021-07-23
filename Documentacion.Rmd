@@ -154,6 +154,7 @@ Dos de eventos de los que vamos a inspeccionar coinciden con eventos extremos, e
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
 # Incendios acumulados por mes
+Departamentos <- st_read('Materiales/Departamentos.gpkg')
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp) %>% 
   mutate(Date = paste(`AñO`), Fecha = paste(`AñO`, MES_N, DIA, sep = '-')) %>% 
@@ -184,13 +185,9 @@ names(Spp_Pres) <- Names_JmType
 
 # Ploteamos cada sf, pero sin leyenda
 Spp_Map <- leaflet() %>% addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png") %>%
-  addPolygons(data = Departamentos,
-              fillOpacity = 0,
-              weight = 1,
-              opacity = 1,
-              label = ~DEPARTAMEN,
-              color = "#ef3b2c",
-              group = "Departamentos")
+  addPolygons(data = Departamentos, fillOpacity = 0, weight = 1, opacity = 1,
+              label = ~DEPARTAMEN, color = "#ef3b2c", group = "Departamentos")
+
 for (i in 1:length(Spp_Pres)) {
   Spp_Map <- Spp_Map %>%
     addCircleMarkers(data = Spp_Pres[[i]],
@@ -210,8 +207,10 @@ Spp_Map <- Spp_Map %>%
   addLayersControl(overlayGroups = c("Leyenda"), baseGroups = Names_JmType,
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
 Spp_Map
-
 ```
+
+
+
 
 
 #### 5.1.3 Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
@@ -228,7 +227,7 @@ Basicamente, esta función del paquete MASS, la función kernel varía por ubica
 
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE}
-fires <- st_read(shp)
+fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 peru <- st_read('Materiales/Peru.gpkg')
 Departamentos <- st_read('Materiales/Departamentos.gpkg')
 
@@ -273,10 +272,7 @@ m
 ```
 
 
-
-
-
-
+Seguimos con...
 
 #### 5.1.4 Elección del área de estudio
 
@@ -316,7 +312,6 @@ leaflet() %>%
 Se verá el comportamiento estacional promeido y máximo, para un registro de incendios 2000 - 2018.
 
 ```{r}
-
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 
 yr <- 2016
@@ -351,23 +346,32 @@ Sys.setlocale(category = "LC_ALL", locale = "english")
 # PLOTEO  
 X <- ggplot(df) +
   geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
-           stat="identity", fill='blue', colour='blue', alpha=0.4) +
+           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
   geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
-           stat="identity", fill='gray', colour='black', alpha=0.4) +
+           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
   geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
-           stat="identity", colour='red', alpha=0) +
-  ggtitle('Comportamiento Mensual de Incendios', subtitle = paste0('Desde 2000 to 2018\nAño ', as.character(yr))) +
-  theme_bw() + labs(y = 'Number of fires', x = '') +
-  theme(plot.title    = element_text(size=20, hjust = 0.5, face = 'bold'),
-        plot.subtitle = element_text(size=12, hjust = 0.5, face = 'italic'),
-        axis.text.x   = element_text(size=12, hjust = 1),
-        axis.text.y   = element_text(size=12),
-        axis.title.y  = element_text(size=15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+           stat = "identity", colour = 'red', alpha=0) +
+  ggtitle('Comportamiento Mensual de Incendios', 
+          subtitle = paste0('Desde 2000 to 2018\nAño ', as.character(yr))) +
+  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
   scale_x_date(date_labels = "%b", breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
-  theme(legend.position = "none")
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
+  theme(legend.position = "none", )
 X
 
+element_rect(
+  fill = NULL,
+  colour = NULL,
+  size = NULL,
+  linetype = NULL,
+  color = NULL,
+  inherit.blank = FALSE
+)
   # ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
   # theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15),
   #       axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
