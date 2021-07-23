@@ -382,7 +382,7 @@ Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorol
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
-pp_velox <- velox("RasterData/PISCO/Prec_monthly/PISCOp_v2.1.1.nc")                 
+pp_velox <- velox("RasterData/PISCO/PISCOp_v211_cajamarca.tif")                 
 region <- read_sf("Materiales/Cutervo.gpkg")
 
 data <- pp_velox$extract(sp=region, fun = function(x){mean(x,na.rm=T)}) %>%
@@ -415,7 +415,7 @@ X <-  ggplot(df, aes(date, ppmean)) +
             axis.title    = element_text(size=20),
             axis.title.y =  element_text(size=12, face='bold')) +
             scale_x_date(date_labels = '%b', breaks = '1 month') +
-            scale_y_continuous(breaks = seq(0,325,50), limits = c(0, 325)) +
+            scale_y_continuous(breaks = seq(0,480,50), limits = c(0, 480)) +
       geom_line(aes(date, ppmax),  colour = 'red', linetype = 'dashed', size=.8) +
       geom_line(aes(date, ppmin),  colour = 'red', linetype = 'dashed', size=.8) +
       geom_line(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=.8) +
@@ -434,7 +434,7 @@ X
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
-temp_velox <- velox("RasterData/PISCO/tmax_monthly/PISCOmtx_v1.1.nc")                 
+temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_cajamarca.tif")                 
 region <- read_sf("Materiales/Cutervo.gpkg")
 
 data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
