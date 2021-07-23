@@ -224,8 +224,6 @@ Se estima la función de densidad de probabilidad para calcular en porcentaje la
 Basicamente, esta función del paquete MASS, la función kernel varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.
 
 
-
-
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE}
 fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 peru <- st_read('Materiales/Peru.gpkg')
@@ -239,24 +237,8 @@ names(fires_df) <- c('lon','lat')#here
 kde <- kde2d(fires_df$lon, fires_df$lat, n = 250, h = .5, lims = c(-86, -65, -19, 0))
 kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru)
 
-# image(kde)
-# plot(peru, add = T, col = NA)
-
-# Convirtiendolo a raster:
-# 
-# kde_raster <- kde %>% raster()
-# kde_raster[kde_raster < 0.05] = NA
-# kde_raster[kde_raster >= 0.05] = 1
-# writeRaster(kde_raster, 'raster2.tif')
-
-# summary(kde_raster %>% getValues() %>% as_vector())
-# Mapa con leaflet
-# pal <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"), values(kde_raster ), na.color = "transparent")
-
-
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
-
 m <- leaflet() %>%
   addTiles() %>%
   addRasterImage(kde_raster, colors = pal) %>%
@@ -270,7 +252,6 @@ m <- leaflet() %>%
               group = "Departamentos")
 m
 ```
-
 
 Seguimos con...
 
@@ -288,7 +269,7 @@ kde_raster_clas[kde_raster >= 0.05] = 1
 
 leaflet() %>%
   addTiles() %>%
-  addRasterImage(kde_raster_clas, 
+  addRasterImage(kde_raster_clas,
                  colors = "#f03b20") %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
   addPolygons(data = Provincias,
@@ -352,7 +333,7 @@ X <- ggplot(df) +
   geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
            stat = "identity", colour = 'red', alpha=0) +
   ggtitle('Comportamiento Mensual de Incendios', 
-          subtitle = paste0('Desde 2000 to 2018\nAño ', as.character(yr))) +
+          subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
   theme_bw() + labs(y = 'Número de incendios', x = '') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
@@ -403,8 +384,11 @@ Ahora toca trabajar con las variables bioclimáticas...
 
 Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^16$.
 
+
 ##### Filtro por la banda de calidad
+
 Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
+
 
 ```{r, warning=FALSE, cache=FALSE}
 # Función para los filtros con la banda quality pilxles qa
@@ -429,7 +413,6 @@ mod13A2_clean <- function(img) {
   # Mask pixels with value zero.
   ndvi_values$updateMask(quality_mask)
 }
-
 ```
 
 
@@ -461,16 +444,18 @@ modis_ndvi <- ee$ImageCollection("MODIS/006/MOD13Q1")
 
 # Creamos un compuesto mensual: para fines de presentacion
 
-ndvi_composite_sc <- modis_ndvi$
-  filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-  filter(ee$Filter$calendarRange(1, field = "month"))$
-  mean()
-
 ndvi_composite <- modis_ndvi$
   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
   filter(ee$Filter$calendarRange(1, field = "month"))$
   map(mod13A2_clean)$
   mean()
+
+
+# ndvi_composite_sc <- modis_ndvi$
+#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   filter(ee$Filter$calendarRange(1, field = "month"))$
+#   mean()
+
 
 # Color para el segundo NDVI
 ndviParams <- list(palette = c(
@@ -490,6 +475,7 @@ Map$addLayer(
     palette = cpt("grass_ndvi", 10))) + 
   Map$addLayer(ee_roi)
 ```
+
 Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2)
 
 ## 6. Resultados
