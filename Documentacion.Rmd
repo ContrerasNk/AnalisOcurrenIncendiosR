@@ -239,6 +239,7 @@ names(fires_df) <- c('lon','lat')#here
 # Aplicación de la estimación
 kde <- kde2d(fires_df$lon, fires_df$lat, n = 250, h = .5, lims = c(-86, -65, -19, 0))
 kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru)
+kde_raster <- kde_raster * 100
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
@@ -262,33 +263,31 @@ Seguimos con...
 
 ```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 Provincias <- st_read('Materiales/Provincias.gpkg')
-Anta <- st_read('Materiales/Anta.gpkg')
+Cutervo <- st_read('Materiales/Cutervo.gpkg')
 names(Provincias)
 kde_raster_clas <- kde_raster
-kde_raster_clas[kde_raster < 0.05] = NA
-kde_raster_clas[kde_raster >= 0.05] = 1
+kde_raster_clas[kde_raster < 8] = NA
+kde_raster_clas[kde_raster >= 8] = 1
 # writeRaster(kde_raster, 'raster2.tif')
 
+# Posicion para el ploteo
+centroid <- st_centroid(Cutervo)
+X <- (st_coordinates(centroid))[,"X"]
+Y <- (st_coordinates(centroid))[,"Y"]
 
-leaflet() %>%
-  addTiles() %>%
-  addRasterImage(kde_raster_clas,
-                 colors = "#f03b20") %>%
+# Interactivo
+leaflet() %>% 
+  addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", group = "Dark") %>%
+  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", group = "Satellite") %>%
+  setView(lng = X, lat = Y, zoom = 6.5) %>%
+  addRasterImage(kde_raster_clas, colors = "#f03b20", group = "Density") %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
-  addPolygons(data = Provincias,
-              fillOpacity = 0,
-              weight = 2,
-              opacity = 1,
-              label = ~PROVINCIA,
-              color = "#000000",
-              group = "Provincias") %>%
-  addPolygons(data = Anta,
-              fillOpacity = 0,
-              weight = 4,
-              opacity = 1,
-              label = ~PROVINCIA,
-              color = "#54278f",
-              group = "Anta")
+  addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
+              label = ~PROVINCIA, color = "#ffff33", group = "Provincias") %>%
+  addPolygons(data = Anta, fillOpacity = 0, weight = 4, opacity = 1,
+              label = ~PROVINCIA, color = "#54278f",group = "Anta") %>%
+  addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
+                   options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
 
 #### 5.1.5 Variabilidad estacional de la ocurrecia de incendios
@@ -300,7 +299,7 @@ fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 
 yr <- 2016
 
-# CREACI?N Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
 a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(nfires = length(Date)) %>% 
   group_by(MES = substr(Date,6,7)) %>% 
@@ -481,19 +480,28 @@ X
 ```
 
 #### 5.2.3 Índice de Vegetación Normalizado (NDVI)
-Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m
 
 Ahora toca trabajar con las variables bioclimáticas...
 
+Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
 
-Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^16$.
+
+Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^16$.
 
 
 ##### Filtro por la banda de calidad
 
+<<<<<<< HEAD
 Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro 
 
 ```{r, warning=FALSE, cache=FALSE, eval=FALSE}
+=======
+Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
+
+
+```{r, warning=FALSE, cache=FALSE, eval=FALSE}
+
+>>>>>>> 979fd4383183ae977f196020d92bfcc8b63468d2
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
   # Convert binary (character) to decimal (little endian)
@@ -503,7 +511,7 @@ getQABits <- function(image, qa) {
 }
 
 # Usando getQABits construimos una sola variable para la funcion'mod13A2_clean'
-mod13A2_clean <- function(img) {
+mod13Q1_clean <- function(img) {
   # Extract the NDVI band
   ndvi_values <- img$select("NDVI")
 
@@ -511,7 +519,7 @@ mod13A2_clean <- function(img) {
   ndvi_qa <- img$select("SummaryQA")
 
   # Select pixels to mask
-  quality_mask <- getQABits(ndvi_qa, "10")
+  quality_mask <- getQABits(ndvi_qa, "10") # Pixel producido, pero probablemente en la nube
 
   # Mask pixels with value zero.
   ndvi_values$updateMask(quality_mask)
@@ -524,14 +532,14 @@ mod13A2_clean <- function(img) {
 ```{r, eval=TRUE, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
-Anta <- st_read('Materiales/Anta.gpkg')
+Cajamarca <- st_read('Materiales/Cajamarca.gpkg')
 
 # Generamos el centroide para la correcta visualizacion
-centroid <- st_centroid(Anta)
+centroid <- st_centroid(Cajamarca)
 X <- (st_coordinates(centroid))[,"X"]
 Y <- (st_coordinates(centroid))[,"Y"]
 
-ee_roi <- Anta %>%
+ee_roi <- Cajamarca %>%
   st_geometry() %>%
   sf_as_ee()
 
@@ -542,17 +550,17 @@ ee_roi <- Anta %>%
 #   ee_search_title("1km") %>%
 #   ee_search_display()
 
-modis_ndvi <- ee$ImageCollection("MODIS/006/MOD13Q1")
-
-
 # Creamos un compuesto mensual: para fines de presentacion
 
-ndvi_composite <- modis_ndvi$
-  filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-  filter(ee$Filter$calendarRange(1, field = "month"))$
-  map(mod13A2_clean)$
-  mean()
+# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
+#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   filter(ee$Filter$calendarRange(1, field = "month"))$
+#   map(mod13Q1_clean)$
+#   mean()
 
+ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
+  filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+  map(mod13Q1_clean)
 
 # ndvi_composite_sc <- modis_ndvi$
 #   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
@@ -568,15 +576,27 @@ ndviParams <- list(palette = c(
 ))
 
 # Display results
-scale <- 0.0001
-Map$setCenter(lon = X, lat = Y, zoom = 10)
-Map$addLayer(
-  eeObject = ndvi_composite,
-  visParams = list(
-    min = 0.2 / scale,
-    max = 0.7 / scale,
-    palette = cpt("grass_ndvi", 10))) + 
-  Map$addLayer(ee_roi)
+# scale <- 0.0001
+# Map$setCenter(lon = X, lat = Y, zoom = 10)
+# Map$addLayer(
+#   eeObject = ndvi_composite,
+#   visParams = list(
+#     min = 0.2 / scale,
+#     max = 0.7 / scale,
+#     palette = cpt("grass_ndvi", 10))) + 
+#   Map$addLayer(ee_roi)
+
+
+# Download raster
+# ee_raster <- ee_as_raster(
+#   image = ndvi_composite,
+#   region = ee_roi$geometry(),
+#   via = "drive"
+# )
+
+ee_imagecollection_to_local(ic = ndvi_composite, 
+                            region = ee_roi, 
+                            dsn = "MODQ1/Filtrado/NDVI_MOD13Q1")
 ```
 
 Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2)
