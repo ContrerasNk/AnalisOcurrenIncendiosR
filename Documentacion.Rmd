@@ -522,17 +522,23 @@ mod13Q1_clean <- function(img) {
 
 #### Filtro del producto NDVI mediante las fechas con mas incendios (Solo 2016)
 
-```{r, eval=TRUE, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+```{r, eval=137, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
-Cajamarca <- st_read('Materiales/Cajamarca.gpkg')
+Cajamarca <- st_read('Materiales/Cajamarca.gpkg') # Se activa en la descarga
+Cutervo <- st_read('Materiales/Cutervo.gpkg')
 
 # Generamos el centroide para la correcta visualizacion
-centroid <- st_centroid(Cajamarca)
+
+ee_roi1 <- Cajamarca %>%
+  st_geometry() %>%
+  sf_as_ee()
+
+centroid <- st_centroid(Cutervo)
 X <- (st_coordinates(centroid))[,"X"]
 Y <- (st_coordinates(centroid))[,"Y"]
 
-ee_roi <- Cajamarca %>%
+ee_roi <- Cutervo %>%
   st_geometry() %>%
   sf_as_ee()
 
@@ -545,28 +551,28 @@ ee_roi <- Cajamarca %>%
 
 # Creamos un compuesto mensual: para fines de presentacion
 
-# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
-#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-#   filter(ee$Filter$calendarRange(1, field = "month"))$
-#   map(mod13Q1_clean)$
-#   mean()
-
 ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-  map(mod13Q1_clean)
+  filter(ee$Filter$calendarRange(1, field = "month"))$
+  map(mod13Q1_clean)$
+  mean()
 
-# ndvi_composite_sc <- modis_ndvi$
+# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 #   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   map(mod13Q1_clean) # Descarga de estos
+
+# ndvi_composite_sc <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 #   filter(ee$Filter$calendarRange(1, field = "month"))$
-#   mean()
+#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   mean() # Para ploteo no sirve
 
 
 # Color para el segundo NDVI
-ndviParams <- list(palette = c(
-  "#d73027", "#f46d43", "#fdae61",
-  "#fee08b", "#d9ef8b", "#a6d96a",
-  "#66bd63", "#1a9850"
-))
+# ndviParams <- list(palette = c(
+#   "#d73027", "#f46d43", "#fdae61",
+#   "#fee08b", "#d9ef8b", "#a6d96a",
+#   "#66bd63", "#1a9850"
+# ))
 
 # Ploteo de la media de los años
 scale <- 0.0001
@@ -576,8 +582,10 @@ Map$addLayer(
   visParams = list(
     min = 0.2 / scale,
     max = 0.7 / scale,
-    palette = cpt("grass_ndvi", 10))) +
-  Map$addLayer(ee_roi)
+    palette = cpt("grass_ndvi", 10)),
+  name = "NDVImean") +
+  Map$addLayer(ee_roi, name = "Cutervo") +
+  Map$addLayer(ee_roi1, name = "Cajamarca")
 
 
 # Download raster
