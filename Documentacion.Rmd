@@ -18,8 +18,17 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 
 ## 1. Identificación del problema
 
-En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y
-Cajamarca (INDECI, 2013; El Comercio, 2018), siendo muy perjudicial para un Perú que no está en condiciones de afrontar este tipo de emergencias al no tener una unidad especializada de respuesta ante Incendios (RPP, 2016). 
+La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
+
+Segun los registros historicos del CFOI se puede afirmar que
+los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno, Apurímac, Amazonas, Ayacucho y Piura, en estos departamentos todos los años se van a presentar estos eventos entre los meses de junio a enero. 
+
+En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. 
+
+```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.'}
+knitr::include_graphics('Img/evidencia_2.jpg')
+```
+
 
 ### 1.1. Planteamiento del problema
 ### 1.2. Objetivos
@@ -31,14 +40,20 @@ Analizar la estacionalidad de variables bioclimáticas en el marco del estudio d
 * Analizar el comportamiento estacional de las variables bioclimáticas con respecto a la altitud en las zonas CFOI.
 
 ### 1.3. Justificación
-Las graves consecuencias que a todos los niveles (ecológico, económico, social y humano) pueden derivarse de un incendio forestal son razones suficientes para dedicar una atención especial a este fenómeno. El hombre ha desarrollado numerosos instrumentos y puesto en práctica diversos procedimientos para combatirlos. 
-Este proyecto de investigación se justifica en la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.
+
+Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.
+
 
 ## 2. Antecedentes
 
 [MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+[Cajamarca: incendio forestal afectó a zona boscosa de Cerro Negro](https://andina.pe/agencia/noticia-cajamarca-incendio-forestal-afecto-a-zona-boscosa-cerro-negro-640629.aspx)
 
 [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
+
+[ANÁLISE ESPACIAL DE EVENTOS](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
+
+[Evaluacion de algoritmos para estimar la derivada de presion en pruebas de pozos](https://dialnet.unirioja.es/descarga/articulo/5432182.pdf)
 
 [Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
 
@@ -48,14 +63,19 @@ Este proyecto de investigación se justifica en la carencia de datos estadístic
 
 ## 3. Marco Teórico
 
+
+
 ### 3.1 Función Kernel
+
+Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
 * Un kernel, a su vez, es una funcion no negativa (no dijimos qué forma
 aun)
-* Usaremos un parametro de suavizacion o bandwidth (h) -més alto, mas
+* Usaremos un parametro de suavizacion o bandwidth (h) mientras mas alto, mas
 suavizamos.
+* Tanto el n como el h nos determinar el area de influencia de los puntos a ser interpolados. 
 
 Estimación de la densidad para un punto $x$ :
 
@@ -66,6 +86,9 @@ Donde
 * $h:$ Ancho de banda.
 * $K:$ Es la función kernel.
 
+
+### 3.2. Filtro Digital Savitzky-Golay 
+Tiene como objetivo la disminucion del ruido de una curva, esta optimizacion se baso incialmente en una tabla de terminos que suavizaban puntos a partir de la simplificacion del metodo de minimos cuadrados (puntos equisdistantes al eje X), posteriormente el metodo incorporo otros metodos de auto-optimizacion subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio optimo.
 
 ## 4. Área de estudio
 
@@ -92,11 +115,16 @@ library(leaflet.extras)
 library(leafpop)
 library(MASS)
 library(dplyr)
-library(tidyverse)
-library(rgee)
+library(ncdf4)
+library(devtools)
+library(velox)
+library(signal)
+library(doParallel)
+library(foreach)
 ```
 
 ```{r , eval=TRUE, echo=FALSE}
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
 # Inicializando sesion en GEE
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
@@ -279,7 +307,7 @@ leaflet() %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
   addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
               label = ~PROVINCIA, color = "#ffff33", group = "Provincias") %>%
-  addPolygons(data = Anta, fillOpacity = 0, weight = 4, opacity = 1,
+  addPolygons(data = Cutervo, fillOpacity = 0, weight = 4, opacity = 1,
               label = ~PROVINCIA, color = "#54278f",group = "Anta") %>%
   addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
@@ -301,7 +329,7 @@ a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(fires_mean = mean(nfires, na.rm = T), fires_max  = max(nfires, na.rm = T)) %>%
   mutate(MES = as.numeric(MES)) %>% arrange(MES) %>% as.data.frame() %>% dplyr::select(-geom)
 
-b <- fires %>% filter(`AñO`== yr) %>%
+b <- fires %>% dplyr::filter(`AñO`== yr) %>%
   mutate(MES = MES_N) %>%
   group_by(MES) %>% 
   summarise(fires_anom = length(MES)) %>%
@@ -373,6 +401,107 @@ Este registro abarca los años 2000 a 2018, descargados del [geoservidor del Min
 #### 5.2.2 Precipitación acumulada y Temperatura Máxima
 Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI)
 
+##### Precipitacion acumulada mensual
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+
+```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+pp_velox <- velox("RasterData/PISCO/PISCOp_v211_cajamarca.tif")                 
+region <- read_sf("Materiales/Cutervo.gpkg")
+
+data <- pp_velox$extract(sp=region, fun = function(x){mean(x,na.rm=T)}) %>%
+        as.vector()
+date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'),by='month')
+
+pp <- data.frame(date,data) %>% mutate(mes=substr(date,6,7)) %>% group_by(mes) %>%
+      summarise(ppmean= mean(data, na.rm = T),
+                ppmax= max(data, na.rm = T),
+                ppmin= min(data, na.rm=T))  
+
+pp2000 <- data.frame(date, pp2000 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
+pp2005 <- data.frame(date, pp2005 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
+pp2010 <- data.frame(date, pp2010 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
+pp2016 <- data.frame(date, pp2016 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
+
+df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by =             'month'), pp) %>% full_join(pp2000) %>% full_join(pp2005) %>%                        full_join(pp2010) %>% full_join(pp2016)
+
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+X <-  ggplot(df, aes(date, ppmean)) +
+      geom_line(colour = 'black', size=.8) + 
+      theme_bw() + ylab(label = '[mm]') +  xlab(label = '') +
+      ggtitle('Precipitacion acumulada mensual', 
+              subtitle = 'De 1981 hasta 2018') + 
+      theme(plot.title    = element_text(size = 16, hjust = 0.5, face = 'bold'),
+            plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+            axis.text.x   = element_text(size=12),
+            axis.text.y   = element_text(size=12),
+            axis.title    = element_text(size=20),
+            axis.title.y =  element_text(size=12, face='bold')) +
+            scale_x_date(date_labels = '%b', breaks = '1 month') +
+            scale_y_continuous(breaks = seq(0,325,50), limits = c(0, 325)) +
+      geom_line(aes(date, ppmax),  colour = 'red', linetype = 'dashed', size=.8) +
+      geom_line(aes(date, ppmin),  colour = 'red', linetype = 'dashed', size=.8) +
+      geom_line(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=.8) +
+      geom_line(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=.8) +
+      geom_line(aes(date, pp2010), colour = 'snow3'       , size=.8) +
+      geom_line(aes(date, pp2016), colour = 'springgreen3', size=.8) +
+      geom_point(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+      geom_point(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+      geom_point(aes(date, pp2010), colour = 'snow3'       , size=2) +
+      geom_point(aes(date, pp2016), colour = 'springgreen3', size=2)
+
+X
+```
+
+##### Temperatura maxima mensual
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+
+```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_cajamarca.tif")                 
+region <- read_sf("Materiales/Cutervo.gpkg")
+
+data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
+date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = 'month')
+
+
+temp <- data.frame(date, data) %>% mutate(mes = substr(date,6,7)) %>% group_by(mes) %>% summarise(tempmean = mean(data, na.rm = T),                                                    tempmax  = max(data, na.rm = T),                                                     tempmin  = min(data, na.rm = T))
+
+temp2000 <- data.frame(date, temp2000 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
+temp2005 <- data.frame(date, temp2005 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
+temp2010 <- data.frame(date, temp2010 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
+temp2016 <- data.frame(date, temp2016 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
+
+df <- data.frame(date = seq(as.Date('2016-01-01'), as.Date('2016-12-01'), by = 'month'), temp) %>% full_join(temp2000) %>% full_join(temp2005) %>% 
+                                                                                                   full_join(temp2010) %>% full_join(temp2016)
+
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+
+X <- ggplot(df, aes(date, tempmean)) +
+     geom_line(colour = 'black', size=.8) + 
+     theme_bw() + ylab(label = '[°C]') +  xlab(label = '') +
+     ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2016') + 
+     theme(plot.title    = element_text(size = 16, hjust = 0.5, face = 'bold'),
+           plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+           axis.text.x   = element_text(size=12),
+           axis.text.y   = element_text(size=12),
+           axis.title    = element_text(size=12, face='bold'))+
+     scale_x_date(date_labels = '%b', breaks = '1 month') +
+     scale_y_continuous(breaks = seq(20,28,1), limits = c(20, 28)) +
+     geom_line(aes(date, tempmax),  colour = 'red', linetype = 'dashed', size=.8) +
+     geom_line(aes(date, tempmin),  colour = 'red', linetype = 'dashed', size=.8) +
+     geom_line(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=.8) +
+     geom_line(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=.8) +
+     geom_line(aes(date, temp2010), colour = 'snow3'       , size=.8) +
+     geom_line(aes(date, temp2016), colour = 'springgreen3', size=.8) +
+     geom_point(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+     geom_point(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+     geom_point(aes(date, temp2010), colour = 'snow3'       , size=2) +
+     geom_point(aes(date, temp2016), colour = 'springgreen3', size=2)
+
+X
+```
+
 #### 5.2.3 Índice de Vegetación Normalizado (NDVI)
 
 Ahora toca trabajar con las variables bioclimáticas...
@@ -392,37 +521,42 @@ Para entender como se interpreta un banda de calidad no dirigimos a la página d
 
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
-  # Convert binary (character) to decimal (little endian)
-  qa <- sum(2^(which(rev(unlist(strsplit(as.character(qa), "")) == 1))-1))
-  # Return a mask band image, giving the qa value.
-  image$bitwiseAnd(qa)$lt(1)
+  
+  qa <- sum(2^(which(rev(unlist(strsplit(as.character(qa), "")) == 1))-1)) # Convert binary (character) to decimal (little endian)
+  image$bitwiseAnd(qa)$lt(1) # Return a mask band image, giving the qa value.
 }
 
 # Usando getQABits construimos una sola variable para la funcion'mod13A2_clean'
 mod13Q1_clean <- function(img) {
-  # Extract the NDVI band
+  # Extraccion de la banda NDVI
   ndvi_values <- img$select("NDVI")
 
-  # Extract the quality band
+  # Extraccion de la banda de calidad
   ndvi_qa <- img$select("SummaryQA")
 
-  # Select pixels to mask
+  # Seleccion los pixeles para enmascararlo
   quality_mask <- getQABits(ndvi_qa, "10") # Pixel producido, pero probablemente en la nube
 
-  # Mask pixels with value zero.
+  # Enmascararlo con valor de 0
   ndvi_values$updateMask(quality_mask)
 }
 ```
 
 
-#### Filtro del producto NDVI mediante las fechas con mas incendios
+#### Filtro del producto NDVI mediante las fechas con mas incendios (Solo 2016)
 
-```{r, eval=TRUE, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+```{r, eval=137, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
+Cajamarca <- st_read('Materiales/Cajamarca.gpkg') # Se activa en la descarga
 Cutervo <- st_read('Materiales/Cutervo.gpkg')
 
 # Generamos el centroide para la correcta visualizacion
+
+ee_roi1 <- Cajamarca %>%
+  st_geometry() %>%
+  sf_as_ee()
+
 centroid <- st_centroid(Cutervo)
 X <- (st_coordinates(centroid))[,"X"]
 Y <- (st_coordinates(centroid))[,"Y"]
@@ -440,55 +574,111 @@ ee_roi <- Cutervo %>%
 
 # Creamos un compuesto mensual: para fines de presentacion
 
-# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
-#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-#   filter(ee$Filter$calendarRange(1, field = "month"))$
-#   map(mod13Q1_clean)$
-#   mean()
-
 ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-  map(mod13Q1_clean)
+  filter(ee$Filter$calendarRange(1, field = "month"))$
+  map(mod13Q1_clean)$
+  mean()
 
-# ndvi_composite_sc <- modis_ndvi$
+# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 #   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   map(mod13Q1_clean) # Descarga de estos
+
+# ndvi_composite_sc <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 #   filter(ee$Filter$calendarRange(1, field = "month"))$
-#   mean()
+#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+#   mean() # Para ploteo no sirve
 
 
 # Color para el segundo NDVI
-ndviParams <- list(palette = c(
-  "#d73027", "#f46d43", "#fdae61",
-  "#fee08b", "#d9ef8b", "#a6d96a",
-  "#66bd63", "#1a9850"
-))
+# ndviParams <- list(palette = c(
+#   "#d73027", "#f46d43", "#fdae61",
+#   "#fee08b", "#d9ef8b", "#a6d96a",
+#   "#66bd63", "#1a9850"
+# ))
 
-# Display results
-# scale <- 0.0001
-# Map$setCenter(lon = X, lat = Y, zoom = 10)
-# Map$addLayer(
-#   eeObject = ndvi_composite,
-#   visParams = list(
-#     min = 0.2 / scale,
-#     max = 0.7 / scale,
-#     palette = cpt("grass_ndvi", 10))) + 
-#   Map$addLayer(ee_roi)
+# Ploteo de la media de los años
+scale <- 0.0001
+Map$setCenter(lon = X, lat = Y, zoom = 10)
+Map$addLayer(
+  eeObject = ndvi_composite,
+  visParams = list(
+    min = 0.2 / scale,
+    max = 0.7 / scale,
+    palette = cpt("grass_ndvi", 10)),
+  name = "NDVImean") +
+  Map$addLayer(ee_roi, name = "Cutervo") +
+  Map$addLayer(ee_roi1, name = "Cajamarca")
 
 
 # Download raster
-# ee_raster <- ee_as_raster(
-#   image = ndvi_composite,
-#   region = ee_roi$geometry(),
-#   via = "drive"
-# )
-
-ee_imagecollection_to_local(ic = ndvi_composite, 
-                            region = ee_roi, 
-                            dsn = "MODQ1/Filtrado/NDVI_MOD13Q1",
-                            scale = 0.0001)
+# ee_imagecollection_to_local(ic = ndvi_composite, 
+#                             region = ee_roi, 
+#                             dsn = "MODQ1/Filtrado/NDVI_MOD13Q1")
 ```
 
+El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://bit.ly/3BrQvk2)
+
 Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2)
+
+#### Completación de datos con el método Savitzky Golay
+
+Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
+
+Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
+
+En la creación de la matriz: Apartir de los datos de NDVI, donde cada columna representará a cada una de las imágenes y cada fila, la serie de tiempo para cada pixel.
+```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
+```
+
+```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
+```
+
+
+
+
+```{r, eval = FALSE}
+ndvi_list  <- list.files("RasterData/MODQ1/Filtrado/", pattern=".tif$", full.names = T)
+ndvi_base <- raster(ndvi_list[1]) # Solo para extraer la caracteristicas de los raster
+
+# Creación de la matriz
+for (i in 1:length(ndvi_list)) {
+  print(i)
+  ndvi = raster(ndvi_list[i]) %>% getValues()
+  if (i == 1) {
+    df = data.frame(ndvi) # Primera columna en forma de NDVI
+  } else {
+    df = cbind(df, ndvi) # Se concatenan las siguientes, apartir del 2do raster
+  }
+}
+
+# Funcion de filtro Savitzky Golay
+
+for (j in 1:nrow(df)) {
+  print(j)
+  pixel = df[j, ] %>% as.numeric() # vector numerico, porsiaca
+  if (any(is.na(pixel) == F)) {
+    pixel[is.na(pixel)] = mean(pixel, na.rm = T) # Completación de vacios con el promedio temporal
+    pixel = sgolayfilt(x = pixel)
+    
+    if (j == 1) {
+      df_SG = matrix(pixel, nrow = 1)
+    } else {
+      df_SG = rbind(df_SG, pixel)
+    }
+    
+    if (j == 1) {
+      df_SG = matrix(rep(NA, ncol(df)), nrow = 1)
+    } else {
+      df_SG = rbind(df_SG, rep(NA), ncol(df))
+    }
+  }
+}
+
+```
+
 
 ## 6. Resultados
 
