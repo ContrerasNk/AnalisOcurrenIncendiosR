@@ -1,6 +1,6 @@
 ---
 title: <center> <h1> **Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 - 2018** </h1> </center>
-author: <center> <h1> *Contreras Huerta Julio y Flores Farfan Jair* </h1> </center>
+author: <center> <h2> *Contreras Huerta Julio y Flores Farfan Jair* </h2> </center>
 date: "***`r format(Sys.time(), '%B %d, %Y')`***"
 output:
   html_document:
@@ -70,13 +70,11 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 ### **3.1 Función Kernel**
 
-<<<<<<< HEAD
 ### 3.1 Función Kernel
 
 Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes.
-=======
+
 <div style = "text-align: justify"> Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la localizacion de interes. </div>
->>>>>>> e97a45b23d923a9edd62c1d3477d2944f71ce057
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
@@ -442,12 +440,12 @@ pp <- data.frame(date,data) %>% mutate(mes=substr(date,6,7)) %>% group_by(mes) %
                 ppmax= max(data, na.rm = T),
                 ppmin= min(data, na.rm=T))  
 
-pp2000 <- data.frame(date, pp2000 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
-pp2005 <- data.frame(date, pp2005 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
-pp2010 <- data.frame(date, pp2010 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
-pp2016 <- data.frame(date, pp2016 = data) %>% mutate(mes = substr(date,6,7)) %>%               dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
+pp2000 <- data.frame(date, pp2000 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2000) %>% dplyr::select(-date)
+pp2005 <- data.frame(date, pp2005 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2005) %>% dplyr::select(-date)
+pp2010 <- data.frame(date, pp2010 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2010) %>% dplyr::select(-date)
+pp2016 <- data.frame(date, pp2016 = data) %>% mutate(mes = substr(date,6,7)) %>% dplyr::filter(substr(date,1,4) == 2016) %>% dplyr::select(-date)
 
-df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by =             'month'), pp) %>% full_join(pp2000) %>% full_join(pp2005) %>%                        full_join(pp2010) %>% full_join(pp2016)
+df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), pp) %>% full_join(pp2000) %>% full_join(pp2005) %>%                        full_join(pp2010) %>% full_join(pp2016)
 
 Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
 
@@ -477,7 +475,8 @@ X <-  ggplot(df, aes(date, ppmean)) +
 
 X
 ```
-En la anterior grafica podemos observar que
+
+<div style = "text-align: justify"> En la anterior grafica podemos observar la precipitacion acumulada mensual maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2018, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.</div>
 
 
 ##### **Temperatura maxima mensual**
@@ -529,6 +528,7 @@ X <- ggplot(df, aes(date, tempmean)) +
 
 X
 ```
+<div style = "text-align: justify"> En la anterior grafica podemos observar la tempertaura maxima mensual: al maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2016, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima.</div>
 
 #### **5.2.3 Índice de Vegetación Normalizado (NDVI)**
 
