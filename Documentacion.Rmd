@@ -1,7 +1,7 @@
 ---
-title: Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 -2018
-author: "Contreras y Flores"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
+title: <center> <h1> **Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 - 2018** </h1> </center>
+author: <center> <h1> *Contreras Huerta Julio y Flores Farfan Jair* </h1> </center>
+date: "***`r format(Sys.time(), '%B %d, %Y')`***"
 output:
   html_document:
     toc: yes
@@ -11,63 +11,66 @@ output:
       smooth_scroll: false
 ---
 
-# Introducción
-Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013) como es el caso del Perú (FAO, 2004). 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+
+# **Introducción**
+<div style = "text-align: justify"> Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013) como es el caso del Perú (FAO, 2004). 
 El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (MINAM, 2019)
-En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios.
+En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios.</div>
 
-## 1. Identificación del problema
-
-La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
+## **1. Identificación del problema**
+<div style = "text-align: justify"> La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
 
 Segun los registros historicos del CFOI se puede afirmar que
 los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno, Apurímac, Amazonas, Ayacucho y Piura, en estos departamentos todos los años se van a presentar estos eventos entre los meses de junio a enero. 
 
-En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. 
+En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
-```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.'}
+```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.', out.width="600px"}
 knitr::include_graphics('Img/evidencia_2.jpg')
 ```
 
 
-### 1.1. Planteamiento del problema
-### 1.2. Objetivos
-#### 1.2.1. Objetivo General
-Analizar la estacionalidad de variables bioclimáticas en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).
+### **1.1. Planteamiento del problema**
+### **1.2. Objetivos**
+#### **1.2.1. Objetivo General**
 
-#### 1.2.2. Objetivos Específicos
+<div style = "text-align: justify"> Analizar la estacionalidad de variables bioclimáticas en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
+
+#### **1.2.2. Objetivos Específicos**
 * Analizar las variables climáticas (calidad de vegatción, temperatura y preciptación) de forma interestacional en las zonas CFOI
 * Analizar el comportamiento estacional de las variables bioclimáticas con respecto a la altitud en las zonas CFOI.
 
-### 1.3. Justificación
+### **1.3. Justificación**
 
-Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.
-
-
-## 2. Antecedentes
-
-[MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
-[Cajamarca: incendio forestal afectó a zona boscosa de Cerro Negro](https://andina.pe/agencia/noticia-cajamarca-incendio-forestal-afecto-a-zona-boscosa-cerro-negro-640629.aspx)
-
-[Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
-
-[ANÁLISE ESPACIAL DE EVENTOS](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
-
-[Evaluacion de algoritmos para estimar la derivada de presion en pruebas de pozos](https://dialnet.unirioja.es/descarga/articulo/5432182.pdf)
-
-[Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
+<div style = "text-align: justify"> Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.</div>
 
 
-[Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)  
+## **2. Antecedentes**
+
+* [MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+
+* [Cajamarca: incendio forestal afectó a zona boscosa de Cerro Negro](https://andina.pe/agencia/noticia-cajamarca-incendio-forestal-afecto-a-zona-boscosa-cerro-negro-640629.aspx)
+
+* [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
+
+* [ANÁLISE ESPACIAL DE EVENTOS](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
+
+* [Evaluacion de algoritmos para estimar la derivada de presion en pruebas de pozos](https://dialnet.unirioja.es/descarga/articulo/5432182.pdf)
+
+* [Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
+
+* [Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)  
 
 
-## 3. Marco Teórico
+## **3. Marco Teórico**
 
+### **3.1 Función Kernel**
 
-
-### 3.1 Función Kernel
-
-Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes
+<div style = "text-align: justify"> Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la localizacion de interes. </div>
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
@@ -80,28 +83,31 @@ suavizamos.
 Estimación de la densidad para un punto $x$ :
 
 $${\displaystyle {\widehat {f}}_{h}(x)={\frac {1}{n}}\sum _{i=1}^{n}K_{h}(x-x_{i})={\frac {1}{nh}}\sum _{i=1}^{n}K{\Big (}{\frac {x-x_{i}}{h}}{\Big )}}$$
-Donde
+
+Donde:
 
 * $n:$ Número de observaciones (cada datos es el centro donde se coloca el kernel).
 * $h:$ Ancho de banda.
 * $K:$ Es la función kernel.
 
 
-### 3.2. Filtro Digital Savitzky-Golay 
-Tiene como objetivo la disminucion del ruido de una curva, esta optimizacion se baso incialmente en una tabla de terminos que suavizaban puntos a partir de la simplificacion del metodo de minimos cuadrados (puntos equisdistantes al eje X), posteriormente el metodo incorporo otros metodos de auto-optimizacion subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio optimo.
+### **3.2. Filtro Digital Savitzky-Golay** 
 
-## 4. Área de estudio
+<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva, esta optimizacion se baso incialmente en una tabla de terminos que suavizaban puntos a partir de la simplificacion del metodo de minimos cuadrados (puntos equisdistantes al eje X), posteriormente el metodo incorporo otros metodos de auto-optimizacion subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio optimo. </div>
 
-## 5. Metodología
+
+## **4. Área de estudio**
+
+## **5. Metodología**
 Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:
 
 ```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
 
-### Librerias de R utilizadas hasta el momento
+### **Librerias de R utilizadas hasta el momento**
 
-```{r, warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, eval=TRUE}
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
@@ -123,20 +129,22 @@ library(doParallel)
 library(foreach)
 ```
 
-```{r , eval=TRUE, echo=FALSE}
-Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+### **Iniciamos sesion en GEE**
+
+```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
 
-### 5.1 Localización del área de estudio
+### **5.1 Localización del área de estudio**
 
-#### 5.1.1 Histograma de la acumulación de incendios a lo largo del tiempo
+#### **5.1.1 Histograma de la acumulación de incendios a lo largo del tiempo**
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
-fires <- st_read(shp) %>% 
+fires <- st_read(shp, quiet = TRUE) %>% 
   mutate(Date = paste(`AñO`, 
                       MES_N, 1, 
                       sep = '-')) %>% 
@@ -174,15 +182,21 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 
 ```
-Dos de eventos de los que vamos a inspeccionar coinciden con eventos extremos, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).
+<div style = "text-align: justify"> Dos de eventos de los que vamos a inspeccionar coinciden con eventos extremos, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
 
-#### 5.1.2 Histograma de la acumulación de incendios a lo largo del tiempo
+#### **5.1.2 Distribución de los incendios por años de 2000 - 2018**
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+<style>
+.html-widget {
+    margin: auto;
+}
+</style>
+
+```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="900px" }
 # Incendios acumulados por mes
-Departamentos <- st_read('Materiales/Departamentos.gpkg')
+Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
-fires <- st_read(shp) %>% 
+fires <- st_read(shp, quiet = TRUE) %>% 
   mutate(Date = paste(`AñO`), Fecha = paste(`AñO`, MES_N, DIA, sep = '-')) %>% 
   as.data.frame() %>%
   dplyr::select(Date, Fecha, LOCALIDAD, 
@@ -239,21 +253,21 @@ Spp_Map
 
 
 
-#### 5.1.3 Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
+#### **5.1.3 Estimación de densidad de probabilidad 2D: función de densidad no paramétrica**
 
-Se tratade suvizar una serie tanto en el eje x e y. Seria raro que pase un incendio en un lugar y no haya la probabilidad que ocurra a sus alrededores cercanos, mientras que a unos cuantos metros paso uno grande.
+<div style = "text-align: justify"> Se tratade suvizar una serie tanto en el eje x e y. Seria raro que pase un incendio en un lugar y no haya la probabilidad que ocurra a sus alrededores cercanos, mientras que a unos cuantos metros paso uno grande.
 
 En realidad existe funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal.
 
 Se estima la función de densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
 
-Basicamente, esta función del paquete MASS, la función kernel varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.
+Basicamente, esta función del paquete MASS, la función kernel varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
 
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE}
-fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
-peru <- st_read('Materiales/Peru.gpkg')
-Departamentos <- st_read('Materiales/Departamentos.gpkg')
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE}
+fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
+peru <- st_read('Materiales/Peru.gpkg', quiet = TRUE)
+Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
 
 # Extracción de coordenadas de los puntos
 fires_df <- st_coordinates(fires) %>% as.data.frame()
@@ -282,12 +296,12 @@ m
 
 Seguimos con...
 
-#### 5.1.4 Elección del área de estudio
+#### **5.1.4 Elección del área de estudio**
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
-Provincias <- st_read('Materiales/Provincias.gpkg')
-Cutervo <- st_read('Materiales/Cutervo.gpkg')
-names(Provincias)
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
+Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
+
 kde_raster_clas <- kde_raster
 kde_raster_clas[kde_raster < 8] = NA
 kde_raster_clas[kde_raster >= 8] = 1
@@ -313,12 +327,12 @@ leaflet() %>%
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
 
-#### 5.1.5 Variabilidad estacional de la ocurrecia de incendios
+#### **5.1.5 Variabilidad estacional de la ocurrecia de incendios**
 
-Se verá el comportamiento estacional promeido y máximo, para un registro de incendios 2000 - 2018.
+<div style = "text-align: justify"> Se verá el comportamiento estacional promeido y máximo, para un registro de incendios 2000 - 2018.</div>
 
-```{r}
-fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2016
 
@@ -370,14 +384,14 @@ X <- ggplot(df) +
   theme(legend.position = "none", )
 X
 
-element_rect(
-  fill = NULL,
-  colour = NULL,
-  size = NULL,
-  linetype = NULL,
-  color = NULL,
-  inherit.blank = FALSE
-)
+# element_rect(
+#   fill = NULL,
+#   colour = NULL,
+#   size = NULL,
+#   linetype = NULL,
+#   color = NULL,
+#   inherit.blank = FALSE
+# )
   # ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
   # theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15),
   #       axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
@@ -388,25 +402,30 @@ element_rect(
 
 ```
 
-
-En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre.
-
+<div style = "text-align: justify"> En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre.</div>
 
 
-### 5.2 Materiales
 
-#### 5.2.1 Data histórica de incendios 2000-2018
-Este registro abarca los años 2000 a 2018, descargados del [geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/).
 
-#### 5.2.2 Precipitación acumulada y Temperatura Máxima
-Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI)
+### **5.2 Materiales**
 
-##### Precipitacion acumulada mensual
-Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+#### **5.2.1 Data histórica de incendios 2000-2018**
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/).</div>
+
+
+#### **5.2.2 Precipitación acumulada y Temperatura Máxima**
+
+<div style = "text-align: justify"> Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI) </div>
+
+
+##### **Precipitacion acumulada mensual**
+
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI.
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 pp_velox <- velox("RasterData/PISCO/PISCOp_v211_cajamarca.tif")                 
-region <- read_sf("Materiales/Cutervo.gpkg")
+region <- st_read("Materiales/Cutervo.gpkg", quiet = TRUE)
 
 data <- pp_velox$extract(sp=region, fun = function(x){mean(x,na.rm=T)}) %>%
         as.vector()
@@ -453,12 +472,13 @@ X <-  ggplot(df, aes(date, ppmean)) +
 X
 ```
 
-##### Temperatura maxima mensual
+##### **Temperatura maxima mensual**
+
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
 
-```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+```{r, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_cajamarca.tif")                 
-region <- read_sf("Materiales/Cutervo.gpkg")
+region <- st_read("Materiales/Cutervo.gpkg", quiet = TRUE)
 
 data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
 date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = 'month')
@@ -502,22 +522,20 @@ X <- ggplot(df, aes(date, tempmean)) +
 X
 ```
 
-#### 5.2.3 Índice de Vegetación Normalizado (NDVI)
+#### **5.2.3 Índice de Vegetación Normalizado (NDVI)**
 
-Ahora toca trabajar con las variables bioclimáticas...
+<div style = "text-align: justify">Ahora toca trabajar con las variables bioclimáticas...
 
 Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
 
 
-Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^16$.
+Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
 
 
-##### Filtro por la banda de calidad
+##### **Filtro por la banda de calidad**
+<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**. </div>
 
-Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**
-
-
-```{r, warning=FALSE, cache=FALSE, eval=FALSE}
+```{r warning=FALSE, cache=FALSE, eval=TRUE}
 
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
@@ -543,13 +561,13 @@ mod13Q1_clean <- function(img) {
 ```
 
 
-#### Filtro del producto NDVI mediante las fechas con mas incendios (Solo 2016)
+#### **Filtro del producto NDVI - Promedio 2016**
 
-```{r, eval=137, message=FALSE, eval=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
-Cajamarca <- st_read('Materiales/Cajamarca.gpkg') # Se activa en la descarga
-Cutervo <- st_read('Materiales/Cutervo.gpkg')
+Cajamarca <- st_read('Materiales/Cajamarca.gpkg', quiet = TRUE) # Se activa en la descarga
+Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
 
 # Generamos el centroide para la correcta visualizacion
 
@@ -617,17 +635,18 @@ Map$addLayer(
 #                             dsn = "MODQ1/Filtrado/NDVI_MOD13Q1")
 ```
 
-El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://bit.ly/3BrQvk2)
+<div style = "text-align: justify">El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://bit.ly/3BrQvk2)
 
-Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2)
+Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2).</div>
 
-#### Completación de datos con el método Savitzky Golay
 
-Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
+#### **Completación de datos con el método Savitzky Golay**
+<div style = "text-align: justify">Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
 
-En la creación de la matriz: Apartir de los datos de NDVI, donde cada columna representará a cada una de las imágenes y cada fila, la serie de tiempo para cada pixel.
+En la creación de la matriz: Apartir de los datos de NDVI, donde cada columna representará a cada una de las imágenes y cada fila, la serie de tiempo para cada pixel.</div>
+
 ```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
 knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
 ```
@@ -639,7 +658,7 @@ knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
 
 
 
-```{r, eval = FALSE}
+```{r eval = FALSE}
 ndvi_list  <- list.files("RasterData/MODQ1/Filtrado/", pattern=".tif$", full.names = T)
 ndvi_base <- raster(ndvi_list[1]) # Solo para extraer la caracteristicas de los raster
 
@@ -680,14 +699,14 @@ for (j in 1:nrow(df)) {
 ```
 
 
-## 6. Resultados
+## **6. Resultados**
 
-## 7. Análisis 
+## **7. Análisis**
 
-## 8. Discusión de resultados
+## **8. Discusión de resultados**
 
-## 9. Conclusión
+## **9. Conclusión**
 
-## 10. Referencias
+## **10. Referencias**
 
 
