@@ -67,7 +67,7 @@ Este proyecto de investigación se justifica en lo poco explorado que estan sien
 
 ### 3.1 Función Kernel
 
-Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes
+Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes.
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
@@ -452,6 +452,8 @@ X <-  ggplot(df, aes(date, ppmean)) +
 
 X
 ```
+En la anterior grafica podemos observar que
+
 
 ##### Temperatura maxima mensual
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
