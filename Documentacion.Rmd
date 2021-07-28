@@ -29,7 +29,6 @@ los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno,
 
 En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
-<<<<<<< HEAD
 En los últimos años los incendios han impactado severamente varias regiones del Perú, como Cusco, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018).
 En el caso del Cuzco, los incendios que se presentan anualmente  entre los meses de junio a setiembre, debido principalmente al uso irresponsable del fuego por personas que desarrollan es agrícolas, ganaderas y forestales gracias a los cuales, la calidad de las personas se ve gravemente afectada. 
 
@@ -42,7 +41,7 @@ Las provincias de Paruro, Canas, Chumbivilcas,  Quipicachi, Acomayo y Espinar so
 ```{r echo = FALSE, fig.align='center'}
 knitr::include_graphics('Img/incendios_provocados.jpg')
 ```
-=======
+
 ```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.', out.width="600px"}
 knitr::include_graphics('Img/evidencia_2.jpg')
 ```
@@ -51,7 +50,6 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 ### **1.1. Planteamiento del problema**
 ### **1.2. Objetivos**
 #### **1.2.1. Objetivo General**
->>>>>>> master
 
 <div style = "text-align: justify"> Analizar la estacionalidad de variables bioclimáticas en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
 
@@ -87,19 +85,13 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 ### 3.1 Función Kernel
 
-<<<<<<< HEAD
 [En Cusco todas las provincias tienen condiciones de media a muy alta para ocurrencia de incendios](https://gestion.pe/peru/en-cusco-todas-las-provincias-tienen-condiciones-de-medias-a-muy-altas-para-ocurrencia-de-incendios-noticia/)
 
 [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
-=======
+
 Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes.
 
 <div style = "text-align: justify"> Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la localizacion de interes. </div>
-<<<<<<< HEAD
->>>>>>> e97a45b23d923a9edd62c1d3477d2944f71ce057
->>>>>>> master
-=======
->>>>>>> master
 
 * Aveces, el Kernel es una funcion de ventana (window function)
 * Una window function fuera de cierto intervalo adopta el valor 0 
@@ -163,6 +155,7 @@ library(foreach)
 
 ```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
+ee_install()
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
 
@@ -281,14 +274,12 @@ Spp_Map
 
 
 
-
-<<<<<<< HEAD
 ```{r, include=FALSE}
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp)
 peru <- read_sf('Materiales/Peru.gpkg')
 Departamentos <- st_read('Materiales/Departamentos.gpkg')
-=======
+
 #### **5.1.3 Estimación de densidad de probabilidad 2D: función de densidad no paramétrica**
 
 <div style = "text-align: justify"> Se tratade suvizar una serie tanto en el eje x e y. Seria raro que pase un incendio en un lugar y no haya la probabilidad que ocurra a sus alrededores cercanos, mientras que a unos cuantos metros paso uno grande.
