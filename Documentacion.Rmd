@@ -74,12 +74,11 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 * [Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)  
 
-<br/>
+* [La problemática de los incendios forestales y bases para su teledetección en el Perú](http://journals.continental.edu.pe/index.php/apuntes/article/view/198/196)
 
 
 ## **3. Marco Teórico**
 
-<br/>
 
 ### **3.1 Función Kernel**
 
@@ -111,8 +110,6 @@ Donde:
 
 <div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. Esta optimización se basó inicialmente en una tabla de términos que suavizaban puntos a partir de la simplificación del método de mínimos cuadrados (puntos equisdistantes al eje X), posteriormente el método incorporó otros métodos de auto-optimización subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio óptimo. *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
 
-<br/>
-
 
 ## **4. Área de estudio**
 <div style = "text-align: justify">Nuestro área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, aplicaremos la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio a la provincia de Cutervo, departamento de Cajamarca. Como en los apartados posteriores generaremos mapas respecto a la ubicación de esta provincia, solo mostraremos un mapa de ubicación referencial, por ahora.</div>
@@ -121,7 +118,6 @@ Donde:
 knitr::include_graphics('Img/mapa_referencial.png')
 ```
 
-<br/>
 
 ## **5. Metodología**
 <div style = "text-align: justify">Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:</div>
@@ -129,11 +125,11 @@ knitr::include_graphics('Img/mapa_referencial.png')
 ```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
-<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.
+<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.</div>
 
-En este proyecto uitilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:</div>
+En este proyecto uitilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
 
-####**Librerias de R utilizadas hasta el momento**
+***Librerias de R utilizadas hasta el momento***
 
 ```{r warning=FALSE, message=FALSE, eval=TRUE}
 library(dplyr)
@@ -158,7 +154,7 @@ library(reshape2)
 library(RColorBrewer)
 ```
 
-#### **Librerias de Python utilizadas hasta el momento**
+***Librerias de Python utilizadas hasta el momento***
 
 ```{python warning=FALSE, message=FALSE, eval=FALSE}
 import numpy as np ## For array handling
@@ -175,17 +171,15 @@ from scipy import signal ## Aplying Savistky Golay
 import rasterio as rio # For raster analysis
 ```
 
-<div style = "text-align: justify">
-Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP.
-</div>
+<div style = "text-align: justify">Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP.</div>
 
-#### **Iniciamos sesion en GEE**
+***Iniciamos sesion en GEE***
 
 ```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
-<br/>
+
 
 ### **5.1 Localización del área de estudio**
 
@@ -904,9 +898,9 @@ for (j in 1:nrow(df)) {
 
 ```
 
-### 5.4 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
+### **5.4 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación**
 
-#### 5.4.1. DEM SRTM V4
+#### **5.4.1. DEM SRTM V4**
 
 El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios.
 
@@ -956,7 +950,7 @@ X
 Como podemos observar en el histograma los incendios se registran entre los 1000 y 4500 msnm, pero es entre los 3500 y 4500 principalmente donde la cantidad de incendios supera los 75 registros aproximadamente.
 
 
-#### 5.4.2. Poligonizamos el DEM: Clases de altitud
+#### **5.4.2. Poligonizamos el DEM: Clases de altitud**
  Dentro de este apartado vamos a vectorizar el DEM STRM V4 dentro de los intervalos cada 500 m
  
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
@@ -979,7 +973,7 @@ plot(dem)
 ```
  
 
-#### 5.4.3. Variabilidad estacional de precipitación por elevación
+#### **5.4.3. Variabilidad estacional de precipitación por elevación**
 
 El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio
 
@@ -1035,7 +1029,7 @@ X
 
 ```
 
-#### 5.4.4. Variabilidad estacional de temperatura máxima por elevación
+#### **5.4.4. Variabilidad estacional de temperatura máxima por elevación**
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
@@ -1083,22 +1077,21 @@ X
 ```
 
 
-#### Análisis final
+## **6. Resultados y Análisis**
 
 
-De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
-Por ultimo el comportamiento estacional del NDVI, al igual que la temperatura máxima pierde homogeneidad a partir de los 3250 msnm con un notorio contrastre de los meses de junio a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.35 de NDVI, entonces podemos llgar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
+De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios con aquel constraste estacional de precipitaciones acumuladas mensuales por debajo de 200 mm, para los meses de invierno, y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 2300 msnm, ya por este umbral se denota un contraste entre la varibilidad estacional y la constancia de este paraámetros, esto nos podría indicar que si bien a esa altitud ya no varía la temperatura máxima, eso donde se dan los mayores incendios en Cutervo.
+Por ultimo el comportamiento estacional del NDVI, aún no ha sido analizado de esta forma.
 
 Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
 
-## **6. Resultados**
 
-## **7. Análisis**
+## **7. Discusión de resultados**
 
-## **8. Discusión de resultados**
+## **8. Conclusión**
 
-## **9. Conclusión**
+## **9. Referencias**
 
-## **10. Referencias**
+Por ahora las referencias lo encontramos en los antecedentes.
 
-http://journals.continental.edu.pe/index.php/apuntes/article/view/198/196
+
