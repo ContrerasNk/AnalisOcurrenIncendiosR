@@ -17,12 +17,14 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 
 # **Introducción**
+
 <div style = "text-align: justify"> Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial, sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013), como es el caso del Perú (FAO, 2004). 
 El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (MINAM, 2019).
 
 En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios, desde el año 2000 al 2018.</div>
 
 ## **1. Identificación del problema**
+
 <div style = "text-align: justify"> La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
 
 Segun los registros historicos del CFOI se puede afirmar que
@@ -34,15 +36,22 @@ En el caso de Cajamarca, gran parte de los incendios son por factor antropico, S
 knitr::include_graphics('Img/evidencia_2.jpg')
 ```
 
-
 ### **1.1. Objetivos**
+
+<br/>
+
 #### **1.1.1. Objetivo General**
 
-<div style = "text-align: justify"> Analizar la estacionalidad de variables bioclimáticas en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
+<div style = "text-align: justify"> El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
+
+<br/>
 
 #### **1.1.2. Objetivos Específicos**
-* Analizar las variables climáticas (calidad de vegatción, temperatura y preciptación) de forma interestacional en las zonas CFOI
-* Analizar el comportamiento estacional de las variables bioclimáticas con respecto a la altitud en las zonas CFOI.
+* Analizar las variables bioclimáticas (calidad de vegetación, temperatura, preciptación y altitud) de forma interestacional en las zonas con CFOI 
+* Ampliar el conocimiento de la influencia de las variables bioclimáticas para las CFOI y así en un futuro generar un modelo de predicción.
+* Generar conocimiento y aprender la técnica de la Teledetección, además de aplicar los conocimientos aprendidos en clase.
+
+<br/>
 
 ### **1.2. Justificación**
 
@@ -51,13 +60,13 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 ## **2. Antecedentes**
 
-* [MONITOREO DE LAS CONDICIONES FAVORABLES PARA LA OCURRENCIA DE INCENDIOS SOBRE LA COBERTURA VEGETAL – CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
+* [Monitoreo de las condiciones favorables para la ocurrencia de incendios sobre la cobertura vegetal - CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
 
 * [Cajamarca: incendio forestal afectó a zona boscosa de Cerro Negro](https://andina.pe/agencia/noticia-cajamarca-incendio-forestal-afecto-a-zona-boscosa-cerro-negro-640629.aspx)
 
 * [Ocurrencia de incendios forestales en el Perú durante eventos El Niño](https://repositorio.igp.gob.pe/bitstream/handle/20.500.12816/4704/Zubieta_etal_2019_Ocurrencia-de-incendios-forestales-en-el-Peru-durante-eventos-El-Nino.pdf?sequence=1&isAllowed=y)
 
-* [ANÁLISE ESPACIAL DE EVENTOS](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
+* [Análise espacial de eventos](http://www.dpi.inpe.br/gilberto/livro/analise/cap2-eventos.pdf)
 
 * [Evaluacion de algoritmos para estimar la derivada de presion en pruebas de pozos](https://dialnet.unirioja.es/descarga/articulo/5432182.pdf)
 
@@ -65,26 +74,27 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 * [Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)  
 
+<br/>
+
 
 ## **3. Marco Teórico**
 
+<br/>
+
 ### **3.1 Función Kernel**
 
-### 3.1 Función Kernel
+<div style = "text-align: justify">Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la región de estudio*. Para esto usaremos una función bidimensional sobre los eventos considerados, generando una superficie cuyo valor será proporcional a la *intensidad de muestras por unidad de área*. Esta función realiza un conteo de todos los puntos dentro de una región de influencia, ponderándolos por la distancia de cada uno con respecto a la localización de interés.
 
-Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la loclaizacion de interes.
+Para conocer el comportamiento de esta función no parámetrica de probabilidad, plateamos unas carácteristicas:
 
-<div style = "text-align: justify"> Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la region de estudio*. Para esto usaremos una funcion bidimensional sobre los eventos considerados, componiendo una superficie cuyo valor sera proporcional a la intensidad de muestras por unidad de area. Esta funcion realiza un conteo de todos los puntos dentro de una region de influencia, ponderandolos por la distancia de cada uno con respecto a la localizacion de interes. </div>
+* Aveces, el Kernel es una funcion de ventana (window function), esto quiere decir que si hay valores que caen dentro de esa ventana (área) tendrá un valor peso asignado.
+* Una función ventana fuera de cierto intervalo adopta el valor 0, normalmente, u otro peso.
+* Un kernel, a su vez, es una funcion no negativa.
+* Usaremos un parámetro de suavizacion o bandwidth $(h)$, que mientras mas alto, mas suavizamos.
+* Usaremos el $n$ para definir el número de observaciones que analizaremos (donde cada dato es el centro donde se coloca un kernel)
+* Tanto el $n$ como el $h$ determinarán el area de influencia de los puntos a ser interpolados. 
 
-* Aveces, el Kernel es una funcion de ventana (window function)
-* Una window function fuera de cierto intervalo adopta el valor 0 
-* Un kernel, a su vez, es una funcion no negativa (no dijimos qué forma
-aun)
-* Usaremos un parametro de suavizacion o bandwidth (h) mientras mas alto, mas
-suavizamos.
-* Tanto el n como el h nos determinar el area de influencia de los puntos a ser interpolados. 
-
-Estimación de la densidad para un punto $x$ :
+La ecuación para la estimación de la densidad para un punto $x$ sería: </div>
 
 $${\displaystyle {\widehat {f}}_{h}(x)={\frac {1}{n}}\sum _{i=1}^{n}K_{h}(x-x_{i})={\frac {1}{nh}}\sum _{i=1}^{n}K{\Big (}{\frac {x-x_{i}}{h}}{\Big )}}$$
 
@@ -94,23 +104,36 @@ Donde:
 * $h  :$ Ancho de banda.
 * $K  :$ Es la función kernel.
 
+<br/>
 
-### **3.2. Filtro Digital Savitzky-Golay** 
 
-<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva, esta optimizacion se baso inicialmente en una tabla de términos que suavizaban puntos a partir de la simplificación del método de mínimos cuadrados (puntos equisdistantes al eje X), posteriormente el metodo incorporó otros métodos de auto-optimización subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio optimo. 
+### **3.2. Filtro Digital Savitzky-Golay**
 
-*Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
+<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. Esta optimización se basó inicialmente en una tabla de términos que suavizaban puntos a partir de la simplificación del método de mínimos cuadrados (puntos equisdistantes al eje X), posteriormente el método incorporó otros métodos de auto-optimización subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio óptimo. *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
+
+<br/>
+
 
 ## **4. Área de estudio**
+<div style = "text-align: justify">Nuestro área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, aplicaremos la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio a la provincia de Cutervo, departamento de Cajamarca. Como en los apartados posteriores generaremos mapas respecto a la ubicación de esta provincia, solo mostraremos un mapa de ubicación referencial, por ahora.</div>
+
+```{r echo = FALSE, fig.align='center'}
+knitr::include_graphics('Img/mapa_referencial.png')
+```
+
+<br/>
 
 ## **5. Metodología**
-Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:
+<div style = "text-align: justify">Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:</div>
 
 ```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
+<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.
 
-### **Librerias de R utilizadas hasta el momento**
+En este proyecto uitilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:</div>
+
+####**Librerias de R utilizadas hasta el momento**
 
 ```{r warning=FALSE, message=FALSE, eval=TRUE}
 library(dplyr)
@@ -130,23 +153,49 @@ library(ncdf4)
 library(devtools)
 library(velox)
 library(signal)
-library(doParallel)
 library(foreach)
 library(reshape2)
 library(RColorBrewer)
 ```
 
+#### **Librerias de Python utilizadas hasta el momento**
 
-### **Iniciamos sesion en GEE**
+```{python warning=FALSE, message=FALSE, eval=FALSE}
+import numpy as np ## For array handling
+import pandas as pd ## For dataframes
+import ee # # Authenticates and initializes Earth Engine
+import geemap # A dynamic module of Google Earth Engine
+import fiona # For geopackage file handling 
+from shapely.geometry import shape ## Shapes f  or geometries
+import os #To set and modify filepaths
+import json # For json objects
+import urllib # For download geopackage files
+import matplotlib.pyplot as plt
+from scipy import signal ## Aplying Savistky Golay
+import rasterio as rio # For raster analysis
+```
+
+<div style = "text-align: justify">
+Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP.
+</div>
+
+#### **Iniciamos sesion en GEE**
 
 ```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
 ee_Initialize('juliocontreras1', drive =TRUE)
 ```
+<br/>
 
 ### **5.1 Localización del área de estudio**
 
+<div style = "text-align: justify"> 
+Nuestra investigación empieza con el análisis de las zonas de incendios (puntos) a lo largo de los años, especificamente en el periodo 2000 al 2018. Para este propósito necesitaremos un área en específico de estudio, pero, ¿realmente sabemos en donde hay mayor probalidad de ocurrencia de incendios?, o mejor dicho, ¿dónde hay una mayor tendencia a ocurrir estos fenómenos?. Entonces, para ello, utilizaremos la información del geoservidor del MINAM que nos proporciona información de incendios históricos, así detallaremos los procedimientos para localizar nuestra área de estudio, a partir de los datos mencionados, en los apartados posteriores.
+</div> 
+
 #### **5.1.1 Diagrama de barras de la acumulación de incendios a lo largo del tiempo**
+
+<div style = "text-align: justify">Ahora, analizaremos la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, necesitaremos de la estadística, la cual no brida diversas herramientas para nuestro propósito. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan.</div>
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # Incendios acumulados por mes
@@ -189,9 +238,14 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 
 ```
-<div style = "text-align: justify"> Dos de eventos de los que vamos a inspeccionar coinciden con eventos extremos, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
+
+<div style = "text-align: justify">Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
+
+Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
 
 #### **5.1.2 Distribución de los incendios por años de 2000 - 2018**
+
+En el apartado anterior generamos un histograma, pero para que se entienda mejor tenía que plotear los puntos de incendios de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios en los años de estudio.
 
 <style>
 .html-widget {
@@ -260,14 +314,13 @@ Spp_Map
 
 #### **5.1.3 Estimación de densidad de probabilidad 2D: función de densidad no paramétrica**
 
-<div style = "text-align: justify"> Se tratade suvizar una serie tanto en el eje x e y. Seria raro que pase un incendio en un lugar y no haya la probabilidad que ocurra a sus alrededores cercanos, mientras que a unos cuantos metros paso uno grande.
+<div style = "text-align: justify"> Se tratará suavizar una serie, que sería la distribución de los incendios por tiempo y espacio, tanto en el eje x e y. Pensabamos que sería algo extraño que ocurriera un incendio en un lugar determinado y no haya alguna probabilidad que ocurra esto en sus alrededores cercanos. Así, nos dimos cuenta la manera en que funciona esta estadística. 
 
-En realidad existe funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal.
+Cuando recordamos nuestro curso de estadística pensabamos en las funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
 
-Se estima la función de densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
+Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
 
-Basicamente, esta función del paquete MASS, la función kernel varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
-
+Cabe mencionar que para ver nuestro trabajo en códigos, visitar la página de nuestro repositorio en [Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR)
 <br/>
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px"}
@@ -286,18 +339,11 @@ kde_raster <- kde_raster * 100
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
-m <- leaflet() %>%
-  addTiles() %>%
-  addRasterImage(kde_raster, colors = pal) %>%
+leaflet() %>% addTiles() %>%
+  addRasterImage(kde_raster, colors = pal) %>% 
   addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
-  addPolygons(data = Departamentos,
-              fillOpacity = 0,
-              weight = 2,
-              opacity = 1,
-              label = ~DEPARTAMEN,
-              color = "#000000",
-              group = "Departamentos")
-m
+  addPolygons(data = Departamentos, fillOpacity = 0, weight = 2,
+              opacity = 1, label = ~DEPARTAMEN, color = "#000000", group = "Departamentos")
 ```
 <br/>
 Seguimos con...
@@ -333,9 +379,10 @@ leaflet() %>%
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
 
-#### **5.1.5 Variabilidad estacional de la ocurrecia de incendios**
+### **5.2 Variabilidad estacional de la ocurrecia de incendios**
 
-<div style = "text-align: justify"> Se verá el comportamiento estacional promeido y máximo, para un registro de incendios 2000 - 2018.</div>
+<div style = "text-align: justify"> Se verá el comportamiento estacional promedio y máximo, para un registro de incendios 2000 - 2018.</div>
+
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
@@ -387,7 +434,7 @@ X <- ggplot(df) +
   scale_x_date(date_labels = "%b", breaks = '1 month') +
   scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
   theme(legend.position = "none")
-# X
+X
 
 # element_rect(
 #   fill = NULL,
@@ -403,22 +450,112 @@ X <- ggplot(df) +
   #       axis.text.y  = element_text(size=11),
   #       axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5)) 
 # ggsave(plot = X, filename = paste0('Img/Bar_Fires_', as.character(yr),'.png'), units = "cm", dpi = 500)
-
-```
-```{r echo = FALSE, fig.align='center'}
-knitr::include_graphics('Img/Bar_Fires_2005.png')
 ```
 
-<br/>
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
-```{r echo = FALSE, fig.align='center',}
-knitr::include_graphics('Img/Bar_Fires_2010.png')
+yr <- 2010
+
+# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
+  summarise(nfires = length(Date)) %>% 
+  group_by(MES = substr(Date,6,7)) %>% 
+  summarise(fires_mean = mean(nfires, na.rm = T), fires_max  = max(nfires, na.rm = T)) %>%
+  mutate(MES = as.numeric(MES)) %>% arrange(MES) %>% as.data.frame() %>% dplyr::select(-geom)
+
+b <- fires %>% dplyr::filter(`AñO`== yr) %>%
+  mutate(MES = MES_N) %>%
+  group_by(MES) %>% 
+  summarise(fires_anom = length(MES)) %>%
+  as.data.frame() %>% dplyr::select(-geom)
+
+
+df <- data.frame(MES = c(1:12)) %>% 
+  full_join(a, by = 'MES') %>% 
+  full_join(b, by = 'MES') %>% 
+  dplyr::select(-MES) %>%
+  mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
+         fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
+         fires_max  = ifelse(is.na(fires_max), 0, fires_max),
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
+         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+
+# CAMBIO DE IDIOMA
+
+# PLOTEO  
+B <- ggplot(df) +
+  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
+           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
+  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
+           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
+  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
+           stat = "identity", colour = 'red', alpha=0) +
+  ggtitle('Comportamiento Mensual de Incendios', 
+          subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
+  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+  scale_x_date(date_labels = "%b", breaks = '1 month') +
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
+  theme(legend.position = "none")
+B
 ```
 
-<br/>
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
-```{r echo = FALSE, fig.align='center'}
-knitr::include_graphics('Img/Bar_Fires_2016.png')
+yr <- 2016
+
+# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
+  summarise(nfires = length(Date)) %>% 
+  group_by(MES = substr(Date,6,7)) %>% 
+  summarise(fires_mean = mean(nfires, na.rm = T), fires_max  = max(nfires, na.rm = T)) %>%
+  mutate(MES = as.numeric(MES)) %>% arrange(MES) %>% as.data.frame() %>% dplyr::select(-geom)
+
+b <- fires %>% dplyr::filter(`AñO`== yr) %>%
+  mutate(MES = MES_N) %>%
+  group_by(MES) %>% 
+  summarise(fires_anom = length(MES)) %>%
+  as.data.frame() %>% dplyr::select(-geom)
+
+
+df <- data.frame(MES = c(1:12)) %>% 
+  full_join(a, by = 'MES') %>% 
+  full_join(b, by = 'MES') %>% 
+  dplyr::select(-MES) %>%
+  mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
+         fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
+         fires_max  = ifelse(is.na(fires_max), 0, fires_max),
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
+         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+
+# CAMBIO DE IDIOMA
+
+# PLOTEO  
+A <- ggplot(df) +
+  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
+           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
+  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
+           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
+  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
+           stat = "identity", colour = 'red', alpha=0) +
+  ggtitle('Comportamiento Mensual de Incendios', 
+          subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
+  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+  scale_x_date(date_labels = "%b", breaks = '1 month') +
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
+  theme(legend.position = "none")
+A
 ```
 
 <br/>
@@ -427,14 +564,14 @@ knitr::include_graphics('Img/Bar_Fires_2016.png')
 
 
 
-### **5.2 Materiales**
+### **5.3 Materiales**
 
-#### **5.2.1 Data histórica de incendios 2000-2018**
+#### **5.3.1 Data histórica de incendios 2000-2018**
 
 <div style = "text-align: justify">Este registro abarca los años 2000 a 2018, descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/).</div>
 
 
-#### **5.2.2 Precipitación acumulada y Temperatura Máxima**
+#### **5.3.2 Precipitación acumulada y Temperatura Máxima**
 
 <div style = "text-align: justify"> Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI) </div>
 
@@ -588,7 +725,7 @@ X
 ```
 <div style = "text-align: justify"> En la anterior grafica podemos observar la tempertaura maxima mensual: al maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2016, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima.</div>
 
-#### **5.2.3 Índice de Vegetación Normalizado (NDVI)**
+#### **5.3.3 Índice de Vegetación Normalizado (NDVI)**
 
 <div style = "text-align: justify">Ahora toca trabajar con las variables bioclimáticas...
 
@@ -598,7 +735,7 @@ Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000
 Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
 
 
-##### **Filtro por la banda de calidad**
+###### **Filtro por la banda de calidad**
 <div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**. </div>
 
 En nuestro caso elegimos el $10$ que representa pixeles promedios en el aspecto de aerosoles, pero se tiene que aumentar más los filtros.
@@ -607,7 +744,6 @@ En nuestro caso elegimos el $10$ que representa pixeles promedios en el aspecto 
 
 # Función para los filtros con la banda quality pilxles qa
 getQABits <- function(image, qa) {
-  
   qa <- sum(2^(which(rev(unlist(strsplit(as.character(qa), "")) == 1))-1)) # Convert binary (character) to decimal (little endian)
   image$bitwiseAnd(qa)$lt(1) # Return a mask band image, giving the qa value.
 }
@@ -621,7 +757,7 @@ mod13Q1_clean <- function(img) {
   ndvi_qa <- img$select("SummaryQA")
 
   # Seleccion los pixeles para enmascararlo
-  quality_mask <- getQABits(ndvi_qa, "10") # Pixel producido, pero probablemente en la nube
+  quality_mask <- getQABits(ndvi_qa, "00") # Pixel producido, pero probablemente en la nube
 
   # Enmascararlo con valor de 0
   ndvi_values$updateMask(quality_mask)
@@ -629,28 +765,32 @@ mod13Q1_clean <- function(img) {
 ```
 
 
-#### **Filtro del producto NDVI - Promedio 2016**
+##### **Filtro del producto NDVI - Promedio 2016**
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 
 # La Region de interes es anta, pero puede variar según sigamos el proceso
-Cajamarca <- st_read('Materiales/Cajamarca.gpkg', quiet = TRUE) # Se activa en la descarga
-Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
+# Cajamarca <- st_read('Materiales/Cajamarca.gpkg', quiet = TRUE) # Se activa en la descarga
+Ct <- st_read('Materiales/Cutervo_Area.gpkg', quiet = TRUE) %>% st_centroid() %>% st_coordinates()
+CtX <- Ct[,1]
+CtY <- Ct[,2]
+Cutervo_a <- st_read('Materiales/Cutervo_Area.gpkg', quiet = TRUE) %>% st_geometry() %>% sf_as_ee()
+Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE) %>% st_geometry() %>% sf_as_ee()
 
 # Generamos el centroide para la correcta visualizacion
 
-ee_roi1 <- Cajamarca %>%
-  st_geometry() %>%
-  sf_as_ee()
-
-centroid <- st_centroid(Cutervo)
-X <- (st_coordinates(centroid))[,"X"]
-Y <- (st_coordinates(centroid))[,"Y"]
-
-ee_roi <- Cutervo %>%
-  st_geometry() %>%
-  sf_as_ee()
-
+# ee_roi1 <- Cajamarca %>%
+#   st_geometry() %>%
+#   sf_as_ee()
+# 
+# centroid <- st_centroid(Cutervo)
+# X <- (st_coordinates(centroid))[,"X"]
+# Y <- (st_coordinates(centroid))[,"Y"]
+# 
+# ee_roi <- Cutervo %>%
+#   st_geometry() %>%
+#   sf_as_ee()
+# 
 
 # Search into the Earth Engine’s public data archive
 # ee_search_dataset() %>%
@@ -661,14 +801,16 @@ ee_roi <- Cutervo %>%
 # Creamos un compuesto mensual: para fines de presentacion
 
 ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
-  filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
+  filter(ee$Filter$date('2000-01-01', '2018-12-31'))$
   filter(ee$Filter$calendarRange(1, field = "month"))$
   map(mod13Q1_clean)$
-  mean()
+  mean()$
+  clip(Cutervo)
 
-# ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
-#   filter(ee$Filter$date('2016-01-01', '2016-12-31'))$
-#   map(mod13Q1_clean) # Descarga de estos
+ndvi_composite_c <- ee$ImageCollection("MODIS/006/MOD13Q1")$
+  filter(ee$Filter$date('2000-01-01', '2018-12-31'))$
+  filter(ee$Filter$calendarRange(1, field = "month"))$
+  map(mod13Q1_clean) # Descarga de estos
 
 # ndvi_composite_sc <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 #   filter(ee$Filter$calendarRange(1, field = "month"))$
@@ -685,22 +827,18 @@ ndvi_composite <- ee$ImageCollection("MODIS/006/MOD13Q1")$
 
 # Ploteo de la media de los años
 scale <- 0.0001
-Map$setCenter(lon = X, lat = Y, zoom = 10)
-Map$addLayer(
-  eeObject = ndvi_composite,
-  visParams = list(
-    min = 0.2 / scale,
-    max = 0.7 / scale,
-    palette = cpt("grass_ndvi", 10)),
-  name = "NDVImean") +
-  Map$addLayer(ee_roi, name = "Cutervo") +
-  Map$addLayer(ee_roi1, name = "Cajamarca")
+Map$setCenter(lon = CtX, lat = CtY ,zoom = 9)
+Map$addLayer(ndvi_composite, 
+             visParams = list(min = 0.2 / scale, max = 0.7 / scale, palette = cpt("grass_ndvi", 10)),
+             name = "NDVImean", legend = TRUE) #+
+  # Map$addLayer(Cutervo, name = "Cutervo") #+
+  # Map$addLayer(Cutervo_a, name = "AreaCorte")
 
 
 # Download raster
-# ee_imagecollection_to_local(ic = ndvi_composite, 
-#                             region = ee_roi, 
-#                             dsn = "MODQ1/Filtrado/NDVI_MOD13Q1")
+# ee_imagecollection_to_local(ic = ndvi_composite_c,
+#                             region = Cutervo_a,
+#                             dsn = "RasterData/MODQ1/Filtrado/NDVI_MOD13Q1_Cutervo")
 ```
 
 <div style = "text-align: justify">El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://bit.ly/3BrQvk2)
@@ -708,7 +846,7 @@ Map$addLayer(
 Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero vimos necesario filtrar según la imagen en **R** con el **rgee**, podemos ver el proceso en [Google Colaboratory](https://colab.research.google.com/drive/12AK2hDrybYn2eNUN0faJwj5qICmIZP4m?authuser=1#scrollTo=kTKeNg7Husn2).</div>
 
 
-#### **Completación de datos con el método Savitzky Golay**
+##### **Completación de datos con el método Savitzky Golay**
 <div style = "text-align: justify">Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
@@ -766,14 +904,14 @@ for (j in 1:nrow(df)) {
 
 ```
 
-### 5.3 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
+### 5.4 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
 
-#### 5.3.1. DEM
+#### 5.4.1. DEM SRTM V4
 
 El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios.
 
 Cutervo
-```{r}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Cutervo <- st_read('Materiales/Cutervo.gpkg') %>% st_geometry() %>% sf_as_ee()
 # Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
 
@@ -785,12 +923,12 @@ viz <- list(min= 100,
             palette = cpt(pal = 'gmt_GMT_dem1',n = 10))
 
 Map$centerObject(Cutervo, zoom = 9)
-Map$addLayer(Cutervo_dem,visParams = viz, name = "DEM_SRTM_V4") +
-  Map$addLayer(Cutervo, name = "Lim_Cutervo") #+
+Map$addLayer(Cutervo_dem,visParams = viz, name = "DEM_SRTM_V4", legend = TRUE) #+
+  # Map$addLayer(Cutervo, name = "Lim_Cutervo") #+
   # Map$addLayer(Cajamarca, name = "Cajamarca")
 ```
 
-```{r}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 dem   <- raster('RasterData/SRTM_90/CutervoSRTM.tif')
 
@@ -818,10 +956,10 @@ X
 Como podemos observar en el histograma los incendios se registran entre los 1000 y 4500 msnm, pero es entre los 3500 y 4500 principalmente donde la cantidad de incendios supera los 75 registros aproximadamente.
 
 
-#### 5.3.2. Poligonizamos el DEM: Clases de altitud
+#### 5.4.2. Poligonizamos el DEM: Clases de altitud
  Dentro de este apartado vamos a vectorizar el DEM STRM V4 dentro de los intervalos cada 500 m
  
-```{r eval=TRUE, echo=FALSE}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 dem   <- raster('RasterData/SRTM_90/CutervoSRTM.tif')
 dem[dem == 0] = NA
 dem[dem > 0 & dem < 500] = 1
@@ -841,7 +979,7 @@ plot(dem)
 ```
  
 
-#### 5.3.2. Variabilidad estacional de precipitación por elevación
+#### 5.4.3. Variabilidad estacional de precipitación por elevación
 
 El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio
 
@@ -897,7 +1035,7 @@ X
 
 ```
 
-#### 5.3.2. Variabilidad estacional de temperatura máxima por elevación
+#### 5.4.4. Variabilidad estacional de temperatura máxima por elevación
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
@@ -948,7 +1086,7 @@ X
 #### Análisis final
 
 
-De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación que a partir de los 3250 msnm aproximadamente, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
+De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
 Por ultimo el comportamiento estacional del NDVI, al igual que la temperatura máxima pierde homogeneidad a partir de los 3250 msnm con un notorio contrastre de los meses de junio a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.35 de NDVI, entonces podemos llgar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
 
 Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
