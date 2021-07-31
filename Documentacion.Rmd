@@ -132,6 +132,8 @@ library(velox)
 library(signal)
 library(doParallel)
 library(foreach)
+library(reshape2)
+library(RColorBrewer)
 ```
 
 
@@ -400,7 +402,7 @@ X <- ggplot(df) +
   #       axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
   #       axis.text.y  = element_text(size=11),
   #       axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5)) 
-ggsave(plot = X, filename = paste0('Img/Bar_Fires_', as.character(yr),'.png'), units = "cm", dpi = 500)
+# ggsave(plot = X, filename = paste0('Img/Bar_Fires_', as.character(yr),'.png'), units = "cm", dpi = 500)
 
 ```
 ```{r echo = FALSE, fig.align='center'}
@@ -422,7 +424,6 @@ knitr::include_graphics('Img/Bar_Fires_2016.png')
 <br/>
 
 <div style = "text-align: justify"> En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre.</div>
-
 
 
 
@@ -765,53 +766,192 @@ for (j in 1:nrow(df)) {
 
 ```
 
-### 5.3 Análisis de variables
+### 5.3 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
 
 #### 5.3.1. DEM
 
 El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios.
 
-CAJAMARCA
+Cutervo
 ```{r}
-Cutervo <- st_read('Materiales/Cutervo.gpkg') %>% sf_as_ee()
-Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
+Cutervo <- st_read('Materiales/Cutervo.gpkg') %>% st_geometry() %>% sf_as_ee()
+# Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
 
-Cajamarca_dem <- ee$Image('CGIAR/SRTM90_V4')#$clip(Cajamarca)
-dem_caja_raster <- ee_as_raster(Cajamarca_dem, Cajamarca)
-writeRaster(dem_caja_raster, 'RasterData/SRTM_90/CajamarcaSRTM.tif')
+Cutervo_dem <- ee$Image('CGIAR/SRTM90_V4')$clip(Cutervo)
+# dem_caja_raster <- ee_as_raster(Cajamarca_dem, Cutervo)
+# writeRaster(dem_caja_raster, 'RasterData/SRTM_90/CutervoSRTM.tif')
 viz <- list(min= 100,
             max = 4500,
             palette = cpt(pal = 'gmt_GMT_dem1',n = 10))
 
-Map$centerObject(Cajamarca, zoom = 10)
-Map$addLayer(Cajamarca_dem,visParams = viz, name = "DEM_SRTM_V4") +
-  Map$addLayer(Cutervo, name = "Cutervo") +
-  Map$addLayer(Cajamarca, name = "Cajamarca")
+Map$centerObject(Cutervo, zoom = 9)
+Map$addLayer(Cutervo_dem,visParams = viz, name = "DEM_SRTM_V4") +
+  Map$addLayer(Cutervo, name = "Lim_Cutervo") #+
+  # Map$addLayer(Cajamarca, name = "Cajamarca")
 ```
 
 ```{r}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
-dem   <- raster('RasterData/SRTM_90/CajamarcaSRTM.tif')
+dem   <- raster('RasterData/SRTM_90/CutervoSRTM.tif')
 
 df <- raster::extract(dem,fires) %>% data.frame()
 names(df) <- 'elev'
 
 X <- ggplot(df, aes(df$elev)) + geom_histogram(binwidth = 100, fill='gray', col='black') +
-     theme_bw() + labs(x = '', y = '') +
-     ggtitle('Number of Fires by Elevation', subtitle = 'from 2000 to 2018\nHistogram') +
-     theme(plot.title    = element_text(size=15),
-           plot.subtitle = element_text(size=13),
-           axis.text.x   = element_text(size=12),
-           axis.text.y   = element_text(size=12),
-           axis.title    = element_text(size=20),
-           panel.border  = element_rect(colour = "black", fill=NA, size=1)) +
-     scale_y_continuous(breaks = seq(0,200,25), limits = c(0,200), expand = c(0,0))
+  theme_bw() + labs(x = '', y = '') +
+  ggtitle('Number of Fires by Elevation', subtitle = 'from 2000 to 2018\nHistogram') +
+  theme(plot.title    = element_text(size=15),
+        plot.subtitle = element_text(size=13),
+        axis.text.x   = element_text(size=12),
+        axis.text.y   = element_text(size=12),
+        axis.title    = element_text(size=20),
+        panel.border  = element_rect(colour = "black", fill=NA, size=1)) +
+  scale_y_continuous(breaks = seq(0,30,5), limits = c(0, 17), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(0, 3500, 500), limits = c(500, 3700), expand = c(0,0))
+  
+  
 X 
-ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Number_of_Fires_by_Elev.png',
-       width = 15, height = 15, units = "cm", dpi = 500)
+# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Number_of_Fires_by_Elev.png',
+#        width = 15, height = 15, units = "cm", dpi = 500)
 ```
 
 Como podemos observar en el histograma los incendios se registran entre los 1000 y 4500 msnm, pero es entre los 3500 y 4500 principalmente donde la cantidad de incendios supera los 75 registros aproximadamente.
+
+
+#### 5.3.2. Poligonizamos el DEM: Clases de altitud
+ Dentro de este apartado vamos a vectorizar el DEM STRM V4 dentro de los intervalos cada 500 m
+ 
+```{r eval=TRUE, echo=FALSE}
+dem   <- raster('RasterData/SRTM_90/CutervoSRTM.tif')
+dem[dem == 0] = NA
+dem[dem > 0 & dem < 500] = 1
+dem[dem >= 500 & dem < 1000] = 2
+dem[dem >= 1000 & dem < 1500] = 3
+dem[dem >= 1500 & dem < 2000] = 4
+dem[dem >= 2000 & dem < 2500] = 5
+dem[dem >= 2500 & dem < 3000] = 6
+dem[dem >= 3000 & dem < 3500] = 7
+dem[dem >= 3500 & dem < 4000] = 8
+dem[dem >= 4000] = 9
+plot(dem)
+# vec_dem   <- st_read('Materiales/Cutervo_RangoAlt.gpkg') # Raster DEM vectorizado
+# writeRaster(dem, 'RasterData/SRTM_90/CutervoAntPoly.tif')
+# dem_poly <- rasterToPolygons(dem) %>% st_as_sf()
+# dem_poly <- dem_poly %>% group_by(CutervoSRTM) %>% summarise(.)
+```
+ 
+
+#### 5.3.2. Variabilidad estacional de precipitación por elevación
+
+El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+pp_velox <- velox('RasterData/PISCO/PISCOp_v211_cajamarca.tif')
+region_elev <- st_read('Materiales/Cutervo_RangoAlt.gpkg') %>% arrange(DN)
+date <- seq(as.Date('1981-01-01'), as.Date('2018-02-01'), by = "month")
+
+data <- pp_velox$extract(sp = region_elev, fun = function(x){ mean(x, na.rm = T) }) %>% t()
+
+df <- data.frame(date,data) %>% 
+  mutate(mes = substr(date,6,7)) %>% 
+  group_by(mes) %>%
+  summarise(inter02 = mean(X2, na.rm = T),
+            inter03 = mean(X3, na.rm = T),inter04 = mean(X4, na.rm = T),
+            inter05 = mean(X5, na.rm = T),inter06 = mean(X6, na.rm = T),
+            inter07 = mean(X7, na.rm = T)) %>%
+  mutate(mes = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = "month"))
+
+names(df)[2:7] <- seq(500,3000,500) %>% as.character()
+df <- df %>% melt(id.vars = 'mes')
+names(df) <- c('mes','elev','pp')
+
+
+hm.palette <- colorRampPalette(brewer.pal(9, 'YlGnBu'), space='Lab')
+
+Sys.setlocale(category = 'LC_ALL', locale = 'english')
+
+X <- ggplot(df, aes(mes, elev))+ geom_raster(aes(fill=pp)) +
+     scale_fill_gradientn(colours = hm.palette(100)) + theme_bw() +
+     ggtitle('Precipitación Mensual por Elevación', subtitle = 'De 1981 a 2018') + 
+     labs(x = '', y = 'Altitud\n[msnm]', fill='[mm]') +
+     scale_x_date(date_labels = '%b', breaks = '1 month', expand = c(0,0)) +
+     scale_y_discrete(expand = c(0,0)) +
+     theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))
+X
+
+  # theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+  #       plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+  #       axis.text.x   = element_text(size = 12, hjust = 1),
+  #       axis.text.y   = element_text(size = 12),
+  #       axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+  # scale_x_date(date_labels = "%b", breaks = '1 month') +
+  # scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
+  # theme(legend.position = "none")
+# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Seasonal_by_Elev_Rainfall.png',
+#        width = 15, height = 15, units = "cm", dpi = 500)
+
+```
+
+#### 5.3.2. Variabilidad estacional de temperatura máxima por elevación
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+temp_velox <- velox('RasterData/PISCO/PISCOmtx_v11_cajamarca.tif')
+region_elev <- st_read('Materiales/Cutervo_RangoAlt.gpkg') %>% arrange(DN)
+date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = "month")
+
+data <- temp_velox$extract(sp = region_elev, fun = function(x){ mean(x, na.rm = T) }) %>% t()
+
+df <- data.frame(date,data) %>% 
+  mutate(mes = substr(date,6,7)) %>% 
+  group_by(mes) %>%
+  summarise(inter02 = mean(X2, na.rm = T),
+            inter03 = mean(X3, na.rm = T),inter04 = mean(X4, na.rm = T),
+            inter05 = mean(X5, na.rm = T),inter06 = mean(X6, na.rm = T),
+            inter07 = mean(X7, na.rm = T)) %>%
+  mutate(mes = seq(as.Date('2016-01-01'), as.Date('2016-12-01'), by = "month"))
+
+names(df)[2:7] <- seq(500,3000,500) %>% as.character()
+df <- df %>% melt(id.vars = 'mes')
+names(df) <- c('mes','elev','temp')
+
+
+
+
+hm.palette <- colorRampPalette(brewer.pal(9, 'YlGnBu'), space='Lab')
+
+Sys.setlocale(category = 'LC_ALL', locale = 'english')
+
+X <- ggplot(df, aes(mes, elev))+ geom_raster(aes(fill=temp)) +
+     scale_fill_gradientn(colours = hm.palette(100)) + theme_bw() +
+     ggtitle('Temperatura Máxima por Elevación', subtitle = 'De 1981 a 2018') + 
+     labs(x = '', y = 'Altitud\n[msnm]', fill='[°C]') +
+     scale_x_date(date_labels = '%b', breaks = '1 month', expand = c(0,0)) +
+     scale_y_discrete(expand = c(0,0)) +
+     theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))
+
+X
+# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Seasonal_by_Elev_Temperature.png',
+#        width = 15, height = 15, units = "cm", dpi = 500)
+```
+
+
+#### Análisis final
+
+
+De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación que a partir de los 3250 msnm aproximadamente, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
+Por ultimo el comportamiento estacional del NDVI, al igual que la temperatura máxima pierde homogeneidad a partir de los 3250 msnm con un notorio contrastre de los meses de junio a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.35 de NDVI, entonces podemos llgar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
+
+Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
 
 ## **6. Resultados**
 
