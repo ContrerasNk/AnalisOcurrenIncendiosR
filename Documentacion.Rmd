@@ -154,8 +154,8 @@ library(devtools)
 library(velox)
 library(signal)
 library(foreach)
-library(reshape2)
 library(RColorBrewer)
+library(reshape2)
 ```
 
 #### **Librerias de Python utilizadas hasta el momento**
@@ -176,7 +176,7 @@ import rasterio as rio # For raster analysis
 ```
 
 <div style = "text-align: justify">
-Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP.
+Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, geemap el cual junto con sus procedimientos reproducibles se encuentran en el siguiente [link](https://drive.google.com/drive/u/1/folders/1GmVLzYTJ2QlTP18KXViBaKMdh28uEeya).
 </div>
 
 #### **Iniciamos sesion en GEE**
@@ -241,7 +241,7 @@ X
 
 <div style = "text-align: justify">Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
-Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senahmi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
+Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
 
 #### **5.1.2 Distribución de los incendios por años de 2000 - 2018**
 
@@ -851,17 +851,97 @@ Se estuvo trabajando inicialmente con **GEE** con **geemap** en **Python**, pero
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
 
+La realizacion de el filtro de Savitzky Golay es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Script/MODIS_SavGol.ipynb) del proyecto.
+
 En la creación de la matriz: Apartir de los datos de NDVI, donde cada columna representará a cada una de las imágenes y cada fila, la serie de tiempo para cada pixel.</div>
 
 ```{r echo = FALSE, fig.align='center'}
 knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
 ```
 
+
+#### Indice de Vegatación Diferencial Normalizado 2000 -2018
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+ndvi_velox <- velox("RasterData/MODQ1/SavGol/SavGol_stack.tif")                 
+region <- st_read("Materiales/Cutervo.gpkg", quiet = TRUE)
+
+data <- ndvi_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
+
+data_csv <- read_csv("RasterData/MODQ1/SavGol/data_SavGol.csv")
+start_date <- as.Date(data_csv$Date...1)
+
+data_ndvi<-data.frame(start_date,data) %>% 
+    mutate(mes=substr(start_date,6,7), ano=substr(start_date,1,4)) %>%                group_by(ano,mes) %>% summarise(ndvi = mean(data, na.rm = T))
+col_ndvi <- data_ndvi$ndvi
+
+
+tserie <- seq(as.Date('2000-02-01'), as.Date('2018-12-31'), by = 'month') 
+
+ndvi <- data.frame(date =tserie,col_ndvi) %>% 
+  mutate(mes = substr(date,6,7)) %>% 
+  group_by(mes) %>%
+  summarise(ndvimean = mean(col_ndvi, na.rm = T), 
+            ndvimax  = max(col_ndvi, na.rm = T),
+            ndvimin  = min(col_ndvi, na.rm = T))
+
+ndvi2000 <- data.frame(tserie, col_ndvi) %>% 
+  mutate(mes = substr(tserie,6,7)) %>% 
+  dplyr::filter(substr(tserie,1,4) == 2000) %>% 
+  group_by(mes) %>% summarise(ndvi2000 = mean(col_ndvi, na.rm=T))
+
+ndvi2005 <- data.frame(tserie, col_ndvi) %>% 
+  mutate(mes = substr(tserie,6,7)) %>% 
+  dplyr::filter(substr(tserie,1,4) == 2005) %>% 
+  group_by(mes) %>% summarise(ndvi2005 = mean(col_ndvi, na.rm=T))
+
+ndvi2010 <- data.frame(tserie, col_ndvi) %>% 
+  mutate(mes = substr(tserie,6,7)) %>% 
+  dplyr::filter(substr(tserie,1,4) == 2010) %>% 
+  group_by(mes) %>% summarise(ndvi2010 = mean(col_ndvi, na.rm=T))
+
+ndvi2016 <- data.frame(tserie, col_ndvi) %>% 
+  mutate(mes = substr(tserie,6,7)) %>% 
+  dplyr::filter(substr(tserie,1,4) == 2016) %>% 
+  group_by(mes) %>% summarise(ndvi2016 = mean(col_ndvi, na.rm=T))
+
+df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), ndvi) %>%
+  full_join(ndvi2000) %>% 
+  full_join(ndvi2005) %>% 
+  full_join(ndvi2010) %>% 
+  full_join(ndvi2016)
+
+Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+
+X <- ggplot(df, aes(date, ndvimean)) +
+     geom_line(colour = 'black', size=0.8) + 
+     theme_bw() + ylab(label = '[NDVI]') +  xlab(label = '') +
+     ggtitle('NDVI mensual', subtitle = 'De 2000 hasta 2018') + 
+     theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+           plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+           axis.text.x = element_text(size=12),
+           axis.text.y = element_text(size=12),
+           axis.title = element_text(size=12, face='bold'))+
+     scale_x_date(date_labels = '%b', breaks = '1 month') +
+     scale_y_continuous(breaks = seq(0.4,0.7,0.05), limits = c(0.4,0.7)) +
+     geom_line(aes(date, ndvimax),  colour = 'red', linetype = 'dashed', size = 0.8) +
+     geom_line(aes(date, ndvimin),  colour = 'red', linetype = 'dashed', size = .8) +
+     geom_line(aes(date, ndvi2000), colour = rgb(233, 228, 91, maxColorValue = 255), size = 0.8) +
+     geom_line(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue = 255), size = 0.8) +
+     geom_line(aes(date, ndvi2010), colour = 'snow3', size=.8) +
+     geom_line(aes(date, ndvi2016), colour = 'springgreen3', size=.8) +
+     geom_point(aes(date, ndvi2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+     geom_point(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+     geom_point(aes(date, ndvi2010), colour = 'snow3', size=2) +
+     geom_point(aes(date, ndvi2016), colour = 'springgreen3', size=2)
+
+X
+```
+
 ```{r echo = FALSE, fig.align='center'}
 knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
 ```
-
-
+<div style = "text-align: justify"> En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas amarilla, marrón, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio.</div>
 
 
 ```{r eval = FALSE}
@@ -905,6 +985,7 @@ for (j in 1:nrow(df)) {
 ```
 
 ### 5.4 Análisis de variables: Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
+En este estudio la cota de 1500 msnm fue considerada divisoria de la región andina. Este rango es también considerado en otros estudios de la región (Zubieta et al., 2017; Zulkafli et al., 2014). Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental consideramos incluir los rangos de altitud como variable en nuestro CFOI.
 
 #### 5.4.1. DEM SRTM V4
 
@@ -1082,18 +1163,15 @@ X
 #        width = 15, height = 15, units = "cm", dpi = 500)
 ```
 
+## **6. Resultados y Análisis**
 
 #### Análisis final
-
 
 De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
 Por ultimo el comportamiento estacional del NDVI, al igual que la temperatura máxima pierde homogeneidad a partir de los 3250 msnm con un notorio contrastre de los meses de junio a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.35 de NDVI, entonces podemos llgar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
 
 Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
 
-## **6. Resultados**
-
-## **7. Análisis**
 
 ## **8. Discusión de resultados**
 
