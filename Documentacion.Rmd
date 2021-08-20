@@ -32,7 +32,7 @@ los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno,
 
 En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
-```{r echo = FALSE, fig.align='center', comment='Figura 2. Evidencia de incendios en la region Cajamarca.'}
+```{r echo = FALSE, fig.align='center', out.width="50%}
 knitr::include_graphics('Img/evidencia_2.jpg')
 ```
 
@@ -176,10 +176,21 @@ Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muc
 </div>
 
 ***Iniciamos sesion en GEE***
+```{python}
+Sys.setenv(RETICULATE_PYTHON = "")
+```
+
 
 ```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
+ee_install()
 ee_Initialize('juliocontreras1', drive =TRUE)
+ee_clean_pyenv()
+
+rgee::ee_install_set_pyenv(
+  py_path = "C:/Program Files/QGIS 3.16/bin/python3", # Change it for your own Python PATH
+  py_env = "rgee" # Change it for your own Python ENV
+)
 ```
 
 
@@ -351,10 +362,20 @@ Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
 Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
 
 kde_raster_clas <- kde_raster
-kde_raster_clas[kde_raster < 8] = NA
-kde_raster_clas[kde_raster >= 8] = 1
+kde_raster_clas[kde_raster < 5] = NA
+kde_raster_clas[kde_raster >= 5] = 1
 # writeRaster(kde_raster, 'raster2.tif')
 
+kde_sf <- rasterToPolygons(kde_raster_clas, dissolve = T) %>% 
+  disaggregate() %>% # multipoligon
+  st_as_sf() %>%
+  mutate(id = 1:14, area = st_area(geometry)/1000000) %>%
+  dplyr::filter(id == 4) %>%
+  st_simplify(dTolerance = 6500)
+
+# st_write(kde_sf, "Materiales/allareas.gpkg")
+# st_write(kde_sf, "Materiales/area.gpkg")
+  
 # Posicion para el ploteo
 centroid <- st_centroid(Cutervo)
 X <- (st_coordinates(centroid))[,"X"]
@@ -374,6 +395,8 @@ leaflet() %>%
   addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
+
+
 
 ### **5.2 Variabilidad estacional de la ocurrecia de incendios**
 
@@ -751,6 +774,7 @@ mod13Q1_clean <- function(img) {
 
   # Extraccion de la banda de calidad
   ndvi_qa <- img$select("SummaryQA")
+  ndvi_qa <- img$select("DetailedQA")
 
   # Seleccion los pixeles para enmascararlo
   quality_mask <- getQABits(ndvi_qa, "00") # Pixel producido, pero probablemente en la nube
