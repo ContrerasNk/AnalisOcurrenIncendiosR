@@ -32,7 +32,14 @@ los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno,
 
 En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
+<<<<<<< Updated upstream
 ```{r echo = FALSE, fig.align='center', out.width="50%}
+=======
+<br/>
+
+
+```{r echo = FALSE, fig.align='center', out.width="50%"}
+>>>>>>> Stashed changes
 knitr::include_graphics('Img/evidencia_2.jpg')
 ```
 
@@ -362,8 +369,13 @@ Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
 Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
 
 kde_raster_clas <- kde_raster
+<<<<<<< Updated upstream
 kde_raster_clas[kde_raster < 5] = NA
 kde_raster_clas[kde_raster >= 5] = 1
+=======
+kde_raster_clas[kde_raster < 4] = NA
+kde_raster_clas[kde_raster >= 4] = 1
+>>>>>>> Stashed changes
 # writeRaster(kde_raster, 'raster2.tif')
 
 kde_sf <- rasterToPolygons(kde_raster_clas, dissolve = T) %>% 
