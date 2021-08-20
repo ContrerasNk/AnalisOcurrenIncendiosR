@@ -183,12 +183,12 @@ Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muc
 </div>
 
 ***Iniciamos sesion en GEE***
-```{python}
+```{python eval = FALSE, echo = FALSE}
 Sys.setenv(RETICULATE_PYTHON = "")
 ```
 
 
-```{r eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 # Inicializando sesion en GEE
 ee_install()
 ee_Initialize('juliocontreras1', drive =TRUE)
@@ -215,7 +215,7 @@ Nuestra investigación empieza con el análisis de las zonas de incendios (punto
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>% 
-  mutate(Date = paste(`AñO`, 
+  mutate(Date = paste(`AñO`,
                       MES_N, 1, 
                       sep = '-')) %>% 
   group_by(Date) %>% 
@@ -271,7 +271,7 @@ En el apartado anterior generamos un histograma, pero para que se entienda mejor
 # Incendios acumulados por mes
 Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
-fires <- st_read(shp, quiet = TRUE) %>% 
+fires <- st_read(shp, quiet = TRUE) %>%
   mutate(Date = paste(`AñO`), Fecha = paste(`AñO`, MES_N, DIA, sep = '-')) %>% 
   as.data.frame() %>%
   dplyr::select(Date, Fecha, LOCALIDAD, 
@@ -347,8 +347,8 @@ fires_df <- st_coordinates(fires) %>% as.data.frame()
 names(fires_df) <- c('lon','lat')#here
 
 # Aplicación de la estimación
-kde <- kde2d(fires_df$lon, fires_df$lat, n = 250, h = .5, lims = c(-86, -65, -19, 0))
-kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru)
+kde <- kde2d(fires_df$lon, fires_df$lat, n = 250, h = 0.8, lims = c(-86, -65, -19, 0))
+kde_raster <- kde %>% raster() %>% crop(peru) %>% mask(peru) %>% disaggregate(fact = 5, method = "bilinear")
 kde_raster <- kde_raster * 100
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
@@ -366,26 +366,26 @@ Seguimos con...
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
-Cutervo <- st_read('Materiales/Cutervo.gpkg', quiet = TRUE)
+Cutervo <- st_read('Materiales/area.gpkg', quiet = TRUE) # abajo el guardado
 
 kde_raster_clas <- kde_raster
-<<<<<<< Updated upstream
+
 kde_raster_clas[kde_raster < 5] = NA
 kde_raster_clas[kde_raster >= 5] = 1
-=======
-kde_raster_clas[kde_raster < 4] = NA
-kde_raster_clas[kde_raster >= 4] = 1
->>>>>>> Stashed changes
+
 # writeRaster(kde_raster, 'raster2.tif')
 
-kde_sf <- rasterToPolygons(kde_raster_clas, dissolve = T) %>% 
+kde_sf <- rasterToPolygons(kde_raster_clas, dissolve = T) %>% # dissolve = no sigue la forma interna de pixeles
   disaggregate() %>% # multipoligon
-  st_as_sf() %>%
-  mutate(id = 1:14, area = st_area(geometry)/1000000) %>%
-  dplyr::filter(id == 4) %>%
-  st_simplify(dTolerance = 6500)
+  st_as_sf() 
 
 # st_write(kde_sf, "Materiales/allareas.gpkg")
+
+kde_sf <-  kde_sf %>% mutate(id = 1:nrow(kde_sf), area = st_area(geometry)/1000000) %>% 
+  arrange(desc(area)) %>%
+  dplyr::filter(id == 3) %>%
+  st_simplify(dTolerance = 1700)
+
 # st_write(kde_sf, "Materiales/area.gpkg")
   
 # Posicion para el ploteo
@@ -403,7 +403,7 @@ leaflet() %>%
   addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
               label = ~PROVINCIA, color = "#ffff33", group = "Provincias") %>%
   addPolygons(data = Cutervo, fillOpacity = 0, weight = 4, opacity = 1,
-              label = ~PROVINCIA, color = "#54278f",group = "Anta") %>%
+              label = ~area, color = "#54278f",group = "Anta") %>%
   addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
                    options = layersControlOptions(collapsed = FALSE), position = "topright")
 ```
@@ -612,7 +612,7 @@ Estos valores han sido extraidos del producto grillado PISCO del SENAMHI.
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center'}
 pp_velox <- velox("RasterData/PISCO/PISCOp_v211_cajamarca.tif")                 
-region <- st_read("Materiales/Cutervo.gpkg", quiet = TRUE)
+region <- st_read("Materiales/area", quiet = TRUE)
 
 data <- pp_velox$extract(sp=region, 
                          fun = function(x){
