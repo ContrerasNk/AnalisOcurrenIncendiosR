@@ -86,6 +86,9 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 * [La problemática de los incendios forestales y bases para su teledetección en el Perú](http://journals.continental.edu.pe/index.php/apuntes/article/view/198/196)
 
+*[Signal Smoothing Algorithms](http://195.134.76.37/applets/AppletSmooth/Appl_Smooth2.html)
+
+*[MODIS Product: MOD13Q1V006](https://lpdaac.usgs.gov/products/mod13q1v006/)
 
 # Marco teórico
 
@@ -206,8 +209,17 @@ Donde:
 
 ## Filtro Digital Savitzky-Golay
 
-<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. Esta optimización se basó inicialmente en una tabla de términos que suavizaban puntos a partir de la simplificación del método de mínimos cuadrados (puntos equisdistantes al eje X), posteriormente el método incorporó otros métodos de auto-optimización subjetiva (como el ajuste del grado del polinomio y la longitud de ventana) basadas en un prueba F para escoger el grado del polinomio óptimo. *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
+<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. 
+El filtro de Savitsky-Golay se basa en el ajuste por minimo cudarados de pequeños conjuntos de datos de longitud $$2n +1$$ para calcular un polinomio local y tomar al punto central de esa curva polinomial ajustada como el nuevo punto de datos suavizado. 
+Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $$({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$$ podrian derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $${({Y}_k)}_{suavizado}$$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación:
 
+$${\displaystyle {{({Y}_k)}_{suavizado}={\frac {\sum _{i=-n}^{n}{A_{i}*{Y_{k+i}}}}{\sum _{i=-n}^{n}A_{i}}}}}$$
+En donde $$2n+1$$ es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $$p$$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $$k$$ equivale a n en la posicion 0.
+
+El $${({Y}_{k+i})}$$ es la funcion polinomial ajustada de grado $$p$$ empleada para la posicion k+i o simplemente $$i$$.  
+
+El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el caso de la media móvil, aunque se debe enfatizar que ambos algoritmos tienen "pérdidas", es decir, parte de la información original se pierde o se distorsiona. Este tipo de suavizado es utilizado principalmente para conservar las características de la distribución inicial, los máximos y mínimos relativos y el ancho entre picos en una serie de datos.
+*Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
 
 # Descripción del área de estudio
 
@@ -225,19 +237,24 @@ knitr::include_graphics('Img/mapa_referencial.png')
 
 ## Data histórica de incendios 2000-2018
 
-<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/).</div>
+<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios, con respecto a los históricos que han sido recopilados desde el año 2000 al 2018. Dicha información, después de un proceso de validación con imágenes satelitales se encuentran georeferenciados y pueden ser descargados en formato shapefile.
+</div>
 
-## Datos modis
+## Datos MODIS (MOD13Q1)
+Los datos de la versión 6 del espectrorradiómetro de imágenes de resolución moderada (MODIS) Terra (MOD13Q1) se generan cada 16 días a una resolución espacial de 250 metros (m) como un producto de Nivel 3. El producto MOD13Q1 proporciona dos capas de vegetación primarias. El primero es el Índice de Vegetación de Diferencia Normalizada (NDVI), que se conoce como el índice de continuidad del NDVI derivado del Radiómetro Avanzado de Muy Alta Resolución de la Administración Nacional Oceánica y Atmosférica existente (NOAA-AVHRR). 
+Para nuestra area de estudio, se hara uso del NDVI procesado a resolucion de 250 m, el cual sera filtrado segun su banda de calidad (QA). 
 
-## Datos pisco
+## Datos PISCO
+El producto grillado PISCO (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima) a paso de tiempo mensual, a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus poductos poseen una escala diaria y mensual y se encuentran disponibles hasta Diciembre del año 2016.  
 
 ## DEM SRTM V4
 
-Presentamos el DEM SRTM V4, que fue encontrado en la plataforma Google Earth Engine. Este DEM tiene una resolución espacial de 90 m, y está apto para el estudio de nuestro análisis.
+El conjunto de datos de elevación digital Shuttle Radar Topography Mission (SRTM) se produjo originalmente para proporcionar datos de elevación consistentes y de alta calidad en un alcance casi global. Esta versión de los datos digitales de elevación del SRTM se ha procesado para llenar los vacíos de datos y facilitar su uso.
+El DEM SRTM V4, que fue encontrado en la plataforma Google Earth Engine y tiene una resolución espacial de 90 m, por lo cual es apto para el estudio de nuestro análisis.
 
 ## R
 
-En este proyecto uitilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
+En este proyecto utilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
 
 ### Librerias de R utilizadas hasta el momento
 
