@@ -368,13 +368,13 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 ```
 
-<div style = "text-align: justify">Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
+<div style = "text-align: justify"> Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
 Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
 
 ## Distribución de los incendios por años de 2000 - 2018
 
-En el apartado anterior generamos un histograma, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios a traves de los años de estudio.
+<div style = "text-align: justify"> En el apartado anterior generamos un histograma, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios a traves de los años de estudio. <div/>
 
 <style>
 .html-widget {
@@ -384,7 +384,7 @@ En el apartado anterior generamos un histograma, para que se entienda mejor la d
 
 ```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 12.'}
 # Incendios acumulados por mes
-Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
+Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>%
   mutate(Date = paste(`AñO`), Fecha = paste(`AñO`, MES_N, DIA, sep = '-')) %>% 
@@ -443,20 +443,24 @@ Spp_Map
 
 ## Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
 
-<div style = "text-align: justify"> Se tratará suavizar una serie, que sería la distribución de los incendios por tiempo y espacio, tanto en el eje x e y. Pensabamos que sería algo extraño que ocurriera un incendio en un lugar determinado y no haya alguna probabilidad que ocurra esto en sus alrededores cercanos. Así, nos dimos cuenta la manera en que funciona esta estadística. 
+<div style = "text-align: justify"> Se tratará suavizar una serie, que sería la distribución de los incendios por tiempo y espacio, tanto en el eje x e y. Pensabamos que sería algo extraño que ocurriera un incendio en un lugar determinado y no haya alguna probabilidad que ocurra esto en sus alrededores cercanos. Así, nos dimos cuenta la manera en que funciona esta estadística. <div/>
 
-Cuando recordamos nuestro curso de estadística pensabamos en las funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
+<br/>
 
-Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
+<div style = "text-align: justify"> Cuando recordamos nuestro curso de estadística pensabamos en las funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.<div/>
 
-Cabe mencionar que para ver nuestro trabajo en códigos, visitar la página de nuestro repositorio en [Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR)
+<br/>
+
+<div style = "text-align: justify">Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
+
+<div style = "text-align: justify"> Cabe mencionar que para ver nuestro trabajo en códigos, visitar la página de nuestro repositorio en [Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR). <div/>
 
 <br/>
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px"}
 fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 peru <- st_read('Materiales/Peru.gpkg', quiet = TRUE)
-Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
+Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
 
 # Extracción de coordenadas de los puntos
 fires_df <- st_coordinates(fires) %>% as.data.frame()
@@ -475,6 +479,7 @@ leaflet() %>% addTiles() %>%
   addPolygons(data = Departamentos, fillOpacity = 0, weight = 2,
               opacity = 1, label = ~DEPARTAMEN, color = "#000000", group = "Departamentos")
 ```
+
 <br/>
 
 ## Elección del área de estudio
@@ -1022,7 +1027,7 @@ region <- st_read("Materiales/Cutervo.gpkg", quiet = TRUE)
 
 data <- ndvi_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
 
-data_csv <- read_csv("RasterData/MODQ1/SavGol/data_SavGol.csv")
+data_csv <- read_csv("RasterData/MODQ1/SavGol/data_SavGol.csv")dggitgitgitgiggiitttt
 start_date <- as.Date(data_csv$Date)
 
 data_ndvi<-data.frame(start_date,data) %>% 
