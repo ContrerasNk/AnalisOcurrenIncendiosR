@@ -976,7 +976,7 @@ Este filtro se basa en el cálculo de una regresión polinómica local, donde su
 
 ***La descarga automatica de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
 
-```{r warning=FALSE, cache=FALSE, eval=TRUE}
+```{r warning=FALSE, cache=FALSE, eval=FALSE}
 ndvi_resamp <- list.files("RasterData/Resultados/Resampled/", pattern=".tif$", 
                           full.names = TRUE)
 ndvi_base <- raster(ndvi_resamp[1])
