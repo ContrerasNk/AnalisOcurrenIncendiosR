@@ -17,7 +17,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE, comment = '') 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE) 
 ```
 
 
@@ -39,20 +39,19 @@ Segun los registros historicos del CFOI se puede afirmar que los departamentos c
 En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
 
+<br/>
 
-```{r echo = FALSE, fig.align='center', out.width="50%"}
-knitr::include_graphics('Img/evidencia_2.jpg')
+```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap='Figura 1. Incendios forestales por la quema de malezas o residuos agrículas.'}
+knitr::include_graphics('Img/planteamientoproblema.jpg')
 ```
 
-## Objetivos
 
-<br/>
+
+## Objetivos
 
 ### Objetivo general
 
 <div style = "text-align: justify"> El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
-
-<br/>
 
 ### Objetivos específicos
 
@@ -60,8 +59,6 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 * Analizar las variables bioclimáticas (calidad de vegetación, temperatura, preciptación y altitud) de forma interestacional en las zonas con CFOI 
 * Ampliar el conocimiento de la influencia de las variables bioclimáticas para las CFOI y así en un futuro generar un modelo de predicción.
 * Generar conocimiento y aprender la técnica de la Teledetección, además de aplicar los conocimientos aprendidos en clase.</div>
-
-<br/>
 
 ## Justificación
 
@@ -91,31 +88,31 @@ knitr::include_graphics('Img/evidencia_2.jpg')
 
 ## Importancia de los bosques
 
-Es necesario mencionar la importancia de los bosques. Estas zonas con este tipo de vegetación o áreas forestales son una parte imprescindible para la vida en el planeta, además de ser parte fundamental en los ciclos de producción y distribución del agua, los bosques se encargan de purificar el aire que respiramos al capturar dióxido de carbono y liberar oxígeno, de la misma forma también, regulan la temperatura y la humedad con lo que se equilibra el clima (Barrios et a., 2020). Estos tipos de vegetación también proporcionan alimento medicinas y refugio a los seres vivos y son un fuente de materia prima en muchas actividades humanas como las actividades forestales, por ejemplo.
+<div style = "text-align: justify"> Es necesario mencionar la importancia de los bosques. Estas zonas con este tipo de vegetación o áreas forestales son una parte imprescindible para la vida en el planeta, además de ser parte fundamental en los ciclos de producción y distribución del agua, los bosques se encargan de purificar el aire que respiramos al capturar dióxido de carbono y liberar oxígeno, de la misma forma también, regulan la temperatura y la humedad con lo que se equilibra el clima (Barrios et a., 2020). Estos tipos de vegetación también proporcionan alimento medicinas y refugio a los seres vivos y son un fuente de materia prima en muchas actividades humanas como las actividades forestales, por ejemplo. <div/>
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', out.width="70%", comment='', fig.cap = 'Figura 2. Más del 60% del territorio peruano es de bosques tropicales y es el cuarto país con más superficie de ecosistemas en el mundo.'}
 knitr::include_graphics('Img/importanciaforestal.jpg')
 ```
 
 ## Amenazas forestales
 
-La vegetación forestal tiene muchos beneficios, sin embargo todos estos procesos vitales se ven amenazados por diversos factores ajenos a las actividades forestales como la degradación de suelos, la deforestación, la tala inmoderada y los fuegos no controlados que muchas veces están relacionados con otras actividades como la agricultura, la ganadería y el desarrollo urbano. Si bien, usualmente, el fuego en los bosques tiene una connotación negativa, el fuego puede tener una influencia positiva en la naturaleza pues ayuda a mantener la biodiversidad e incluso es necesario para la germinación de ciertas plantas. No obstante esta estrategia que tienen algunas plantas de ser estimuladas por el fuego fue producto de la evolución y producto de algunos fuegos estacionales que se producen de manera natural, pero cuando estos fuegos se producen de manera muy frecuente o son provocados por un uso irresponsable o son producto de alguna negligencia puede convertirse en un incendio forestal con unas consecuencias devastadoras para el medio ambiente e incluso para la salud y seguridad de las personas.
+<div style = "text-align: justify"> La vegetación forestal tiene muchos beneficios, sin embargo todos estos procesos vitales se ven amenazados por diversos factores ajenos a las actividades forestales como la degradación de suelos, la deforestación, la tala inmoderada y los fuegos no controlados que muchas veces están relacionados con otras actividades como la agricultura, la ganadería y el desarrollo urbano. Si bien, usualmente, el fuego en los bosques tiene una connotación negativa, el fuego puede tener una influencia positiva en la naturaleza pues ayuda a mantener la biodiversidad e incluso es necesario para la germinación de ciertas plantas. No obstante esta estrategia que tienen algunas plantas de ser estimuladas por el fuego fue producto de la evolución y producto de algunos fuegos estacionales que se producen de manera natural, pero cuando estos fuegos se producen de manera muy frecuente o son provocados por un uso irresponsable o son producto de alguna negligencia puede convertirse en un incendio forestal con unas consecuencias devastadoras para el medio ambiente e incluso para la salud y seguridad de las personas. <div/>
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', out.width="70%", comment='', fig.cap='Figura 3.Sin bosques no se podría contener las emisiones del dióxido de carbono (CO2) y sin la existencia de esta cobertura vegetal tampoco sería posible la vida en el planeta.'}
 knitr::include_graphics('Img/amenazasforestales.jpg')
 ```
 
 ## Fuego
 
-Según Rodríguez (2010), el fuego se define como la liberación de energía en forma de luz y calor producida por la combustión de un cuerpo, lo que lleva a una descomposición rápida del combustible originada por una temperatura elevada y la presencia de oxígeno.
+<div style = "text-align: justify"> Según Rodríguez (2010), el fuego se define como la liberación de energía en forma de luz y calor producida por la combustión de un cuerpo, lo que lleva a una descomposición rápida del combustible originada por una temperatura elevada y la presencia de oxígeno. <div/>
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 4. El incendio es un fuego fuera del control.'}
 knitr::include_graphics('Img/fuego.gif')
 ```
 
 ## Triángulo del fuego (origen)
 
-Triángulo de Fuego. Para que el fuego se pueda presentar se necesita de tres elementos: Combustible, calor y oxígeno. Si no llegase a presentarse uno de estos, la conflagración no se produciría. La (Figura) en el recuadro (a.) muestra esta representación.
+<div style = "text-align: justify"> Para que el fuego se pueda presentar se necesita de tres elementos: Combustible, calor y oxígeno. Si no llegase a presentarse uno de estos, la conflagración no se produciría. La (Figura) en el recuadro (a.) muestra esta representación. 
 
 
 * **Combustible.** El combustible se define como cualquier sólido, líquido o gas que puede ser oxidado. La mayoría de los combustibles o agentes reductores contienen un gran porcentaje de carbono e hidrógeno. 
@@ -124,34 +121,34 @@ Triángulo de Fuego. Para que el fuego se pueda presentar se necesita de tres el
 
 * **Calor.** La temperatura es la medida de actividad molecular dentro de una sustancia. En presencia de una gente oxidante, un combustible con un nivel de energía lo suficientemente alto puede arder. 
 
-* **La Gran Triada.** Otra representación característica es la gran tríada en la cual se relacionan los combustibles, el tiempo atmosférico y la topografía, donde el primero de estos es el único elemento donde el hombre puede actuar directamente, a diferencia de los dos últimos, los cuales no pueden modificarse. La (Figura 1) en el recuadro (b.) muestra esta representación.
+* **La Gran Triada.** Otra representación característica es la gran tríada en la cual se relacionan los combustibles, el tiempo atmosférico y la topografía, donde el primero de estos es el único elemento donde el hombre puede actuar directamente, a diferencia de los dos últimos, los cuales no pueden modificarse. La (Figura 5) en el recuadro (b.) muestra esta representación. <div/>
 
-```{r echo = FALSE, fig.align='center', comment='Figura 1. Representación del Triángulo de Fuego. & b. La gran Triada. Fuente: Comisión Nacional Forestal (2010). Incendios Forestales, guía práctica para comunicadores. (Tercera edición), 6-8.'}
+```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap='Figura 5. Representación del Triángulo de Fuego. & b. La gran Triada. Fuente: Comisión Nacional Forestal (2010). Incendios Forestales, guía práctica para comunicadores. (Tercera edición), 6-8.'}
 knitr::include_graphics('Img/triadafuego.png')
 ```
 
 ## Incendio forestal (IFs)
 
-Los incendios forestales se pueden definir como aquella situación cuando un fuego sin control se propaga libremente afectando a diversas áreas como selvas, bosques y vegetación de zonas áridas y semiáridas. Una manera más simple de definir un incendio forestal sería como la combustión de la vegetación forestal sin control.
-<br/>   
-El estudio de IFs sigue siendo un desafío para la ciencia y el manejo forestal, debido a la interacción entre factores naturales y antrópicos (Lippok et a., 2013).
+<div style = "text-align: justify"> Los incendios forestales se pueden definir como aquella situación cuando un fuego sin control se propaga libremente afectando a diversas áreas como selvas, bosques y vegetación de zonas áridas y semiáridas. Una manera más simple de definir un incendio forestal sería como la combustión de la vegetación forestal sin control.
+
+El estudio de IFs sigue siendo un desafío para la ciencia y el manejo forestal, debido a la interacción entre factores naturales y antrópicos (Lippok et a., 2013). <div/>
 
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 6. Cuando afecta zonas no boscosas ni aptas para la forestación, se incluye el término incendio rural.'}
 knitr::include_graphics('Img/incendioforestal.gif')
 ```
 
 ## Causas de los incendios forestales
 
-Se calcula que las actividades humanas ocasionan el 99% de ellos y solo el resto tiene como causa fenómenos naturales como descargas eléctricas y la erupción de volcanes. Dentro de las principales actividades humanas para el origen de un incendio forestal podemos mencionar situaciones accidentales, por ejemplo, rupturas de líneas eléctricas, accidentes automovilísticos, accidentes ferroviarios e incluso accidentes aéreos, también por negligencias como quemas agropecuarios no controladas, fogatas de excursionistas o incluso actividades de fumadores, quema de basura, la limpieza de vías en carreteras y uso del fuego en otras actividades productivas dentro de las áreas forestales, también una de las causas es por situaciones intencionales como quemas por conflictos entre personas o comunidades, también se puede deber a la tala ilegal o incluso por litigios.
+<div style = "text-align: justify">Se calcula que las actividades humanas ocasionan el 99% de ellos y solo el resto tiene como causa fenómenos naturales como descargas eléctricas y la erupción de volcanes. Dentro de las principales actividades humanas para el origen de un incendio forestal podemos mencionar situaciones accidentales, por ejemplo, rupturas de líneas eléctricas, accidentes automovilísticos, accidentes ferroviarios e incluso accidentes aéreos, también por negligencias como quemas agropecuarios no controladas, fogatas de excursionistas o incluso actividades de fumadores, quema de basura, la limpieza de vías en carreteras y uso del fuego en otras actividades productivas dentro de las áreas forestales, también una de las causas es por situaciones intencionales como quemas por conflictos entre personas o comunidades, también se puede deber a la tala ilegal o incluso por litigios.<div/>
 
 
 ## Regiones con mayor cantidad de incendios
 
-En los últimos años los IFs han impactado severamente varias regiones del Perú, como Cusco, Apurímac, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018).
+<div style = "text-align: justify"> En los últimos años los IFs han impactado severamente varias regiones del Perú, como Cusco, Apurímac, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018). <div/>
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 # Incendios acumulados por mes
 shp   <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 Departamentos <- st_read('Materiales/Departamentos.gpkg')
@@ -164,7 +161,7 @@ for (i in 1:nrow(Departamentos)) {
 st_write(Departamentos[,c(2,6)], "Materiales/DepartamentosIncendios.gpkg")
 ```
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 7. Conteo de la incidencia de incendios en el Perú desde el 2000 al 2018.'}
 knitr::include_graphics('Img/incendiosporregiones.png')
 ```
 
@@ -172,10 +169,9 @@ knitr::include_graphics('Img/incendiosporregiones.png')
 
 El monitoreo de bosques a nivel nacional, a partir del uso de sensoramiento remoto el cual permite documentar la deforestación/cambio de uso de la tierra y catastro forestal por parte de GEO-BOSQUES, GEOSERVIDOR y GEO-SERFOR de los Ministerios del Ambiente (MINAM) y Agricultura, respectivamente, contribuye a la gestión forestal de los gobiernos regionales y locales. El MINAM, en el marco de sus funciones, al evaluar y monitorear los ecosistemas y la biodiversidad en el territorio nacional, reporta por medio de mapas la existencia de [condiciones favorables para la ocurrencia de IFs](http://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/cfoi/). Estos mapas tienen por objetivo realizar una labor de previsión que contribuya a la toma de decisiones.
 
-```{r echo = FALSE, fig.align='center', comment=''}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Geoservidor del MINAM, permite el acceso a información más detallada de condiciones favorables para la ocurrencia de incendios.'}
 knitr::include_graphics('Img/monitoreodebosques.png')
 ```
-
 
 
 ## Función kernel
@@ -215,11 +211,13 @@ Donde:
 
 <div style = "text-align: justify">Nuestro área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, aplicaremos la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio a la provincia de Cutervo, departamento de Cajamarca. Como en los apartados posteriores generaremos mapas respecto a la ubicación de esta provincia, solo mostraremos un mapa de ubicación referencial, por ahora.</div>
 
-```{r echo = FALSE, fig.align='center'}
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 9.'}
 knitr::include_graphics('Img/mapa_referencial.png')
 ```
 
 ## Aspecto generales
+
+Describir nuestra área de estudio, que cubre diversas regiones, más en la zonas altoandina, referenciarse del documento del NIÑO, mencionar ecosistemas
 
 # Materiales y herramientas
 
@@ -233,15 +231,14 @@ knitr::include_graphics('Img/mapa_referencial.png')
 
 ## DEM SRTM V4
 
-Presentamos el DEM SRTM V4, que fue encontrado en la plataforma Google Earth Engine. Este DEM tiene una resolución espacial de 90 m, y está apto para el estudio de nuestro análisis.
-
+<div style = "text-align: justify"> Presentamos el DEM SRTM V4, que fue encontrado en la plataforma Google Earth Engine. Este DEM tiene una resolución espacial de 90 m, y está apto para el estudio de nuestro análisis.</div>
 
 
 ## R
 
-En este proyecto uitilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
+<div style = "text-align: justify">En este proyecto de investigación se utilizó dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación: </div>    
 
-### Librerias de R utilizadas hasta el momento
+### Librerias de R utilizadas 
 
 ```{r warning=FALSE, message=FALSE, eval=TRUE}
 library(dplyr)
@@ -268,7 +265,7 @@ library(reshape2)
 
 ## Python
 
-### Librerias de Python utilizadas hasta el momento
+### Librerias de Python utilizadas 
 
 ```{python warning=FALSE, message=FALSE, eval=FALSE}
 import numpy as np ## For array handling
@@ -296,7 +293,7 @@ Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muc
 Sys.setenv(RETICULATE_PYTHON = "")
 ```
 
-```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, comment='', error=FALSE}
 # Inicializando sesion en GEE
 # ee_install()
 ee_Initialize('juliocontreras1', drive =TRUE)
@@ -314,7 +311,7 @@ ee_Initialize('juliocontreras1', drive =TRUE)
 
 <div style = "text-align: justify">Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:</div>
 
-```{r echo = FALSE, fig.align='center', comment='Figura 1. Metodología del Trabajo.'}
+```{r echo = FALSE, fig.align='center', comment='Figura 10. Metodología del Trabajo.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
 <div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.</div>
@@ -330,7 +327,7 @@ Nuestra investigación empieza con el análisis de las zonas de incendios (punto
 
 <div style = "text-align: justify">Ahora, analizaremos la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, necesitaremos de la estadística, la cual no brida diversas herramientas para nuestro propósito. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan.</div>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="70%", fig.align='center', fig.cap='Figura 11.'}
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>% 
@@ -370,7 +367,6 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
   scale_y_continuous(breaks = seq(0,500,50))
 X
 ```
-**colocar las franjas plomas**
 
 <div style = "text-align: justify">Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
@@ -378,7 +374,7 @@ Nosotros no nos quedamos con la información del este gráfico, sino buscamos al
 
 ## Distribución de los incendios por años de 2000 - 2018
 
-En el apartado anterior generamos un histograma, pero para que se entienda mejor tenía que plotear los puntos de incendios de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios en los años de estudio.
+En el apartado anterior generamos un histograma, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios a traves de los años de estudio.
 
 <style>
 .html-widget {
@@ -386,7 +382,7 @@ En el apartado anterior generamos un histograma, pero para que se entienda mejor
 }
 </style>
 
-```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
+```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 12.'}
 # Incendios acumulados por mes
 Departamentos <- st_read('Materiales/Departamentos.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
@@ -454,6 +450,7 @@ Cuando recordamos nuestro curso de estadística pensabamos en las funciones de d
 Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
 
 Cabe mencionar que para ver nuestro trabajo en códigos, visitar la página de nuestro repositorio en [Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR)
+
 <br/>
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px"}
@@ -479,7 +476,6 @@ leaflet() %>% addTiles() %>%
               opacity = 1, label = ~DEPARTAMEN, color = "#000000", group = "Departamentos")
 ```
 <br/>
-Seguimos con...
 
 ## Elección del área de estudio
 
@@ -539,7 +535,7 @@ fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2005
 
-# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+# CREACION Y MANIPULACION DE TABLA PARA EL PLOTEO
 a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(nfires = length(Date)) %>% 
   group_by(MES = substr(Date,6,7)) %>% 
@@ -575,16 +571,20 @@ X <- ggplot(df) +
            stat = "identity", colour = 'red', alpha=0) +
   ggtitle('Comportamiento Mensual de Incendios', 
           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
-  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme_bw() + 
+  labs(y = 'Número de incendios', x = '') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
         axis.text.x   = element_text(size = 12, hjust = 1),
         axis.text.y   = element_text(size = 12),
         axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
   scale_x_date(date_labels = "%b", breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
-  theme(legend.position = "none")
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
+  guides(fill = guide_legend(override.aes = list(color = "blue", fill = "blue")))
+  #+ 
+  # theme(legend.position = "none")
 X
+
 
 # element_rect(
 #   fill = NULL,
@@ -721,7 +721,7 @@ A
 
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI.
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center', comment='', error=FALSE}
 pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
@@ -763,8 +763,6 @@ df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = '
   full_join(pp2010) %>% full_join(pp2016)
 
 
-Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
-
 X <- ggplot(df, aes(date, ppmean)) +
   geom_line(colour = 'black', size=.8) +
   theme_bw() + 
@@ -791,7 +789,12 @@ X <- ggplot(df, aes(date, ppmean)) +
 X
 ```
 
-<div style = "text-align: justify"> En la anterior grafica podemos observar la precipitacion acumulada mensual maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2018, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.</div>
+<div style = "text-align: justify"> En la anterior grafica podemos observar la precipitacion acumulada mensual maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2018, asimismo las lineas amarillas, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
+
+Se ve que el mes de octubre es la excepción, donde la precipitación supera a la media histórica. Aunque, en el gráfico de número de incendios por meses, se ve justo en ese mes dismuye, para luego crecer con gran pendiente en el mes de noviembre, esto para todos los años seleccionados.
+
+Tambien se tomó un año "normal" donde no hay gran cantidad de incendios históricos y se ve un comportamiento donde la precipitación del año supera a la media histórica, justo en la estación de mayor cantidad de incendios.
+</div>
 
 
 ### Temperatura maxima mensual
@@ -851,7 +854,7 @@ X <- ggplot(df, aes(date, tempmean)) +
            axis.text.y = element_text(size=12),
            axis.title = element_text(size=12, face='bold'))+
      scale_x_date(date_labels = '%b', breaks = '1 month') +
-     scale_y_continuous(breaks = seq(16,25,1), limits = c(16, 25)) +
+     scale_y_continuous(breaks = seq(16,25,1), limits = c(17, 24)) +
      geom_line(aes(date, tempmax),  colour = 'red', linetype = 'dashed', size = 0.8) +
      geom_line(aes(date, tempmin),  colour = 'blue', linetype = 'dashed', size = 0.8) +
      geom_line(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue = 255), size = 0.8) +
@@ -865,7 +868,7 @@ X <- ggplot(df, aes(date, tempmean)) +
 
 X
 ```
-<div style = "text-align: justify"> En la anterior grafica podemos observar la tempertaura maxima mensual: al maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2016, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima.</div>
+<div style = "text-align: justify"> En la anterior grafica podemos observar la tempertaura maxima mensual histórica: al maxima y minima de color rojo y azul, respectivamente. El promedio histórico en negro entre los años 1981 - 2016, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre.</div>
 
 ### Índice de Vegetación Normalizado (NDVI)
 
