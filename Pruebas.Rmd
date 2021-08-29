@@ -1,0 +1,160 @@
+---
+title: <center> <h1> **Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 - 2018** </h1> </center>
+author: <center> <h2> *Contreras Huerta Julio y Flores Farfan Jair* </h2> </center>
+date: "***`r format(Sys.time(), '%B %d, %Y')`***"
+output:
+  html_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 6 
+    toc_float:
+      collapsed: true 
+      smooth_scroll: true 
+    number_sections: true
+    theme: journal 
+    fig_width: 7
+    fig_height: 6
+---
+```{r warning=FALSE, message=FALSE, eval=TRUE}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(sf)
+library(rgee)
+library(mapedit)
+library(raster)
+library(cptcity)
+library(leaflet)
+library(leaflet.extras)
+library(leafpop)
+library(MASS)
+library(dplyr)
+library(ncdf4)
+library(devtools)
+library(velox)
+library(signal)
+library(foreach)
+library(RColorBrewer)
+library(reshape2)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Descripción del área de estudio
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
+
+yr <- 2005
+
+# CREACION Y MANIPULACION DE TABLA PARA EL PLOTEO
+a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
+  summarise(nfires = length(Date)) %>% 
+  group_by(MES = substr(Date,6,7)) %>% 
+  summarise(fires_mean = mean(nfires, na.rm = T), fires_max  = max(nfires, na.rm = T)) %>%
+  mutate(MES = as.numeric(MES)) %>% arrange(MES) %>% as.data.frame() %>% dplyr::select(-geom)
+
+b <- fires %>% dplyr::filter(`AñO`== yr) %>%
+  mutate(MES = MES_N) %>%
+  group_by(MES) %>% 
+  summarise(fires_anom = length(MES)) %>%
+  as.data.frame() %>% dplyr::select(-geom)
+
+
+df <- data.frame(MES = c(1:12)) %>% 
+  full_join(a, by = 'MES') %>% 
+  full_join(b, by = 'MES') %>% 
+  dplyr::select(-MES) %>%
+  mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
+         fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
+         fires_max  = ifelse(is.na(fires_max), 0, fires_max),
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom)) %>%
+  melt(id.vars = c("Date")) # Todas las columnas que no sean Date seran variable y los valores de esas columnas value
+
+# Nombre leyenda
+
+df$variable <- rep(c("Promedios históricos", "Máximos históricos", "Registro Mensual"), each = 12)
+names(df)[2] <- "Incendios"
+
+ggplot(data = df, aes(x = Date, y = value, fill = Incendios, 
+                      color = Incendios, alpha = Incendios)) + # , size = rep(c(0.01,0.011,0.01), each = 12)
+  geom_bar(stat = "identity", position = "identity") +
+  # labs(fill = "Dose (mg)") +
+  scale_fill_manual(values = c("red", "blue","gray")) + # ,name="Incendios",labels = c("Promedios históricos", "Máximos históricos", "Registro Mensual")
+  scale_colour_manual(values=c("red", "blue", "black")) +
+  scale_alpha_manual(values = c(0.2, 0.4, 0)) +
+  # labs(alpha='NEW LEGEND TITLE') +
+  # scale_size_discrete(0.5, 1, 0.5) +
+  # theme(strip.text.x = element_blank(),
+  #     strip.background = element_rect(colour="white", fill="white"),
+  #     legend.position=c(.2,.75)) + 
+  ggtitle('Comportamiento Mensual de Incendios',
+          subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
+  theme_test() +
+  labs(y = 'Número de incendios', x = '') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 12, hjust = 1),
+        axis.text.y   = element_text(size = 12),
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5),
+        legend.position = c(.2,.75), 
+        # Change legend background color
+        legend.background = element_rect(fill = "white", color = "#fed976", linetype = "solid"),
+        legend.key = element_rect(fill = "white"),
+        # Change legend key size and key width
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.3,"cm"),
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold"),
+        legend.title.align = 0.5) + # ,legend.direction = "horizontal"
+  # guides(color=guide_legend(title="New Legend Title")) + # size = FALSE
+  # scale_fill_discrete(name = "Dose", labels = c("A", "B", "C")) +
+  scale_x_date(date_labels = "%b", breaks = '1 month') +
+  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) 
+
+
+# CAMBIO DE IDIOMA
+# 
+# # PLOTEO  
+# X <- ggplot(df) +
+#   geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
+#            stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
+#   geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
+#            stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
+#   
+#   geom_bar(aes(x = Date, y = fires_max,  fill = label_max),
+#            stat = "identity", colour = 'red', alpha=0) +
+#   ggtitle('Comportamiento Mensual de Incendios',
+#           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
+#   theme_bw() +
+#   labs(y = 'Número de incendios', x = '') +
+#   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+#         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+#         axis.text.x   = element_text(size = 12, hjust = 1),
+#         axis.text.y   = element_text(size = 12),
+#         axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+#   scale_x_date(date_labels = "%b", breaks = '1 month') +
+#   scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
+#   guides(fill = guide_legend(override.aes = list(color = "blue", fill = "blue"))) +
+#   scale_fill_manual(name = "Incendios", values = c("blue", "blue", "blue"), labels = c("max_h", "mean_h", "meansual"))
+#   # theme(legend.position = "none")
+# X
+
+
+# element_rect(
+#   fill = NULL,
+#   colour = NULL,
+#   size = NULL,
+#   linetype = NULL,
+#   color = NULL,
+#   inherit.blank = FALSE
+# )
+  # ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
+  # theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15),
+  #       axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
+  #       axis.text.y  = element_text(size=11),
+  #       axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5)) 
+# ggsave(plot = X, filename = paste0('Img/Bar_Fires_', as.character(yr),'.png'), units = "cm", dpi = 500)
+```
