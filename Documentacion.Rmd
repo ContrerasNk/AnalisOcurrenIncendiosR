@@ -611,7 +611,8 @@ leaflet() %>%
   addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", group = "Dark") %>%
   addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
   addProviderTiles(providers$OpenStreetMap, group = "OSM" )%>%
-  setView(lng = X, lat = Y, zoom = 6.5) %>%
+addControl(html = "<p><strong><em>MAPA DE LA ZONA MÁS PROBABLE PARA EL ESTUDIO</em></strong></p>",
+             position = "topright") %>%
   addRasterImage(kde_raster_clas, colors = "#f03b20", group = "Density") %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
   addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
@@ -625,10 +626,10 @@ leaflet() %>%
                    overlayGroups = c("Density", "Area", "Provincias"), 
                    options = layersControlOptions(collapsed = TRUE), position = "bottomleft") %>%
   addMiniMap(tiles = providers$Esri.WorldImagery, toggleDisplay = FALSE, position = "topright") %>%
-  addLogo("https://images.vexels.com/media/users/3/143545/isolated/lists/6b262a6fee14ac40def1be25ca22b5ec-ubicacion-de-la-flecha-norte-nautica.png", #norte
-          position = "topleft", 
-          offset.x = 65, offset.y = 10,
-          width = 75, height = 75) 
+  addLogo("https://cdn.pixabay.com/photo/2020/09/08/09/49/geography-5554166_960_720.png", #norte
+          position = "topleft", offset.x = 65, offset.y = 10,
+          width = 48, height = 65) %>%
+  setView(lng = X, lat = Y, zoom = 6.5) 
 ```
 <br/>
 
@@ -895,74 +896,147 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI.
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center', comment='', error=FALSE}
-pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")                 
+pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
 data <- pp_velox$extract(sp=region, 
                          fun = function(x){
                            mean(x,na.rm=T)
                            }) %>%
-        as.vector()
+        as.vector() # Por que no usar max para los maximos (en ese caso seria para cada pixel)
 
 date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month')
 
+# df
 pp <- data.frame(date, data) %>% 
   mutate(mes = substr(date, 6, 7)) %>% 
   group_by(mes) %>%
-  summarise(ppmean = mean(data, na.rm = T), ppmax = max(data, na.rm = T), ppmin = min(data, na.rm=T))  
+  summarise(ppmean = mean(data, na.rm = T), 
+            ppmax = max(data, na.rm = T), 
+            ppmin = min(data, na.rm=T)) 
+names(pp) <- c("mes", "PP media histórica", "PP máxima histórica", "PP mínima histórica")
+pp <- melt(pp, id.vars = c("mes")) 
 
-pp2000 <- data.frame(date, pp2000 = data) %>% 
+pps <- data.frame(date, value = data) %>% 
   mutate(mes = substr(date, 6, 7)) %>%
-  dplyr::filter(substr(date, 1, 4) == 2000) %>% 
+  dplyr::filter(substr(date, 1, 4) %in% c(2000, 2005, 2010, 2016)) %>% 
+  add_column(variable = rep(c("PP 2000", "PP 2005", "PP 2010", "PP 2016"), each = 12)) %>%
   dplyr::select(-date)
 
-pp2005 <- data.frame(date, pp2005 = data) %>% 
-  mutate(mes = substr(date, 6, 7)) %>% 
-  dplyr::filter(substr(date, 1, 4) == 2005) %>% 
-  dplyr::select(-date)
+# Union filas
+PP <- pp %>% add_row(pps) 
+PP$date <- rep(seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), 7)
 
-pp2010 <- data.frame(date, pp2010 = data) %>% 
-  mutate(mes = substr(date, 6, 7)) %>%
-  dplyr::filter(substr(date, 1, 4) == 2010) %>% 
-  dplyr::select(-date)
+names(PP)[2] <- "Precipitación [mm]" # name leyenda
 
-pp2016 <- data.frame(date, pp2016 = data) %>% 
-  mutate(mes = substr(date, 6, 7)) %>%
-  dplyr::filter(substr(date, 1, 4) == 2016) %>% 
-  dplyr::select(-date)
-
-df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), pp) %>%
-  full_join(pp2000) %>% full_join(pp2005) %>%
-  full_join(pp2010) %>% full_join(pp2016)
-
-
-X <- ggplot(df, aes(date, ppmean)) +
-  geom_line(colour = 'black', size=.8) +
-  theme_bw() + 
+# Plot
+ggplot(data = PP, aes(x = date, y = value, 
+                      fill = `Precipitación [mm]`, color = `Precipitación [mm]`, 
+                      alpha = `Precipitación [mm]`, group = `Precipitación [mm]`)) + # , size = variable 
+  geom_line(aes(linetype = `Precipitación [mm]`)) +
+  geom_point() +
+  scale_linetype_manual(values=c("solid", "solid", "solid", "solid", 
+                                 "dotted", "twodash", "dotted")) +
+  scale_colour_manual(values=c("#e9c612", "#e31a1c", "#54278f", "#3fce1e", 
+                               "#0555f4", "black", "#0555f4")) +
+  scale_alpha_manual(values = c(1, 1, 1, 1, 1, 1, 1)) +
+  # scale_size_manual(values=c(0.2, 0.2, 0.2, 0.2, 0.5, 0.5, 0.5)) +
+  theme_test() + 
   ylab(label = '[mm]') +
   xlab(label = '') +
   ggtitle('Precipitacion acumulada mensual', subtitle = 'De 1981 hasta 2018') +
   theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        axis.title = element_text(size=20), axis.title.y =  element_text(size=12, face='bold')) +
-  scale_x_date(date_labels = '%b', breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,300,50), limits = c(0, 270)) +
-  geom_line(aes(date, ppmax),  colour = 'red', linetype = 'dashed', size=.8) +
-  geom_line(aes(date, ppmin),  colour = 'red', linetype = 'dashed', size=.8) +
-  geom_line(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255), size=.8) +
-  geom_line(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255), size=.8) +
-  geom_line(aes(date, pp2010), colour = 'snow3', size=.8) +
-  geom_line(aes(date, pp2016), colour = 'springgreen3', size=.8) +
-  geom_point(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
-  geom_point(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
-  geom_point(aes(date, pp2010), colour = 'snow3', size=2) +
-  geom_point(aes(date, pp2016), colour = 'springgreen3', size=2)
+        axis.text.x = element_text(size=11), 
+        axis.text.y = element_text(size=10),
+        axis.title = element_text(size=20), 
+        axis.title.y =  element_text(size=12, face='bold'),
+        legend.position = c(.5,.83), # posicion de la leyenda
+        legend.background = element_rect(fill = "white", 
+                                         color = "#fed976", 
+                                         linetype = "solid"),
+        legend.key = element_rect(fill = "white"),
+        legend.key.height= unit(0.1, 'cm'), 
+        legend.key.width = unit(0.5,"cm"), # ancho de simbolo leyenda
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold", size=8.5), # modificar letra del titulo
+        legend.text = element_text(size=7), # tamano letra etiqueta
+        legend.title.align = 0.5,
+        legend.spacing.y = unit(0.1, "cm")) + # distancia entre titulo legend y los labels
+  scale_x_date(date_labels = '%b', breaks = '1 month') + # , breaks = '1 month', date_labels = '%b'
+  scale_y_continuous(breaks = seq(0,300,50), limits = c(0, 270)) 
 
-X
+
+# pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")
+# region <- st_read("Materiales/area.gpkg", quiet = TRUE)
+# 
+# data <- pp_velox$extract(sp=region, 
+#                          fun = function(x){
+#                            mean(x,na.rm=T)
+#                            }) %>%
+#         as.vector() # Por que no usar max para los maximos (en ese caso seria para cada pixel)
+# 
+# date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month')
+# 
+# pp <- data.frame(date, data) %>% 
+#   mutate(mes = substr(date, 6, 7)) %>% 
+#   group_by(mes) %>%
+#   summarise(ppmean = mean(data, na.rm = T), 
+#             ppmax = max(data, na.rm = T), 
+#             ppmin = min(data, na.rm=T))  
+# 
+# pp2000 <- data.frame(date, pp2000 = data) %>% 
+#   mutate(mes = substr(date, 6, 7)) %>%
+#   dplyr::filter(substr(date, 1, 4) == 2000) %>% 
+#   dplyr::select(-date)
+# 
+# pp2005 <- data.frame(date, pp2005 = data) %>% 
+#   mutate(mes = substr(date, 6, 7)) %>% 
+#   dplyr::filter(substr(date, 1, 4) == 2005) %>% 
+#   dplyr::select(-date)
+# 
+# pp2010 <- data.frame(date, pp2010 = data) %>% 
+#   mutate(mes = substr(date, 6, 7)) %>%
+#   dplyr::filter(substr(date, 1, 4) == 2010) %>% 
+#   dplyr::select(-date)
+# 
+# pp2016 <- data.frame(date, pp2016 = data) %>% 
+#   mutate(mes = substr(date, 6, 7)) %>%
+#   dplyr::filter(substr(date, 1, 4) == 2016) %>% 
+#   dplyr::select(-date)
+# 
+# df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), pp) %>%
+#   full_join(pp2000) %>% full_join(pp2005) %>%
+#   full_join(pp2010) %>% full_join(pp2016)
+# 
+# 
+# X <- ggplot(df, aes(date, ppmean)) +
+#   geom_line(colour = 'black', size=.8) +
+#   theme_bw() + 
+#   ylab(label = '[mm]') +
+#   xlab(label = '') +
+#   ggtitle('Precipitacion acumulada mensual', subtitle = 'De 1981 hasta 2018') +
+#   theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+#         plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+#         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
+#         axis.title = element_text(size=20), axis.title.y =  element_text(size=12, face='bold')) +
+#   scale_x_date(date_labels = '%b', breaks = '1 month') +
+#   scale_y_continuous(breaks = seq(0,300,50), limits = c(0, 270)) +
+#   geom_line(aes(date, ppmax),  colour = 'red', linetype = 'dashed', size=.8) +
+#   geom_line(aes(date, ppmin),  colour = 'red', linetype = 'dashed', size=.8) +
+#   geom_line(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255), size=.8) +
+#   geom_line(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255), size=.8) +
+#   geom_line(aes(date, pp2010), colour = 'snow3', size=.8) +
+#   geom_line(aes(date, pp2016), colour = 'springgreen3', size=.8) +
+#   geom_point(aes(date, pp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+#   geom_point(aes(date, pp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+#   geom_point(aes(date, pp2010), colour = 'snow3', size=2) +
+#   geom_point(aes(date, pp2016), colour = 'springgreen3', size=2)
+# 
+# X
 ```
 
-<div style = "text-align: justify"> En la anterior grafica podemos observar la precipitacion acumulada mensual maxima y minima (de color rojo) y promedio (en negro) historico entre los años 1981 - 2018, asimismo las lineas amarillas, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
+<div style = "text-align: justify"> De esto podemos inferir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
 
 Se ve que el mes de octubre es la excepción, donde la precipitación supera a la media histórica. Aunque, en el gráfico de número de incendios por meses, se ve justo en ese mes dismuye, para luego crecer con gran pendiente en el mes de noviembre, esto para todos los años seleccionados.
 
@@ -978,7 +1052,8 @@ Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
 temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_area.tif")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
-data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
+data <- temp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% 
+  as.vector()
 date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = 'month')
 
 
@@ -988,60 +1063,108 @@ temp <- data.frame(date, data) %>%
   summarise(tempmean = mean(data, na.rm = T), 
             tempmax  = max(data, na.rm = T),
             tempmin  = min(data, na.rm = T))
+names(temp) <- c("mes", "TempM media histórica", "TempM máxima histórica", "TempM mínima histórica")
+temp <- melt(temp, id.vars = c("mes"))
 
-temp2000 <- data.frame(date, temp2000 = data) %>% 
+temps <- data.frame(date, value = data) %>% 
   mutate(mes = substr(date,6,7)) %>% 
-  dplyr::filter(substr(date,1,4) == 2000) %>% 
+  dplyr::filter(substr(date, 1, 4) %in% c(2000, 2005, 2010, 2016)) %>% 
+  add_column(variable = rep(c("TemM 2000", "TemM 2005", "TemM 2010", "TemM 2016"), each = 12)) %>%
   dplyr::select(-date)
 
-temp2005 <- data.frame(date, temp2005 = data) %>% 
-  mutate(mes = substr(date,6,7)) %>% 
-  dplyr::filter(substr(date,1,4) == 2005) %>% 
-  dplyr::select(-date)
+# Union filas
+TEMP <- temp %>% add_row(temps) 
+TEMP$date <- rep(seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), 7)
 
-temp2010 <- data.frame(date, temp2010 = data) %>% 
-  mutate(mes = substr(date,6,7)) %>% 
-  dplyr::filter(substr(date,1,4) == 2010) %>% 
-  dplyr::select(-date)
+names(TEMP)[2] <- "Temperatura [°C]" # name leyenda
 
-temp2016 <- data.frame(date, temp2016 = data) %>% 
-  mutate(mes = substr(date,6,7)) %>% 
-  dplyr::filter(substr(date,1,4) == 2016) %>% 
-  dplyr::select(-date)
 
-df <- data.frame(date = seq(as.Date('2016-01-01'), as.Date('2016-12-01'), by = 'month'), temp) %>%
-  full_join(temp2000) %>% 
-  full_join(temp2005) %>% 
-  full_join(temp2010) %>% 
-  full_join(temp2016)
-
-Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
-
-X <- ggplot(df, aes(date, tempmean)) +
-     geom_line(colour = 'black', size=0.8) + 
-     theme_bw() + ylab(label = '[°C]') +  xlab(label = '') +
-     ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2016') + 
-     theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
-           plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
-           axis.text.x = element_text(size=12),
-           axis.text.y = element_text(size=12),
-           axis.title = element_text(size=12, face='bold'))+
+# Plot
+ggplot(data = TEMP, aes(x = date, y = value, 
+                      fill = `Temperatura [°C]`, color = `Temperatura [°C]`, 
+                      alpha = `Temperatura [°C]`, group = `Temperatura [°C]`)) + # , size = variable 
+  geom_line(aes(linetype = `Temperatura [°C]`)) +
+  geom_point() +
+  scale_linetype_manual(values=c("solid", "solid", "solid", "solid", 
+                                 "twodash", "dotted", "twodash")) +
+  scale_colour_manual(values=c("#e9c612", "blue", "#54278f", "#3fce1e", 
+                               "red", "black", "red")) +
+  scale_alpha_manual(values = c(1, 1, 1, 1, 1, 1, 1)) +
+  # scale_size_manual(values=c(0.2, 0.2, 0.2, 0.2, 0.5, 0.5, 0.5)) +
+  theme_test() + 
+  ylab(label = '[mm]') +
+  xlab(label = '') +
+  ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2018') +
+  theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+        axis.text.x = element_text(size=11), 
+        axis.text.y = element_text(size=10),
+        axis.title = element_text(size=20), 
+        axis.title.y =  element_text(size=12, face='bold'),
+        legend.position = c(0.25, 0.83), # posicion de la leyenda
+        legend.background = element_rect(fill = "#fffeeb", 
+                                         color = "black", 
+                                         linetype = "dotted"),
+        legend.key = element_rect(fill = "white"),
+        legend.key.height= unit(0.1, 'cm'), 
+        legend.key.width = unit(0.6, "cm"), # ancho de simbolo leyenda
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold", size=8.5), # modificar letra del titulo
+        legend.text = element_text(size=7), # tamano letra etiqueta
+        legend.title.align = 0.5,
+        legend.spacing.y = unit(0.1, "cm")) + # distancia entre titulo legend y los labels
      scale_x_date(date_labels = '%b', breaks = '1 month') +
-     scale_y_continuous(breaks = seq(16,25,1), limits = c(17, 24)) +
-     geom_line(aes(date, tempmax),  colour = 'red', linetype = 'dashed', size = 0.8) +
-     geom_line(aes(date, tempmin),  colour = 'blue', linetype = 'dashed', size = 0.8) +
-     geom_line(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue = 255), size = 0.8) +
-     geom_line(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue = 255), size = 0.8) +
-     geom_line(aes(date, temp2010), colour = 'snow3', size=0.8) +
-     geom_line(aes(date, temp2016), colour = 'springgreen3', size=.8) +
-     geom_point(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
-     geom_point(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
-     geom_point(aes(date, temp2010), colour = 'snow3', size=2) +
-     geom_point(aes(date, temp2016), colour = 'springgreen3', size=2)
+     scale_y_continuous(breaks = seq(16,25,1), limits = c(17, 25)) 
 
-X
+# 
+# temp2005 <- data.frame(date, temp2005 = data) %>% 
+#   mutate(mes = substr(date,6,7)) %>% 
+#   dplyr::filter(substr(date,1,4) == 2005) %>% 
+#   dplyr::select(-date)
+# 
+# temp2010 <- data.frame(date, temp2010 = data) %>% 
+#   mutate(mes = substr(date,6,7)) %>% 
+#   dplyr::filter(substr(date,1,4) == 2010) %>% 
+#   dplyr::select(-date)
+# 
+# temp2016 <- data.frame(date, temp2016 = data) %>% 
+#   mutate(mes = substr(date,6,7)) %>% 
+#   dplyr::filter(substr(date,1,4) == 2016) %>% 
+#   dplyr::select(-date)
+# 
+# df <- data.frame(date = seq(as.Date('2016-01-01'), as.Date('2016-12-01'), by = 'month'), temp) %>%
+#   full_join(temp2000) %>% 
+#   full_join(temp2005) %>% 
+#   full_join(temp2010) %>% 
+#   full_join(temp2016)
+# 
+# Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
+# 
+# X <- ggplot(df, aes(date, tempmean)) +
+#      geom_line(colour = 'black', size=0.8) + 
+#      theme_bw() + ylab(label = '[°C]') +  xlab(label = '') +
+#      ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2016') + 
+#      theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+#            plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+#            axis.text.x = element_text(size=12),
+#            axis.text.y = element_text(size=12),
+#            axis.title = element_text(size=12, face='bold'))+
+#      scale_x_date(date_labels = '%b', breaks = '1 month') +
+#      scale_y_continuous(breaks = seq(16,25,1), limits = c(17, 24)) +
+#      geom_line(aes(date, tempmax),  colour = 'red', linetype = 'dashed', size = 0.8) +
+#      geom_line(aes(date, tempmin),  colour = 'blue', linetype = 'dashed', size = 0.8) +
+#      geom_line(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue = 255), size = 0.8) +
+#      geom_line(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue = 255), size = 0.8) +
+#      geom_line(aes(date, temp2010), colour = 'snow3', size=0.8) +
+#      geom_line(aes(date, temp2016), colour = 'springgreen3', size=.8) +
+#      geom_point(aes(date, temp2000), colour = rgb(233, 228, 91, maxColorValue=255) , size=2) +
+#      geom_point(aes(date, temp2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+#      geom_point(aes(date, temp2010), colour = 'snow3', size=2) +
+#      geom_point(aes(date, temp2016), colour = 'springgreen3', size=2)
+# 
+# X
 ```
-<div style = "text-align: justify"> En la anterior grafica podemos observar la tempertaura maxima mensual histórica: al maxima y minima de color rojo y azul, respectivamente. El promedio histórico en negro entre los años 1981 - 2016, asimismo las lineas amarilla, marron, gris y verde representan la evolucion mensual de los años 2000, 2005, 2010 y 2016. De ello podemos concluir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre.</div>
+<div style = "text-align: justify"> Podemos inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre.</div>
 
 ### Índice de Vegetación Normalizado (NDVI)
 
