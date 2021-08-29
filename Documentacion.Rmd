@@ -38,7 +38,6 @@ Segun los registros historicos del CFOI se puede afirmar que los departamentos c
 
 En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
 
-
 <br/>
 
 ```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap='Figura 1. Incendios forestales por la quema de malezas o residuos agrículas.'}
@@ -83,15 +82,17 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 * [La problemática de los incendios forestales y bases para su teledetección en el Perú](http://journals.continental.edu.pe/index.php/apuntes/article/view/198/196)
 
-*[Signal Smoothing Algorithms](http://195.134.76.37/applets/AppletSmooth/Appl_Smooth2.html)
+* [Signal Smoothing Algorithms](http://195.134.76.37/applets/AppletSmooth/Appl_Smooth2.html)
 
-*[MODIS Product: MOD13Q1V006](https://lpdaac.usgs.gov/products/mod13q1v006/)
+* [MODIS Product: MOD13Q1V006](https://lpdaac.usgs.gov/products/mod13q1v006/)
 
 # Marco teórico
 
 ## Importancia de los bosques
 
 <div style = "text-align: justify"> Es necesario mencionar la importancia de los bosques. Estas zonas con este tipo de vegetación o áreas forestales son una parte imprescindible para la vida en el planeta, además de ser parte fundamental en los ciclos de producción y distribución del agua, los bosques se encargan de purificar el aire que respiramos al capturar dióxido de carbono y liberar oxígeno, de la misma forma también, regulan la temperatura y la humedad con lo que se equilibra el clima (Barrios et a., 2020). Estos tipos de vegetación también proporcionan alimento medicinas y refugio a los seres vivos y son un fuente de materia prima en muchas actividades humanas como las actividades forestales, por ejemplo. <div/>
+
+<br/>
 
 ```{r echo = FALSE, fig.align='center', out.width="70%", comment='', fig.cap = 'Figura 2. Más del 60% del territorio peruano es de bosques tropicales y es el cuarto país con más superficie de ecosistemas en el mundo.'}
 knitr::include_graphics('Img/importanciaforestal.jpg')
@@ -101,6 +102,8 @@ knitr::include_graphics('Img/importanciaforestal.jpg')
 
 <div style = "text-align: justify"> La vegetación forestal tiene muchos beneficios, sin embargo todos estos procesos vitales se ven amenazados por diversos factores ajenos a las actividades forestales como la degradación de suelos, la deforestación, la tala inmoderada y los fuegos no controlados que muchas veces están relacionados con otras actividades como la agricultura, la ganadería y el desarrollo urbano. Si bien, usualmente, el fuego en los bosques tiene una connotación negativa, el fuego puede tener una influencia positiva en la naturaleza pues ayuda a mantener la biodiversidad e incluso es necesario para la germinación de ciertas plantas. No obstante esta estrategia que tienen algunas plantas de ser estimuladas por el fuego fue producto de la evolución y producto de algunos fuegos estacionales que se producen de manera natural, pero cuando estos fuegos se producen de manera muy frecuente o son provocados por un uso irresponsable o son producto de alguna negligencia puede convertirse en un incendio forestal con unas consecuencias devastadoras para el medio ambiente e incluso para la salud y seguridad de las personas. <div/>
 
+<br/>
+
 ```{r echo = FALSE, fig.align='center', out.width="70%", comment='', fig.cap='Figura 3.Sin bosques no se podría contener las emisiones del dióxido de carbono (CO2) y sin la existencia de esta cobertura vegetal tampoco sería posible la vida en el planeta.'}
 knitr::include_graphics('Img/amenazasforestales.jpg')
 ```
@@ -108,6 +111,8 @@ knitr::include_graphics('Img/amenazasforestales.jpg')
 ## Fuego
 
 <div style = "text-align: justify"> Según Rodríguez (2010), el fuego se define como la liberación de energía en forma de luz y calor producida por la combustión de un cuerpo, lo que lleva a una descomposición rápida del combustible originada por una temperatura elevada y la presencia de oxígeno. <div/>
+
+<br/>
 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 4. El incendio es un fuego fuera del control.'}
 knitr::include_graphics('Img/fuego.gif')
@@ -126,6 +131,8 @@ knitr::include_graphics('Img/fuego.gif')
 
 * **La Gran Triada.** Otra representación característica es la gran tríada en la cual se relacionan los combustibles, el tiempo atmosférico y la topografía, donde el primero de estos es el único elemento donde el hombre puede actuar directamente, a diferencia de los dos últimos, los cuales no pueden modificarse. La (Figura 5) en el recuadro (b.) muestra esta representación. <div/>
 
+<br/>
+
 ```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap='Figura 5. Representación del Triángulo de Fuego. & b. La gran Triada. Fuente: Comisión Nacional Forestal (2010). Incendios Forestales, guía práctica para comunicadores. (Tercera edición), 6-8.'}
 knitr::include_graphics('Img/triadafuego.png')
 ```
@@ -136,6 +143,7 @@ knitr::include_graphics('Img/triadafuego.png')
 
 El estudio de IFs sigue siendo un desafío para la ciencia y el manejo forestal, debido a la interacción entre factores naturales y antrópicos (Lippok et a., 2013). <div/>
 
+<br/>
 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 6. Cuando afecta zonas no boscosas ni aptas para la forestación, se incluye el término incendio rural.'}
 knitr::include_graphics('Img/incendioforestal.gif')
@@ -150,6 +158,7 @@ knitr::include_graphics('Img/incendioforestal.gif')
 
 <div style = "text-align: justify"> En los últimos años los IFs han impactado severamente varias regiones del Perú, como Cusco, Apurímac, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018). <div/>
 
+<br/>
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE}
 # Incendios acumulados por mes
@@ -171,6 +180,8 @@ knitr::include_graphics('Img/incendiosporregiones.png')
 ## Monitoreo de bosques
 
 El monitoreo de bosques a nivel nacional, a partir del uso de sensoramiento remoto el cual permite documentar la deforestación/cambio de uso de la tierra y catastro forestal por parte de GEO-BOSQUES, GEOSERVIDOR y GEO-SERFOR de los Ministerios del Ambiente (MINAM) y Agricultura, respectivamente, contribuye a la gestión forestal de los gobiernos regionales y locales. El MINAM, en el marco de sus funciones, al evaluar y monitorear los ecosistemas y la biodiversidad en el territorio nacional, reporta por medio de mapas la existencia de [condiciones favorables para la ocurrencia de IFs](http://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/cfoi/). Estos mapas tienen por objetivo realizar una labor de previsión que contribuya a la toma de decisiones.
+
+<br/>
 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Geoservidor del MINAM, permite el acceso a información más detallada de condiciones favorables para la ocurrencia de incendios.'}
 knitr::include_graphics('Img/monitoreodebosques.png')
@@ -206,13 +217,18 @@ Donde:
 ## Filtro Digital Savitzky-Golay
 
 <div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. 
-El filtro de Savitsky-Golay se basa en el ajuste por minimo cudarados de pequeños conjuntos de datos de longitud $$2n +1$$ para calcular un polinomio local y tomar al punto central de esa curva polinomial ajustada como el nuevo punto de datos suavizado. 
-Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $$({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$$ podrian derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $${({Y}_k)}_{suavizado}$$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación:
+El filtro de Savitsky-Golay se basa en el ajuste por minimo cudarados de pequeños conjuntos de datos de longitud $2n +1$ para calcular un polinomio local y tomar al punto central de esa curva polinomial ajustada como el nuevo punto de datos suavizado. 
+Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$ podrían derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $Y_{k_{suavizado}}$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación: <div/>
 
-$${\displaystyle {{({Y}_k)}_{suavizado}={\frac {\sum _{i=-n}^{n}{A_{i}*{Y_{k+i}}}}{\sum _{i=-n}^{n}A_{i}}}}}$$
-En donde $$2n+1$$ es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $$p$$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $$k$$ equivale a n en la posicion 0.
+$$Y_{k_{suavizado}}=\frac{\displaystyle\sum_{i=-n}^{n}A_{i}\cdot Y_{k+i}}{\displaystyle\sum_{i=-n}^{n}A_{i}}$$
 
-El $${({Y}_{k+i})}$$ es la funcion polinomial ajustada de grado $$p$$ empleada para la posicion k+i o simplemente $$i$$.  
+
+En donde: 
+
+<div style = "text-align: justify">
+* $2n+1$: Es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $p$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $k$ equivale a n en la posicion 0.
+
+* ${({Y}_{k+i})}$: Es la funcion polinomial ajustada de grado $p$ empleada para la posicion $k+i$ o simplemente $i$.  
 
 El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el caso de la media móvil, aunque se debe enfatizar que ambos algoritmos tienen "pérdidas", es decir, parte de la información original se pierde o se distorsiona. Este tipo de suavizado es utilizado principalmente para conservar las características de la distribución inicial, los máximos y mínimos relativos y el ancho entre picos en una serie de datos.
 *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
@@ -221,22 +237,42 @@ El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el 
 
 ## Localización
 
-<div style = "text-align: justify">Nuestro área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, aplicaremos la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio a la provincia de Cutervo, departamento de Cajamarca. Como en los apartados posteriores generaremos mapas respecto a la ubicación de esta provincia, solo mostraremos un mapa de ubicación referencial, por ahora.</div>
+<div style = "text-align: justify"> El área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, se aplicó la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio un área que abarca la región de Cusco y Apurimac. La probabilidad que se encuentra en el área es mayor a 5%.</div>
 
-```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 9.'}
-knitr::include_graphics('Img/mapa_referencial.png')
+<br/>
+
+```{r echo = FALSE, out.width="100%", fig.align='center', fig.cap='Figura 9.'}
+knitr::include_graphics('Img/mapaubicacion.png')
 ```
 
 ## Aspecto generales
 
 Describir nuestra área de estudio, que cubre diversas regiones, más en la zonas altoandina, referenciarse del documento del NIÑO, mencionar ecosistemas
 
+### Ecosistemas
+
+#### Pajonal de puna humeda
+
+#### Matorral andino
+
+#### Zona agrícola
+
+#### Vegetación Secundaria
+
+#### Bosque altimontano (Pluvial) de Yunga
+
+
 # Materiales y herramientas
 
 ## Data histórica de incendios 2000-2018
 
-<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios, con respecto a los históricos que han sido recopilados desde el año 2000 al 2018. Dicha información, después de un proceso de validación con imágenes satelitales se encuentran georeferenciados y pueden ser descargados en formato shapefile.
-</div>
+<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, fueron descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios, con respecto a los históricos que han sido recopilados desde el año 2000 al 2018. Dicha información, después de un proceso de validación con imágenes satelitales se encuentran georeferenciados y pueden ser descargados en formato shapefile.</div>
+
+<br/>
+
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura .'}
+knitr::include_graphics('Img/plataforma_incendios2000_2018.png')
+```
 
 ## Datos MODIS (MOD13Q1)
 Los datos de la versión 6 del espectrorradiómetro de imágenes de resolución moderada (MODIS) Terra (MOD13Q1) se generan cada 16 días a una resolución espacial de 250 metros (m) como un producto de Nivel 3. El producto MOD13Q1 proporciona dos capas de vegetación primarias. El primero es el Índice de Vegetación de Diferencia Normalizada (NDVI), que se conoce como el índice de continuidad del NDVI derivado del Radiómetro Avanzado de Muy Alta Resolución de la Administración Nacional Oceánica y Atmosférica existente (NOAA-AVHRR). 
@@ -269,6 +305,7 @@ library(cptcity)
 library(leaflet)
 library(leaflet.extras)
 library(leafpop)
+library(leafem)
 library(MASS)
 library(dplyr)
 library(ncdf4)
@@ -328,7 +365,7 @@ ee_Initialize('juliocontreras1', drive =TRUE)
 
 <div style = "text-align: justify">Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:</div>
 
-```{r echo = FALSE, fig.align='center', comment='Figura 10. Metodología del Trabajo.', out.width="70%"}
+```{r echo = FALSE, fig.align='center', fig.cap = 'Figura . Metodología del Trabajo.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
 <div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.</div>
@@ -344,7 +381,9 @@ Nuestra investigación empieza con el análisis de las zonas de incendios (punto
 
 <div style = "text-align: justify">Ahora, analizaremos la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, necesitaremos de la estadística, la cual no brida diversas herramientas para nuestro propósito. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan.</div>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="70%", fig.align='center', fig.cap='Figura 11.'}
+<br/>
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="80%", fig.align='center', fig.cap='Figura .'}
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>% 
@@ -365,18 +404,25 @@ ts    <- data.frame(Date = seq(as.Date('2000-08-01'),
 
 # Generación del histograma
 
+df1 <- data.frame(dt = c(as.Date('2005-09-01'), as.Date('2010-08-15'), as.Date('2016-08-01')), 
+           vl = c(300, 190, 435)) # ancho azul de los años señalados
+
 X <- ggplot(ts, aes(x=Date, y=nfires)) + 
+  geom_col(data = df1, 
+           aes(x=dt,y=vl, fill = "n"), 
+           position ="dodge", width = 310, alpha = 0.7, 
+           fill = '#fff933') + # , colour = 'blue' borde
   geom_bar(stat="identity", 
            fill="gray", 
-           colour="black") +
-  theme_bw() + 
+           colour="#f03b20") +
+  theme_test() + 
   ylab(label = 'Número de incendios\n') +  
   xlab(label = '') + 
   ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
-  theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15),
-        axis.text.x  = element_text(size=11, angle = 75, hjust = 1),
-        axis.text.y  = element_text(size=11),
-        axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5)) + 
+  theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15, color = "#020722"),
+        axis.text.x  = element_text(size=9, angle = 75, hjust = 1, color = "#020722"),
+        axis.text.y  = element_text(size=9, color = "#020722"),
+        axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) + 
   scale_x_date(limits = c(as.Date('2000-07-01'),
                           as.Date('2019-01-01')),
                date_labels = ("%Y"), 
@@ -385,13 +431,15 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 ```
 
-<div style = "text-align: justify"> Como se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
+<div style = "text-align: justify"> Se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
 Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
 
 ## Distribución de los incendios por años de 2000 - 2018
 
-<div style = "text-align: justify"> En el apartado anterior generamos un histograma, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver tambien, cómo se comporta la distribución de incendios a traves de los años de estudio. <div/>
+<div style = "text-align: justify"> En el apartado anterior generamos un histograma con el fin de ver el comportamiento acumulativo de los incendios desde 2000 al 2018, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver también, cómo se comporta la distribución de incendios a traves de los años de estudio. <div/>
+
+<br/>
 
 <style>
 .html-widget {
@@ -446,13 +494,24 @@ for (i in 1:length(Spp_Pres)) {
 }
 
 
-# Agremos leyenda y su visualizador por grupos, tanto leyenda como suelos
+# Agremos leyenda y su visualizador por grupos, tanto leyenda como suelos8
 Spp_Map <- Spp_Map %>%
-  addLegend(data = fires, "bottomleft", pal = pal, 
-                values = ~Date, title = "Inc: 2000-2018", 
-                opacity = 0.8, group = "Leyenda") %>%
-  addLayersControl(overlayGroups = c("Leyenda"), baseGroups = Names_JmType,
-                   options = layersControlOptions(collapsed = FALSE), position = "topright")
+  addControl(html = "<p><strong><em>MAPA DE DISTRIBUCIÓN DE INCENDIOS</em></strong></p>",
+             position = "topright") %>% 
+  # addLegend(data = fires, "bottomleft", pal = pal, 
+  #               values = ~Date, title = "Incendios", 
+  #               opacity = 0.5, group = "Leyenda") %>%
+  addLayersControl(baseGroups = Names_JmType, # overlayGroups = c("Leyenda"), 
+                   options = layersControlOptions(collapsed = FALSE, color = "blue"), 
+                   position = "topright") %>%
+  addScaleBar(position = "bottomleft",options = scaleBarOptions(maxWidth = 100,
+                                                                 metric = TRUE,
+                                                                 imperial = TRUE,
+                                                                 updateWhenIdle = TRUE)) %>%
+  addMiniMap(tiles = providers$Esri.WorldImagery, toggleDisplay = FALSE, position = "bottomleft") %>%
+  addLogo("https://cdn.pixabay.com/photo/2020/09/08/09/49/geography-5554166_960_720.png", #norte
+          position = "topleft", offset.x = 65, offset.y = 10,
+          width = 48, height = 65) 
 Spp_Map
 ```
   
@@ -460,21 +519,17 @@ Spp_Map
 
 ## Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
 
-<div style = "text-align: justify"> Se tratará suavizar una serie, que sería la distribución de los incendios por tiempo y espacio, tanto en el eje x e y. Pensabamos que sería algo extraño que ocurriera un incendio en un lugar determinado y no haya alguna probabilidad que ocurra esto en sus alrededores cercanos. Así, nos dimos cuenta la manera en que funciona esta estadística. <div/>
+<div style = "text-align: justify"> Se suavizó la serie de incendios, en función a una matriz, en este caso 250 x 250, tambien definido el tamaño del pixel 0.8 s, además se tuvo en cuenta la matriz movil o kernel (3x3, 5x5, etc).
+
+Con el kernel se determinará la probilidad de ocurrencia, ¿y qué quiere decir eso?. Para pixel central del kernel, de nuestra matriz movil, se calculará la probabilidad de ocurrencia respecto al total de incendios de todo el Perú. Así, la matriz movil irá recorriendo cada pixel y calculando dicha probabilidad.
+
+Las funciones de densidad parámetricas dependen de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
+
+Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), sus argumentos de coordenadas son los límites de la matriz ya definida. <div/>
 
 <br/>
 
-<div style = "text-align: justify"> Cuando recordamos nuestro curso de estadística pensabamos en las funciones de densidad parámetricas, donde la función depende de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.<div/>
-
-<br/>
-
-<div style = "text-align: justify">Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), ese es el porqué de su argumento de coordenadas.</div>
-
-<div style = "text-align: justify"> Cabe mencionar que para ver nuestro trabajo en códigos, visitar la página de nuestro repositorio en [Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR). <div/>
-
-<br/>
-
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px"}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px", fig.cap='Figura. '}
 fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 peru <- st_read('Materiales/Peru.gpkg', quiet = TRUE)
 Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
@@ -490,18 +545,39 @@ kde_raster <- kde_raster * 100
 
 pal <- colorNumeric(c("#3182bd", "#fec44f", "#f03b20"), values(kde_raster), na.color ="transparent")
                    
-leaflet() %>% addTiles() %>%
-  addRasterImage(kde_raster, colors = pal) %>% 
-  addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
+leaflet() %>% 
+  addProviderTiles(providers$OpenStreetMap, group = "OSM")%>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite")%>%
+  addControl(html = "<p><strong><em>MAPA DE DISTRIBUCIÓN DE PROBABILIDAD DE INCENDIOS</em></strong></p>",
+             position = "topright") %>%
+  addRasterImage(kde_raster, colors = pal, group = "prop") %>% 
+  addLegend(pal = pal, values = values(kde_raster),title = "%") %>%
   addPolygons(data = Departamentos, fillOpacity = 0, weight = 2,
-              opacity = 1, label = ~DEPARTAMEN, color = "#000000", group = "Departamentos")
+              opacity = 1, label = ~DEPARTAMEN, color = "#000000", group = "Departamentos") %>%
+  addScaleBar(position = "bottomleft", 
+              options = scaleBarOptions(maxWidth = 100, metric = TRUE, 
+                                        imperial = TRUE, updateWhenIdle = TRUE)) %>%
+  addMiniMap(tiles = providers$Esri.WorldImagery, toggleDisplay = FALSE, position = "bottomleft") %>%
+  addLogo("https://images.vexels.com/media/users/3/143545/isolated/lists/6b262a6fee14ac40def1be25ca22b5ec-ubicacion-de-la-flecha-norte-nautica.png", #norte
+          position = "topleft", 
+          offset.x = 65, offset.y = 10,
+          width = 75, height = 75) %>%
+  addLayersControl(baseGroups = c("OSM","Satellite"),
+                   overlayGroups = c("prop"),
+                   position = "topright",
+                   options = layersControlOptions(collapsed = T)) %>%
+  setView(lng = -75, lat = -7.9, zoom = 5)
 ```
 
 <br/>
 
 ## Elección del área de estudio
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
+Se definió el área de estudió en relación a la distribución de probabilidad. El proceso consistió en rasterizar las áreas probables, previo enmascaramiento de una probabilidad de 5%. Luego, de rasterizado el área, se poligonizó. Se obtuvieron 7 poligonos, se eligió al que se encontraba en la **zona sur**. La zona ya se deifinió anteriormente.
+
+<br/>
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.cap='Figura. '}
 Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
 Cutervo <- st_read('Materiales/area.gpkg', quiet = TRUE) # abajo el guardado
 
@@ -533,24 +609,34 @@ Y <- (st_coordinates(centroid))[,"Y"]
 # Interactivo
 leaflet() %>% 
   addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", group = "Dark") %>%
-  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", group = "Satellite") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "OSM" )%>%
   setView(lng = X, lat = Y, zoom = 6.5) %>%
   addRasterImage(kde_raster_clas, colors = "#f03b20", group = "Density") %>%
   # addLegend(pal = pal, values = values(kde_raster),title = "% Incendios") %>%
   addPolygons(data = Provincias, fillOpacity = 0, weight = 1, opacity = 1, 
               label = ~PROVINCIA, color = "#ffff33", group = "Provincias") %>%
   addPolygons(data = Cutervo, fillOpacity = 0, weight = 4, opacity = 1,
-              label = ~area, color = "#54278f",group = "Anta") %>%
-  addLayersControl(baseGroups = c("Dark", "Satellite"), overlayGroups = "Density",
-                   options = layersControlOptions(collapsed = FALSE), position = "topright")
+              label = ~area, color = "#54278f",group = "Area") %>%
+  addScaleBar(position = "bottomleft", 
+              options = scaleBarOptions(maxWidth = 100, metric = TRUE,
+                                        imperial = TRUE, updateWhenIdle = TRUE)) %>%
+  addLayersControl(baseGroups = c("Dark", "Satellite", "OSM"), 
+                   overlayGroups = c("Density", "Area", "Provincias"), 
+                   options = layersControlOptions(collapsed = TRUE), position = "bottomleft") %>%
+  addMiniMap(tiles = providers$Esri.WorldImagery, toggleDisplay = FALSE, position = "topright") %>%
+  addLogo("https://images.vexels.com/media/users/3/143545/isolated/lists/6b262a6fee14ac40def1be25ca22b5ec-ubicacion-de-la-flecha-norte-nautica.png", #norte
+          position = "topleft", 
+          offset.x = 65, offset.y = 10,
+          width = 75, height = 75) 
 ```
-
-
+<br/>
 
 ## Variabilidad estacional de la ocurrecia de incendios
 
-<div style = "text-align: justify"> Se verá el comportamiento estacional promedio y máximo, para un registro de incendios 2000 - 2018.</div>
+<div style = "text-align: justify"> Se verá el comportamiento estacional, promedio y máximo, para un registro de incendios. La idea es identificar los meses de cada año, donde el registro mensual se comporte igual o cerca de los máximos históricos y que superen los promedios historicos, esos meses debieron tener la mejores condiciones favorables para la ocurrencia de indencios.</div>
 
+<br/>
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
@@ -578,34 +664,77 @@ df <- data.frame(MES = c(1:12)) %>%
   mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
          fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
          fires_max  = ifelse(is.na(fires_max), 0, fires_max),
-         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
-         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom)) %>%
+  melt(id.vars = c("Date")) # Todas las columnas que no sean Date seran variable y los valores de esas columnas value
 
-# CAMBIO DE IDIOMA
+# Nombre leyenda
 
-# PLOTEO  
-X <- ggplot(df) +
-  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
-           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
-           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
-           stat = "identity", colour = 'red', alpha=0) +
-  ggtitle('Comportamiento Mensual de Incendios', 
+df$variable <- rep(c("Promedios históricos", "Máximos históricos", "Registro Mensual"), each = 12)
+names(df)[2] <- "Incendios"
+
+ggplot(data = df, aes(x = Date, y = value, fill = Incendios, 
+                      color = Incendios, alpha = Incendios)) + # , size = rep(c(0.01,0.011,0.01), each = 12)
+  geom_bar(stat = "identity", position = "identity") +
+  # labs(fill = "Dose (mg)") +
+  scale_fill_manual(values = c("red", "blue","gray")) + # ,name="Incendios",labels = c("Promedios históricos", "Máximos históricos", "Registro Mensual")
+  scale_colour_manual(values=c("red", "blue", "black")) +
+  scale_alpha_manual(values = c(0.2, 0.4, 0)) +
+  # labs(alpha='NEW LEGEND TITLE') +
+  # scale_size_discrete(0.5, 1, 0.5) +
+  # theme(strip.text.x = element_blank(),
+  #     strip.background = element_rect(colour="white", fill="white"),
+  #     legend.position=c(.2,.75)) + 
+  ggtitle('Comportamiento Mensual de Incendios',
           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
-  theme_bw() + 
+  theme_test() +
   labs(y = 'Número de incendios', x = '') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
         axis.text.x   = element_text(size = 12, hjust = 1),
         axis.text.y   = element_text(size = 12),
-        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5),
+        legend.position = c(.2,.75), 
+        # Change legend background color
+        legend.background = element_rect(fill = "white", color = "#fed976", linetype = "solid"),
+        legend.key = element_rect(fill = "white"),
+        # Change legend key size and key width
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.3,"cm"),
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold"),
+        legend.title.align = 0.5) + # ,legend.direction = "horizontal"
+  # guides(color=guide_legend(title="New Legend Title")) + # size = FALSE
+  # scale_fill_discrete(name = "Dose", labels = c("A", "B", "C")) +
   scale_x_date(date_labels = "%b", breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
-  guides(fill = guide_legend(override.aes = list(color = "blue", fill = "blue")))
-  #+ 
-  # theme(legend.position = "none")
-X
+  scale_y_continuous(breaks = seq(0,450,50), limits = c(0, 430)) 
+
+
+# CAMBIO DE IDIOMA
+# 
+# # PLOTEO  
+# X <- ggplot(df) +
+#   geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
+#            stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
+#   geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
+#            stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
+#   
+#   geom_bar(aes(x = Date, y = fires_max,  fill = label_max),
+#            stat = "identity", colour = 'red', alpha=0) +
+#   ggtitle('Comportamiento Mensual de Incendios',
+#           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
+#   theme_bw() +
+#   labs(y = 'Número de incendios', x = '') +
+#   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+#         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+#         axis.text.x   = element_text(size = 12, hjust = 1),
+#         axis.text.y   = element_text(size = 12),
+#         axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+#   scale_x_date(date_labels = "%b", breaks = '1 month') +
+#   scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) +
+#   guides(fill = guide_legend(override.aes = list(color = "blue", fill = "blue"))) +
+#   scale_fill_manual(name = "Incendios", values = c("blue", "blue", "blue"), labels = c("max_h", "mean_h", "meansual"))
+#   # theme(legend.position = "none")
+# X
 
 
 # element_rect(
@@ -624,12 +753,14 @@ X
 # ggsave(plot = X, filename = paste0('Img/Bar_Fires_', as.character(yr),'.png'), units = "cm", dpi = 500)
 ```
 
+<br/>
+
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2010
 
-# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+# CREACION Y MANIPULACION DE TABLA PARA EL PLOTEO
 a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(nfires = length(Date)) %>% 
   group_by(MES = substr(Date,6,7)) %>% 
@@ -650,31 +781,41 @@ df <- data.frame(MES = c(1:12)) %>%
   mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
          fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
          fires_max  = ifelse(is.na(fires_max), 0, fires_max),
-         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
-         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom)) %>%
+  melt(id.vars = c("Date")) 
 
-# CAMBIO DE IDIOMA
+# Nombre leyenda
+df$variable <- rep(c("Promedios históricos", "Máximos históricos", "Registro Mensual"), each = 12)
+names(df)[2] <- "Incendios"
 
-# PLOTEO  
-B <- ggplot(df) +
-  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
-           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
-           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
-           stat = "identity", colour = 'red', alpha=0) +
-  ggtitle('Comportamiento Mensual de Incendios', 
+# Ploteo
+ggplot(data = df, aes(x = Date, y = value, fill = Incendios, 
+                      color = Incendios, alpha = Incendios)) + 
+  geom_bar(stat = "identity", position = "identity") +
+  scale_fill_manual(values = c("red", "blue","gray")) + 
+  scale_colour_manual(values=c("red", "blue", "black")) +
+  scale_alpha_manual(values = c(0.2, 0.4, 0)) +
+  ggtitle('Comportamiento Mensual de Incendios',
           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
-  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme_test() +
+  labs(y = 'Número de incendios', x = '') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
         axis.text.x   = element_text(size = 12, hjust = 1),
         axis.text.y   = element_text(size = 12),
-        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5),
+        legend.position = c(.2,.75), 
+        legend.background = element_rect(fill = "white", 
+                                         color = "#fed976", 
+                                         linetype = "solid"),
+        legend.key = element_rect(fill = "white"),
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.3,"cm"),
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold"),
+        legend.title.align = 0.5) + 
   scale_x_date(date_labels = "%b", breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
-  theme(legend.position = "none")
-B
+  scale_y_continuous(breaks = seq(0,450,50), limits = c(0, 430)) 
 ```
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
@@ -682,7 +823,7 @@ fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2016
 
-# CREACION Y MANIPULACI?N DE TABLA PARA EL PLOTEO
+# CREACION Y MANIPULACION DE TABLA PARA EL PLOTEO
 a <- fires %>% group_by(Date = paste(`AñO`, MES_N, sep = '-')) %>%
   summarise(nfires = length(Date)) %>% 
   group_by(MES = substr(Date,6,7)) %>% 
@@ -703,31 +844,41 @@ df <- data.frame(MES = c(1:12)) %>%
   mutate(Date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by='month'),
          fires_mean = ifelse(is.na(fires_mean), 0, fires_mean),
          fires_max  = ifelse(is.na(fires_max), 0, fires_max),
-         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom),
-         label_mean = 'mean', label_max = 'max', label_anom = 'anom')
+         fires_anom = ifelse(is.na(fires_anom), 0, fires_anom)) %>%
+  melt(id.vars = c("Date")) 
 
-# CAMBIO DE IDIOMA
+# Nombre leyenda
+df$variable <- rep(c("Promedios históricos", "Máximos históricos", "Registro Mensual"), each = 12)
+names(df)[2] <- "Incendios"
 
-# PLOTEO  
-A <- ggplot(df) +
-  geom_bar(aes(x = Date, y = fires_mean, fill = label_mean),
-           stat = "identity", fill = 'blue', colour = 'blue', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_anom, fill = label_anom), 
-           stat = "identity", fill = 'gray', colour = 'black', alpha = 0.4) +
-  geom_bar(aes(x = Date, y = fires_max,  fill = label_max), 
-           stat = "identity", colour = 'red', alpha=0) +
-  ggtitle('Comportamiento Mensual de Incendios', 
+# Ploteo
+ggplot(data = df, aes(x = Date, y = value, fill = Incendios, 
+                      color = Incendios, alpha = Incendios)) + 
+  geom_bar(stat = "identity", position = "identity") +
+  scale_fill_manual(values = c("red", "blue","gray")) + 
+  scale_colour_manual(values=c("red", "blue", "black")) +
+  scale_alpha_manual(values = c(0.2, 0.4, 0)) +
+  ggtitle('Comportamiento Mensual de Incendios',
           subtitle = paste0('Desde 2000 hasta 2018\nAño ', as.character(yr))) +
-  theme_bw() + labs(y = 'Número de incendios', x = '') +
+  theme_test() +
+  labs(y = 'Número de incendios', x = '') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
         axis.text.x   = element_text(size = 12, hjust = 1),
         axis.text.y   = element_text(size = 12),
-        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5))  + #
+        axis.title.y  = element_text(size = 15, hjust = 0.5, face = 'bold', vjust = 0.5),
+        legend.position = c(.2,.75), 
+        legend.background = element_rect(fill = "white", 
+                                         color = "#fed976", 
+                                         linetype = "solid"),
+        legend.key = element_rect(fill = "white"),
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.3,"cm"),
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold"),
+        legend.title.align = 0.5) + 
   scale_x_date(date_labels = "%b", breaks = '1 month') +
-  scale_y_continuous(breaks = seq(0,140,20), limits = c(0, 140)) + 
-  theme(legend.position = "none")
-A
+  scale_y_continuous(breaks = seq(0,450,50), limits = c(0, 430)) 
 ```
 
 <br/>

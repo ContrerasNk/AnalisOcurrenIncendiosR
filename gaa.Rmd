@@ -1,0 +1,103 @@
+---
+title: <center> <h1> **Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 - 2018** </h1> </center>
+author: <center> <h2> *Contreras Huerta Julio y Flores Farfan Jair* </h2> </center>
+date: "***`r format(Sys.time(), '%B %d, %Y')`***"
+output:
+  html_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 6 
+    toc_float:
+      collapsed: true 
+      smooth_scroll: true 
+    number_sections: true
+    theme: journal 
+    fig_width: 7
+    fig_height: 6
+---
+```{r warning=FALSE, message=FALSE, eval=TRUE}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(sf)
+library(rgee)
+library(mapedit)
+library(raster)
+library(cptcity)
+library(leaflet)
+library(leaflet.extras)
+library(leafpop)
+library(MASS)
+library(dplyr)
+library(ncdf4)
+library(devtools)
+library(velox)
+library(signal)
+library(foreach)
+library(RColorBrewer)
+library(reshape2)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Descripción del área de estudio
+
+```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 12.'}
+# Incendios acumulados por mes
+Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
+shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
+fires <- st_read(shp, quiet = TRUE) %>%
+  mutate(Date = paste(`AñO`), Fecha = paste(`AñO`, MES_N, DIA, sep = '-')) %>% 
+  as.data.frame() %>%
+  dplyr::select(Date, Fecha, LOCALIDAD, 
+                DES_EMERGE, DES_FUENTE, DES_DANO, 
+                NOMBDIST, NOMBPROV, NOMBDEP, COOR_X, COOR_Y, -geom)
+names(fires) <- c("Date", "Fecha", "Localidad", 
+                  "Causa", "Acción", "Daños",
+                  "Distrito", "Provincia", "Departamento", "Longitud", "Latitud")
+
+# Este es más dinámico
+Number_JmType <- fires$Date %>% unique() %>% length() # Numero de especies
+Names_JmType <- fires$Date %>% unique() ## Nombre de las especies
+Colores <- c("#ef3b2c", "#ffffff", "#807dba", "#33a02c", "#fed976", 
+             "#000000", "#0570b0", "#a6cee3", "#1f78b4", "#b2df8a",
+             "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00",
+             "#cab2d6", "#6a3d9a", "#b15928") # colorbrewer2, Colores de las especies seran
+pal <- colorFactor(Colores, domain = Names_JmType) # Generamos la paleta
+
+
+# Partimos un sf en varios sf
+Spp_Pres <- list()
+for (i in 1:length(Names_JmType)) {
+  Spp_Pres[[i]] <- fires %>% dplyr::filter(Date == Names_JmType[i])
+}
+names(Spp_Pres) <- Names_JmType
+
+# Ploteamos cada sf, pero sin leyenda
+Spp_Map <- leaflet() %>% addTiles(urlTemplate = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png") %>%
+  addPolygons(data = Departamentos, fillOpacity = 0, weight = 1, opacity = 1,
+              label = ~DEPARTAMEN, color = "#ef3b2c", group = "Departamentos")
+
+for (i in 1:length(Spp_Pres)) {
+  Spp_Map <- Spp_Map %>%
+    addCircleMarkers(data = Spp_Pres[[i]],
+                     lat = ~Latitud, lng = ~Longitud, fillColor = ~pal(Date),
+                     fillOpacity = 0.8, radius = 6, weight = 0.5, label = ~Provincia,
+                     color = ~pal(Date), group =  Names_JmType[i], 
+                     popup = popupTable((Spp_Pres[[i]])[,2:length(Spp_Pres[[i]])],
+                                        row.numbers = F, feature.id = F))
+}
+
+
+# Agremos leyenda y su visualizador por grupos, tanto leyenda como suelos8
+Spp_Map <- Spp_Map %>%
+  addLegend(data = fires, "bottomleft", pal = pal, 
+                values = ~Date, title = "Incendios", 
+                opacity = 0.5, group = "Leyenda") %>%
+  addLayersControl(overlayGroups = c("Leyenda"), baseGroups = Names_JmType,
+                   options = layersControlOptions(collapsed = TRUE), position = "bottomright") %>%
+  addMiniMap(tiles = providers$Esri.WorldImagery, toggleDisplay = FALSE, position = "topright")
+Spp_Map
+```
