@@ -633,6 +633,137 @@ addControl(html = "<p><strong><em>MAPA DE LA ZONA MÁS PROBABLE PARA EL ESTUDIO<
 ```
 <br/>
 
+## Preprocesamiento para NDVI del MOD13Q1
+
+<div style = "text-align: justify"> Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
+
+
+Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
+
+
+### Filtro por la banda de calidad
+
+<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**. </div>
+
+En nuestro caso elegimos el $10$ que representa pixeles promedios en el aspecto de aerosoles, pero se tiene que aumentar más los filtros.
+
+```{r warning=FALSE, cache=FALSE, eval=FALSE}
+#### Indice de Vegetación Diferencial Normalizado 2000 - 2018
+
+dataBIN <- DecToBin(c(1:65535))
+for (i in 1:length(dataBIN)) {
+  nceros = 16 - nchar(dataBIN[i])
+  dataBIN[i]   = paste(substr('000000000000000', 1, nceros), dataBIN[i], sep = '')
+}
+
+dataBIN_DF <- data.frame(bin = dataBIN) %>% mutate(dec = c(1:length(bin))) %>%
+                         dplyr::filter(substr(bin ,1,1)  == '1' | substr(bin ,2,2)   == '1'| substr(bin ,3,5)   == '011' | substr(bin ,3,5)  == '000' | substr(bin ,3,5)   == '100' | substr(bin ,3,5)   == '110' | substr(bin ,3,5)  == '111' | substr(bin ,6,6)   == '1'   | substr(bin ,8,8)   == '1'   | substr(bin, 9,10) == '00'  | substr(bin, 9,10)  == '11'  |
+substr(bin, 11,14) == '1100'| substr(bin, 11,14)== '1101'| substr(bin, 11,14) == '1110'|    substr(bin, 11,14) == '1111'| substr(bin, 15,16)== '10'  | substr(bin, 15,16) == '11')
+#--------------------------------------------------------------------------------------------------------------------#
+# FILTRANDO EL INDICE DE VEGETACION A TRAVES DE LA BANDA DE CALIDAD QA
+qa_list   = list.files("RasterData/Resultados/QA_MOD13Q1/", pattern = 'QA', full.names = T)
+ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI', 
+                       full.names = T)
+
+ for (k in 1:length(qa_list)) {# EL length puede ser tanto de la banda QA o del NDVI, es la misma cantidad
+  print(k)
+  #NOMBRE DEL NUEVO NDVI
+  name = ndvi_list[k] %>% strsplit('_') %>% sapply('[',7)
+  #LLAMANDO A LAS BANDAS QA Y NDVI
+  qa   = raster(qa_list[k])
+  ndvi = raster(ndvi_list[k])
+  #BANDA QA A VALORES DE 1 Y NA
+  qa[qa %in% dataBIN_DF$dec] = NA
+  qa[!is.na(qa)] = 1
+  #FILTRANDO LOS NDVI
+  ndvi_filter = ndvi*qa
+  writeRaster(ndvi_filter, paste("RasterData/Resultados/Filtered/",'MOD13Q1_NDVI_filtered_', name, '.tif', sep=''), overwrite = T)
+  date()
+ }
+```
+
+### Remuestreo
+
+```{r warning=FALSE, cache=FALSE, eval=TRUE}
+ndvi_raster <- list.files("RasterData/Resultados/Filtered/", pattern=".tif$",
+                          full.names = TRUE)
+
+for(i in ndvi_raster){
+  print(i)
+  nom=i
+  ndvi= raster(i) %>%  aggregate(fact=0.05/res(raster(i))) ## la resolucion que se quiere es 0.05° 
+  writeRaster(ndvi, file.path("RasterData/Resultados/Resampled/",nom))
+}
+```
+
+<div style = "text-align: justify">El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://drive.google.com/drive/u/1/folders/1zOe76MGsXXtgBpC7bpDthYXWu1u5Dcx4)
+</div>
+
+### Completación de datos con el método Savitzky Golay
+
+La siguiente figuras son solo entendimientos básicos del método Savitzly Golay, adoptados por los autores del presente estudio.
+
+```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap="Figura."}
+knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
+```
+
+```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap="Figura."}
+knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
+```
+
+<div style = "text-align: justify"> Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
+
+Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
+
+***La descarga automatica de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
+
+```{r warning=FALSE, cache=FALSE, eval=FALSE}
+ndvi_resamp <- list.files("RasterData/Resultados/Resampled/", pattern=".tif$", 
+                          full.names = TRUE)
+ndvi_base <- raster(ndvi_resamp[1])
+ndvi_stack <- stack(ndvi_resamp)
+
+## --------- Creando matriz --------------------------------------------------
+for (i in 1:length(ndvi_resamp)) {
+  print(i)
+  ndvi = raster(ndvi_resamp[i]) %>% getValues()# obtenemos los valores de cada raster
+  if (i == 1) { df   = data.frame(ndvi) }else{ df = cbind(df, ndvi) } ## Se crea un dataframe con el primer NDVI y despues se concatenan como columnas los NDVI siguientes.
+## El dataframe tiene a cada NDVI como columnas y sus valores como filas (hay 2300)  
+}
+
+## --------- Funcion filtro Savitsky Golay -----------------------------------
+for(j in 1:nrow(df)) {
+  print(j)
+  pixel = df[j,] %>% as.numeric() ## Cada una de las filas representa a un mismo pixel en el dataframe, es decir tenemos la serie del tiempo para cada pixel
+  if(any(is.na(pixel) == FALSE)){ 
+    pixel[is.na(pixel)] = mean(pixel,na.rm=T) ## Si hay valores nulos NA se reemplaza por la media
+    pixel               = sgolayfilt(x=pixel) ## Aplicando el filtro de Savistky Golay
+    if(j ==1){df_SG = matrix(pixel, nrow=1)}else{ df_SG = rbind(df_SG, pixel)}
+    } else{       ## Se crea una matriz con la primera serie de tiempo del primer pixel y despues se concatenan como filas los siguientes pixeles.
+      if(j ==1){ df_SG = matrix(rep(NA, ncol(df)), nrow=1)}else{ df_SG = rbind(df_SG, rep(NA, ncol(df)))}
+      ## En cambio si todos la fila posee valores del pixel como NA se creara su respectiva matriz. 
+      }
+}
+
+## ---------- Construccion de Raster  -------------------------------------- ###
+for(i in 1:length(ndvi_resamp)){ 
+  name = ndvi_resamp[i] %>% strsplit("_") %>% sapply("[",4) %>% substr(1,10)
+  example = ndvi_base
+  ndvi_crs = crs(example)
+  ndvi_res = res(example)
+  xy = coordinates(example) %>% as.data.frame()
+  df_ndvi = cbind(xy, df_SG[,i])
+  names(df_ndvi) = c('x','y','z')
+  ndvi = rasterFromXYZ(df_ndvi, ndvi_res, ndvi_crs, digits=0)
+  writeRaster(ndvi,paste("RasterData/Resultados/SavGol/",name,'_SGolay.tif',sep=''),overwritre=T)
+}
+ndvi_stack <- stack(list.files("RasterData/Resultados/SavGol/", pattern = '.tif$',
+                               full.names=TRUE))
+writeRaster(ndvi_stack,"RasterData/Resultados/SavGol/savgol_stack.nc")
+```
+
+<br/>
+
 ## Variabilidad estacional de la ocurrecia de incendios
 
 <div style = "text-align: justify"> Se verá el comportamiento estacional, promedio y máximo, para un registro de incendios. La idea es identificar los meses de cada año, donde el registro mensual se comporte igual o cerca de los máximos históricos y que superen los promedios historicos, esos meses debieron tener la mejores condiciones favorables para la ocurrencia de indencios.</div>
@@ -1046,7 +1177,7 @@ Tambien se tomó un año "normal" donde no hay gran cantidad de incendios histó
 
 ### Temperatura maxima mensual
 
-Estos valores han sido extraidos del producto grillado PISCO del SENAMHI
+Estos valores han sido extraidos del producto grillado PISCO del SENAMHI. Falta argumentar el porqué de su uso.
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_area.tif")                 
@@ -1166,136 +1297,10 @@ ggplot(data = TEMP, aes(x = date, y = value,
 ```
 <div style = "text-align: justify"> Podemos inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre.</div>
 
-### Índice de Vegetación Normalizado (NDVI)
 
-<div style = "text-align: justify">Ahora toca trabajar con las variables bioclimáticas...
+### NDVI Mensual
 
-Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
-
-
-Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
-
-
-#### Filtro por la banda de calidad
-
-<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**. </div>
-
-En nuestro caso elegimos el $10$ que representa pixeles promedios en el aspecto de aerosoles, pero se tiene que aumentar más los filtros.
-
-```{r warning=FALSE, cache=FALSE, eval=FALSE}
-#### Indice de Vegetación Diferencial Normalizado 2000 - 2018
-
-dataBIN <- DecToBin(c(1:65535))
-for (i in 1:length(dataBIN)) {
-  nceros = 16 - nchar(dataBIN[i])
-  dataBIN[i]   = paste(substr('000000000000000', 1, nceros), dataBIN[i], sep = '')
-}
-
-dataBIN_DF <- data.frame(bin = dataBIN) %>% mutate(dec = c(1:length(bin))) %>%
-                         dplyr::filter(substr(bin ,1,1)  == '1' | substr(bin ,2,2)   == '1'| substr(bin ,3,5)   == '011' | substr(bin ,3,5)  == '000' | substr(bin ,3,5)   == '100' | substr(bin ,3,5)   == '110' | substr(bin ,3,5)  == '111' | substr(bin ,6,6)   == '1'   | substr(bin ,8,8)   == '1'   | substr(bin, 9,10) == '00'  | substr(bin, 9,10)  == '11'  |
-substr(bin, 11,14) == '1100'| substr(bin, 11,14)== '1101'| substr(bin, 11,14) == '1110'|    substr(bin, 11,14) == '1111'| substr(bin, 15,16)== '10'  | substr(bin, 15,16) == '11')
-#--------------------------------------------------------------------------------------------------------------------#
-# FILTRANDO EL INDICE DE VEGETACION A TRAVES DE LA BANDA DE CALIDAD QA
-qa_list   = list.files("RasterData/Resultados/QA_MOD13Q1/", pattern = 'QA', full.names = T)
-ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI', 
-                       full.names = T)
-
- for (k in 1:length(qa_list)) {# EL length puede ser tanto de la banda QA o del NDVI, es la misma cantidad
-  print(k)
-  #NOMBRE DEL NUEVO NDVI
-  name = ndvi_list[k] %>% strsplit('_') %>% sapply('[',7)
-  #LLAMANDO A LAS BANDAS QA Y NDVI
-  qa   = raster(qa_list[k])
-  ndvi = raster(ndvi_list[k])
-  #BANDA QA A VALORES DE 1 Y NA
-  qa[qa %in% dataBIN_DF$dec] = NA
-  qa[!is.na(qa)] = 1
-  #FILTRANDO LOS NDVI
-  ndvi_filter = ndvi*qa
-  writeRaster(ndvi_filter, paste("RasterData/Resultados/Filtered/",'MOD13Q1_NDVI_filtered_', name, '.tif', sep=''), overwrite = T)
-  date()
- }
-```
-#### Remuestreo
-
-```{r warning=FALSE, cache=FALSE, eval=TRUE}
-ndvi_raster <- list.files("RasterData/Resultados/Filtered/", pattern=".tif$",
-                          full.names = TRUE)
-
-for(i in ndvi_raster){
-  print(i)
-  nom=i
-  ndvi= raster(i) %>%  aggregate(fact=0.05/res(raster(i))) ## la resolucion que se quiere es 0.05° 
-  writeRaster(ndvi, file.path("RasterData/Resultados/Resampled/",nom))
-}
-```
-
-<div style = "text-align: justify">El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://drive.google.com/drive/u/1/folders/1zOe76MGsXXtgBpC7bpDthYXWu1u5Dcx4)
-</div>
-
-#### Completación de datos con el método Savitzky Golay
-Nociones básicas
-
-```{r echo = FALSE, fig.align='center'}
-knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
-```
-
-```{r echo = FALSE, fig.align='center'}
-knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
-```
-
-<div style = "text-align: justify">Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
-
-Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
-
-***La descarga automatica de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
-
-```{r warning=FALSE, cache=FALSE, eval=FALSE}
-ndvi_resamp <- list.files("RasterData/Resultados/Resampled/", pattern=".tif$", 
-                          full.names = TRUE)
-ndvi_base <- raster(ndvi_resamp[1])
-ndvi_stack <- stack(ndvi_resamp)
-
-## --------- Creando matriz --------------------------------------------------
-for (i in 1:length(ndvi_resamp)) {
-  print(i)
-  ndvi = raster(ndvi_resamp[i]) %>% getValues()# obtenemos los valores de cada raster
-  if (i == 1) { df   = data.frame(ndvi) }else{ df = cbind(df, ndvi) } ## Se crea un dataframe con el primer NDVI y despues se concatenan como columnas los NDVI siguientes.
-## El dataframe tiene a cada NDVI como columnas y sus valores como filas (hay 2300)  
-}
-
-## --------- Funcion filtro Savitsky Golay -----------------------------------
-for(j in 1:nrow(df)) {
-  print(j)
-  pixel = df[j,] %>% as.numeric() ## Cada una de las filas representa a un mismo pixel en el dataframe, es decir tenemos la serie del tiempo para cada pixel
-  if(any(is.na(pixel) == FALSE)){ 
-    pixel[is.na(pixel)] = mean(pixel,na.rm=T) ## Si hay valores nulos NA se reemplaza por la media
-    pixel               = sgolayfilt(x=pixel) ## Aplicando el filtro de Savistky Golay
-    if(j ==1){df_SG = matrix(pixel, nrow=1)}else{ df_SG = rbind(df_SG, pixel)}
-    } else{       ## Se crea una matriz con la primera serie de tiempo del primer pixel y despues se concatenan como filas los siguientes pixeles.
-      if(j ==1){ df_SG = matrix(rep(NA, ncol(df)), nrow=1)}else{ df_SG = rbind(df_SG, rep(NA, ncol(df)))}
-      ## En cambio si todos la fila posee valores del pixel como NA se creara su respectiva matriz. 
-      }
-}
-
-## ---------- Construccion de Raster  -------------------------------------- ###
-for(i in 1:length(ndvi_resamp)){ 
-  name = ndvi_resamp[i] %>% strsplit("_") %>% sapply("[",4) %>% substr(1,10)
-  example = ndvi_base
-  ndvi_crs = crs(example)
-  ndvi_res = res(example)
-  xy = coordinates(example) %>% as.data.frame()
-  df_ndvi = cbind(xy, df_SG[,i])
-  names(df_ndvi) = c('x','y','z')
-  ndvi = rasterFromXYZ(df_ndvi, ndvi_res, ndvi_crs, digits=0)
-  writeRaster(ndvi,paste("RasterData/Resultados/SavGol/",name,'_SGolay.tif',sep=''),overwritre=T)
-}
-ndvi_stack <- stack(list.files("RasterData/Resultados/SavGol/", pattern = '.tif$',
-                               full.names=TRUE))
-writeRaster(ndvi_stack,"RasterData/Resultados/SavGol/savgol_stack.nc")
-```
-
-
+Falta argumentar el porqué de su uso. o
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")                 
@@ -1304,69 +1309,122 @@ region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 data <- ndvi_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
 
 ndvi_lista <- list.files("RasterData/Resultados/SavGol/", pattern = '.tif$')
+
 for(i in 1:length(ndvi_lista)){ 
-  date = ndvi_lista[i] %>% strsplit("_") %>% sapply("[",1) %>% substr(1,10)
-  if (i == 1) { dt   = data.frame(date) }else{ dt = rbind(dt,date)}
+  date = ndvi_lista[i] %>% strsplit("_") %>% sapply("[",1) %>% substr(1,10) # lo ultimo no se si va
+  if (i == 1) {dt = data.frame(date)} else{dt = rbind(dt,date)} # raro dt sii existe
 }
+
 dates <- as.Date(dt$date)
 
-data_ndvi<-data.frame(dates,data) %>% 
+data_ndvi <- data.frame(dates,data) %>% 
   mutate(mes=substr(dates,6,7), year=substr(dates,1,4)) %>%
   group_by(year,mes) %>% summarise(ndvi = mean(data, na.rm = T))
 
 col_ndvi <- data_ndvi$ndvi
 tserie <- seq(as.Date('2000-02-01'), as.Date('2018-12-31'), by = 'month') 
 
+# df
 ndvi <- data.frame(date =tserie,col_ndvi) %>% 
   mutate(mes = substr(date,6,7)) %>% 
   group_by(mes) %>%
   summarise(ndvimean = mean(col_ndvi, na.rm = T), 
             ndvimax  = max(col_ndvi, na.rm = T),
             ndvimin  = min(col_ndvi, na.rm = T))
+names(ndvi) <- c("mes", "NDVI medio histórico", "NDVI máximo histórico", "NDVI mínimo histórico")
+ndvi <- melt(ndvi, id.vars = c("mes")) 
 
-ndvi2005 <- data.frame(tserie, col_ndvi) %>% 
-  mutate(mes = substr(tserie,6,7)) %>% 
-  dplyr::filter(substr(tserie,1,4) == 2005) %>% 
-  group_by(mes) %>% summarise(ndvi2005 = mean(col_ndvi, na.rm=T))
+ndvis <- data.frame(tserie, value = col_ndvi) %>% 
+  mutate(mes = substr(tserie, 6, 7)) %>%
+  dplyr::filter(substr(tserie, 1, 4) %in% c(2004, 2005, 2010, 2016)) %>% 
+  add_column(variable = rep(c("NDVI 2004", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
+  dplyr::select(-tserie)
 
-ndvi2010 <- data.frame(tserie, col_ndvi) %>% 
-  mutate(mes = substr(tserie,6,7)) %>% 
-  dplyr::filter(substr(tserie,1,4) == 2010) %>% 
-  group_by(mes) %>% summarise(ndvi2010 = mean(col_ndvi, na.rm=T))
+# Union filas
+NDVI <- ndvi %>% add_row(ndvis) 
+NDVI$date <- rep(seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), 7)
 
-ndvi2016 <- data.frame(tserie, col_ndvi) %>% 
-  mutate(mes = substr(tserie,6,7)) %>% 
-  dplyr::filter(substr(tserie,1,4) == 2016) %>% 
-  group_by(mes) %>% summarise(ndvi2016 = mean(col_ndvi, na.rm=T))
+names(NDVI)[2] <- "NDVIs" # name leyenda
 
-df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), ndvi) %>%
-  full_join(ndvi2005) %>% 
-  full_join(ndvi2010) %>% 
-  full_join(ndvi2016)
+# plot
+ggplot(data = NDVI, aes(x = date, y = value, 
+                      fill = NDVIs, color = NDVIs, 
+                      alpha = NDVIs, group = NDVIs)) + # , size = variable 
+  geom_line(aes(linetype = NDVIs)) +
+  geom_point() +
+  scale_linetype_manual(values=c("solid", "solid", "solid", "dotted", 
+                                 "twodash", "dotted", "solid")) +
+  scale_colour_manual(values=c("#fd8d3c", "#e31a1c", "#54278f", "#317800", 
+                               "black", "#96ff00", "#0555f4")) +
+  scale_alpha_manual(values = c(1, 1, 1, 1, 1, 1, 1)) +
+  # scale_size_manual(values=c(0.2, 0.2, 0.2, 0.2, 0.5, 0.5, 0.5)) +
+  theme_test() + 
+  ylab(label = '[NDVI]') +
+  xlab(label = '') +
+  ggtitle('Precipitacion acumulada mensual', subtitle = 'De 1981 hasta 2018') +
+  theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+        axis.text.x = element_text(size=11), 
+        axis.text.y = element_text(size=10),
+        axis.title = element_text(size=20), 
+        axis.title.y =  element_text(size=12, face='bold'),
+        legend.position = c(0.65, 0.8), # posicion de la leyenda
+        legend.background = element_rect(fill = "#f1ffdc", 
+                                         color = "#00441b", 
+                                         linetype = "dotted"),
+        legend.key = element_rect(fill = "white"),
+        legend.key.height= unit(0.1, 'cm'), 
+        legend.key.width = unit(0.6, "cm"), # ancho de simbolo leyenda
+        legend.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"),
+        legend.title = element_text(face = "bold", size=8.5), # modificar letra del titulo
+        legend.text = element_text(size=7), # tamano letra etiqueta
+        legend.title.align = 0.5,
+        legend.spacing.y = unit(0.1, "cm")) + # distancia entre titulo legend y los labels
+  scale_x_date(date_labels = '%b', breaks = '1 month') + # , breaks = '1 month', date_labels = '%b'
+  scale_y_continuous(breaks = seq(0,0.7,0.05), limits = c(0.38, 0.7)) 
 
-Sys.setlocale(category = 'LC_ALL', locale = 'spanish')
-
-X <- ggplot(df, aes(date, ndvimean)) +
-     geom_line(colour = 'black', size=0.8) + 
-     theme_bw() + ylab(label = '[NDVI]') +  xlab(label = '') +
-     ggtitle('NDVI mensual', subtitle = 'De 2000 hasta 2018') + 
-     theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
-           plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
-           axis.text.x = element_text(size=12),
-           axis.text.y = element_text(size=12),
-           axis.title = element_text(size=12, face='bold'))+
-     scale_x_date(date_labels = '%b', breaks = '1 month') +
-     scale_y_continuous(breaks = seq(0.35,0.65,0.05), limits = c(0.35,0.65)) +
-     geom_line(aes(date, ndvimax),  colour = 'red', linetype = 'dashed', size = 0.8) +
-     geom_line(aes(date, ndvimin),  colour = 'red', linetype = 'dashed', size = .8) +
-     geom_line(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue = 255), size = 0.8) +
-     geom_line(aes(date, ndvi2010), colour = 'snow3', size=.8) +
-     geom_line(aes(date, ndvi2016), colour = 'springgreen3', size=.8) +
-     geom_point(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
-     geom_point(aes(date, ndvi2010), colour = 'snow3', size=2) +
-     geom_point(aes(date, ndvi2016), colour = 'springgreen3', size=2)
-
-X
+# ndvi2005 <- data.frame(tserie, col_ndvi) %>% 
+#   mutate(mes = substr(tserie,6,7)) %>% 
+#   dplyr::filter(substr(tserie,1,4) == 2005) %>% 
+#   group_by(mes) %>% summarise(ndvi2005 = mean(col_ndvi, na.rm=T))
+# 
+# ndvi2010 <- data.frame(tserie, col_ndvi) %>% 
+#   mutate(mes = substr(tserie,6,7)) %>% 
+#   dplyr::filter(substr(tserie,1,4) == 2010) %>% 
+#   group_by(mes) %>% summarise(ndvi2010 = mean(col_ndvi, na.rm=T))
+# 
+# ndvi2016 <- data.frame(tserie, col_ndvi) %>% 
+#   mutate(mes = substr(tserie,6,7)) %>% 
+#   dplyr::filter(substr(tserie,1,4) == 2016) %>% 
+#   group_by(mes) %>% summarise(ndvi2016 = mean(col_ndvi, na.rm=T))
+# 
+# df <- data.frame(date = seq(as.Date('2018-01-01'), as.Date('2018-12-01'), by = 'month'), ndvi) %>%
+#   full_join(ndvi2005) %>% 
+#   full_join(ndvi2010) %>% 
+#   full_join(ndvi2016)
+# 
+# 
+# X <- ggplot(df, aes(date, ndvimean)) +
+#      geom_line(colour = 'black', size=0.8) + 
+#      theme_bw() + ylab(label = '[NDVI]') +  xlab(label = '') +
+#      ggtitle('NDVI mensual', subtitle = 'De 2000 hasta 2018') + 
+#      theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+#            plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
+#            axis.text.x = element_text(size=12),
+#            axis.text.y = element_text(size=12),
+#            axis.title = element_text(size=12, face='bold'))+
+#      scale_x_date(date_labels = '%b', breaks = '1 month') +
+#      scale_y_continuous(breaks = seq(0.35,0.65,0.05), limits = c(0.35,0.65)) +
+#      geom_line(aes(date, ndvimax),  colour = 'red', linetype = 'dashed', size = 0.8) +
+#      geom_line(aes(date, ndvimin),  colour = 'red', linetype = 'dashed', size = .8) +
+#      geom_line(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue = 255), size = 0.8) +
+#      geom_line(aes(date, ndvi2010), colour = 'snow3', size=.8) +
+#      geom_line(aes(date, ndvi2016), colour = 'springgreen3', size=.8) +
+#      geom_point(aes(date, ndvi2005), colour = rgb(160, 114, 14, maxColorValue=255) , size=2) +
+#      geom_point(aes(date, ndvi2010), colour = 'snow3', size=2) +
+#      geom_point(aes(date, ndvi2016), colour = 'springgreen3', size=2)
+# 
+# X
 ```
 
 
