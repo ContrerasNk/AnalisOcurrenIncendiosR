@@ -281,10 +281,245 @@ Para nuestra area de estudio, se hara uso del NDVI procesado a resolucion de 250
 ## Datos PISCO
 El producto grillado PISCO (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima) a paso de tiempo mensual, a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus poductos poseen una escala diaria y mensual y se encuentran disponibles hasta Diciembre del año 2016.  
 
-## DEM SRTM V4
+## DEM SRTM V4.1
 
 El conjunto de datos de elevación digital Shuttle Radar Topography Mission (SRTM) se produjo originalmente para proporcionar datos de elevación consistentes y de alta calidad en un alcance casi global. Esta versión de los datos digitales de elevación del SRTM se ha procesado para llenar los vacíos de datos y facilitar su uso.
 El DEM SRTM V4, que fue encontrado en la plataforma Google Earth Engine y tiene una resolución espacial de 90 m, por lo cual es apto para el estudio de nuestro análisis.
+
+<br/>
+
+```{r eval=FALSE, echo=FALSE, warning=FALSE, cache=FALSE}
+#------------------------------------------------------------------------
+# require(pacman)
+# pacman::p_load(RColorBrewer, ggspatial, raster,colorspace, ggpubr, sf,openxlsx)
+#------------------------------------------------------------------------
+Peru <- st_read("Materiales/DepartamentosIncendios.gpkg")
+# Cuencas_peru       <- st_read ("Materiales/area.gpkg")  
+# Rio_libe           <- st_read ("SHP/RIOS_LA_LIBERTAD_geogpsperu_SuyoPomalia_931381206.shp")  
+# Rio_caja           <- st_read ("SHP/RIOS_CAJAMARCA_geogpsperu_SuyoPomalia_931381206.shp")  
+Cuencas_peru <- st_transform(Cuencas_peru ,crs = st_crs("+proj=longlat +datum=WGS84 +no_defs"))
+# Rio_caja           <- st_transform(Rio_caja ,crs = st_crs("+proj=longlat +datum=WGS84 +no_defs"))
+# Rio_libe           <- st_transform(Rio_libe  ,crs = st_crs("+proj=longlat +datum=WGS84 +no_defs"))
+Cuenca_Chicama <- st_read("Materiales/area.gpkg") %>%
+  st_transform(crs = st_crs("+proj=longlat +datum=WGS84 +no_defs"))
+
+# Cuencas_rios1      <- st_intersection(Rio_caja, Cuenca_Chicama)
+# Cuencas_rios       <- st_intersection(Rio_libe, Cuenca_Chicama)
+# Cuencas_peru_c     <- cbind(Cuencas_peru, st_coordinates(st_centroid(Cuencas_peru$geometry)))
+
+# dem = raster("raster/ASTGTM_S08W080_dem.tif")
+# dem2 = raster("raster/ASTGTM_S08W079_dem.tif")
+# DEM_total<- raster::merge(dem, dem2,dem)
+
+Cuenca_Chicama_alt<- raster("RasterData/SRTM_90/areaSRTM.tif") #crop(DEM_total, Cuenca_Chicama)
+# Cuenca_Chicama_alt <- mask(Cuenca_Chicama_alt, Cuenca_Chicama)
+# Cuenca_Chicama_alt[Cuenca_Chicama_alt < 500] = NA
+# Cuenca_Chicama_alt     <- Cuenca_Chicama_alt   <- mask(Cuenca_Chicama_alt  , Cuenca_Chicama)
+# plot(Cuenca_Chicama_alt)
+
+# dem.p <- rasterToPoints(Cuenca_Chicama_alt)
+df <- rasterToPoints(Cuenca_Chicama_alt) %>% 
+  as.data.frame() %>% 
+  dplyr::filter(!is.na(areaSRTM)) %>%
+  rename(lon = x, lat= y, alt = areaSRTM)
+  
+dfr <- rasterFromXYZ(df)
+crs(dfr) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" 
+# rasterize(df, Cuenca_Chicama_alt, "alt", fun = mean)
+# colnames(df) = c("lon", "lat", "alt")
+
+aps <- terrain(dfr , opt = "aspect", unit= "degrees")
+# dem.pa <- rasterToPoints(aps)
+df_a <- rasterToPoints(aps) %>% 
+  as.data.frame() %>% 
+  dplyr::filter(!is.na(aspect))
+# df_a <- data.frame(dem.pa)
+
+#------------------------------------------------------------------------
+Data <- read.xlsx("Materiales/Membrete.xlsx", sheet="Sheet1")
+Data[1,1] <- "MAPA DE ELEVACION DE \nÁREA DE ESTUDIO"
+Data[2,1] <- "Elaborado por: \nJulio Contreras"
+Data[3,1] <- "Escala: Impresión"
+Data[4,1] <- "Sistema de Coordenadas Geográficas \nDatum:WGS84 \nEPSG:4326"
+colnames(Data ) <- c("Mapa elaborado \nen  R")
+Tabla.p <- ggtexttable(Data, rows = NULL,theme =ttheme(base_size =6, "lBlackWhite"))
+
+# Data1     <- read.xlsx("Excel/Embrete.xlsx", sheet="Hoja1")
+# Tabla.p1 <- ggtexttable(Data1, rows = NULL,theme =ttheme(base_size =6, "mBlue"))
+#-----------------------------------------------------------------------
+
+A <- ggplot() +  
+  geom_raster(data = df, aes(lon,lat,fill = alt), alpha = 0.75) +
+  geom_raster(data = df_a, aes(x=x, y=y, alpha=aspect), fill="gray20")+ # ,fill="gray20"
+  scale_alpha(guide = FALSE,range = c(0, 1.00))   +
+  scale_fill_distiller(palette   = "RdYlBu", name="Elevacion \n(m.s.n.m)",
+                       labels = c("[500 - 1000] ","[1000-1500]", "[1500-2000]",
+                                  "[2000-2500]", "[2500-3000]", "[3000-3500]",
+                                  "[3500-4000]", "[4000-4500]", "[4500-5000]"),
+                       breaks = c(500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500))+
+  theme_bw() +
+  coord_equal() +
+  guides(fill = guide_legend(title.position = "top",
+                             direction = "vertical",
+                             title.theme = element_text(angle = 0, 
+                                                        size = 5, 
+                                                        colour = "black"),
+                             barheight = .3, barwidth = .75,
+                             title.hjust = 0.5, raster = FALSE,
+                             title = 'Elevacion \n(m.s.n.m)'))+
+  # geom_sf(data=Cuencas_rios, color="blue", size=0.3)+
+  # geom_sf(data=Cuencas_rios1, color="blue", size=0.3)+
+  scale_x_continuous(name=expression(paste("Longitude (",degree,")"))) +
+  scale_y_continuous(name=expression(paste("Latitude (",degree,")")))+
+  annotation_north_arrow(location="tl", which_north="true",
+                         style=north_arrow_fancy_orienteering()) +
+  ggspatial::annotation_scale(location = "br",
+                              width_hint = 0.3,
+                              bar_cols = c("grey60", "white"), 
+                              text_family = "ArcherPro Book")+
+  theme(legend.position = c(0.73,0.20), # posicion leyenda
+        panel.grid.major = element_line(color = gray(.25),
+                                        linetype = "dashed", size = 0.5),
+        legend.background = element_blank(),
+        plot.title=element_text(color="#666666", size=2, vjust=1.25,  
+                                family="Raleway",  hjust = 0.5),
+        legend.box.just = "left",
+        legend.text = element_text(size=7,face=2),
+        legend.title = element_text(size=10,face=2), 
+        legend.key.width = unit(3,"mm"),
+        legend.key.height= unit(3, 'mm'),
+        legend.title.align = 0.5)+
+  guides(fill = guide_legend(nrow = 4, ncol=2))+ # division en los labels de la leyenda
+  annotation_custom(ggplotGrob(Tabla.p),
+                    xmin = -74, 
+                    xmax = -71.5, 
+                    ymin = -15.5, 
+                    ymax = -14) +
+  annotate(geom = "text", x = -72.2, y = -15.3,
+           label = ".",
+           fontface = "italic", color = "black", size = 2)
+
+B <-ggplot()+
+  geom_sf(data= Peru, fill="white")+
+  geom_sf(data= Cuenca_Chicama, fill="red")+
+  theme_minimal() +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.background = element_rect(colour= "black", size= 1))+
+  annotation_north_arrow(location="tr",which_north="true",
+                         style=north_arrow_fancy_orienteering (),
+                         height = unit(0.8, "cm"),# tamaño altura
+                         width = unit(0.8, "cm"))+
+  ggspatial::annotation_scale(location = "bl",bar_cols = c("grey60", "white"), text_family = "ArcherPro Book")#+
+  # annotate(geom = "text", x = -78.5, y = -17,
+  #          label = "Mapa de Macrolocalizacion",
+  #          fontface = "italic", color = "black", size = 1)
+
+C <-ggplot()+
+  geom_sf(data= Peru, fill=NA)+
+  geom_sf(data= Cuenca_Chicama, fill="gray")+
+  theme_minimal() +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.background = element_rect(colour= "black", size= 1))+
+  annotation_north_arrow(location="tr", which_north="true",
+                         style=north_arrow_fancy_orienteering (),
+                         height = unit(.8, "cm"),# tamaño altura
+                         width = unit(.8, "cm"))+
+  ggspatial::annotation_scale(location = "bl",
+                              bar_cols = c("grey60", "white"), 
+                              text_family = "ArcherPro Book") +
+  # annotate(geom = "text", x = -73, y = -14.25,
+  #          label = "Mapa Departamental",
+  #          fontface = "italic", color = "black", size = 2)+
+  coord_sf(xlim = c(st_bbox(Cuenca_Chicama)$xmin - 0.2, -71.31687 + 0.2), 
+           ylim = c(-14.35301 - 0.2, -12.50643 + 0.2),expand = FALSE) #st_bbox -73.23976
+
+D <- ggplot()+ # 
+  geom_raster(data = df, aes(lon,lat,fill = alt), show.legend = F) + # Condiciona la leyenda
+  # scale_fill_continuous(na.value = "transparent") +
+  scale_fill_distiller(na.value = "white", palette   = "RdYlBu",name="Elevacion \n(m.s.n.m)",
+                       labels = c("[500 - 1000] ","[1000-1500]", "[1500-2000]", "[2000-2500]", "[2500-3000]", "[3000-3500]", "[3500-4000]", "[4000-4500]", "[4500-5000]"),
+                       breaks = c(500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500)) +
+  theme_bw()+coord_equal()+
+  guides(fill = guide_legend(title.position = "top",direction = "vertical",
+                             title.theme = element_text(angle = 0, size = 9, colour = "black"),
+                             barheight = .5, barwidth = .95,
+                             title.hjust = 0.5, raster = FALSE,
+                             title = 'Elevacion \n(m.s.n.m)'))+
+  scale_x_continuous(name=expression(paste("Longitude (",degree,")"))) +
+  scale_y_continuous(name=expression(paste("Latitude (",degree,")")))+
+  annotation_north_arrow(location="tl",which_north="true",
+                         style=north_arrow_fancy_orienteering(),
+                         height = unit(.8, "cm"),# tamaño altura
+                         width = unit(.8, "cm"))+
+  ggspatial::annotation_scale(location = "br",
+                              bar_cols = c("grey60", "white"), 
+                              text_family = "ArcherPro Book")+
+  theme(legend.position = c(0.5,0.5), # 0.65,0.15
+        panel.grid.major = element_line(color = gray(.5),
+        linetype = "dashed", size = 0.5))#,
+        # legend.background = element_blank(),
+        # plot.title=element_text(color="#666666", size=12, vjust=1.25,  family="Raleway",  hjust = 0.5),
+        # legend.box.just = "left",
+        # legend.key.size = unit(0.3, "cm"), #alto de cuadrados de referencia
+        # legend.key.width = unit(0.3,"cm"), #ancho de cuadrados de referencia
+        # legend.text = element_text(size=8,face=2),
+        # legend.title = element_text(size=8,face=2))#+
+  # guides(fill = guide_legend(nrow = 5, ncol=2))
+
+
+E <-ggplot()+
+  geom_raster(data = df, aes(lon,lat,fill = alt), show.legend = F) +
+  geom_raster(data = df_a, aes(x=x, y=y, alpha=aspect), show.legend = F)+
+  scale_fill_gradientn(colours = RColorBrewer::brewer.pal(n = 8, name = "Greys"),
+                       na.value = 'white')+
+  scale_x_continuous(name=expression(paste("Longitude (",degree,")"))) +
+  scale_y_continuous(name=expression(paste("Latitude (",degree,")")))+
+  annotation_north_arrow(location="tl",
+                         which_north="true",
+                         style=north_arrow_fancy_orienteering(),
+                         height = unit(.8, "cm"),# tamaño altura
+                         width = unit(.8, "cm"))+
+  ggspatial::annotation_scale(location = "bl",
+                              bar_cols = c("grey60", "white"), 
+                              text_family = "ArcherPro Book")+
+  theme_bw()
+
+
+Fa <-ggplot() +
+  coord_equal(xlim = c(0, 28), ylim = c(0, 20), expand = FALSE) +
+  annotation_custom(ggplotGrob(A), xmin = -6, xmax = 23, ymin = 0, ymax = 20)+
+  annotation_custom(ggplotGrob(B), xmin = 16.5, xmax = 21.5, ymin = 12.5, ymax = 20) +
+  annotation_custom(ggplotGrob(C), xmin = 21.5, xmax = 28, ymin = 12.5, ymax = 20) +
+  annotation_custom(ggplotGrob(D), xmin = 15, xmax = 28, ymin = 6.5, ymax = 12.5) +
+  annotation_custom(ggplotGrob(E), xmin = 17, xmax = 26, ymin = 0, ymax = 6.5) +
+  # annotation_custom(ggplotGrob(Tabla.p1 ),
+  #                   xmin = 4, xmax = 10,ymin = 0,ymax = 4)+
+  theme_bw() +
+  ggtitle('MAPA DE ELEVACIONES DEL ÁREA DE ESTUDIO PARA LAS CFOI', 
+          subtitle = 'Elevacion con aspecto con ggplot') +
+  labs(
+    # title="MAPA DE ELEVACIONES DEL ÁREA DE ESTUDIO PARA LAS CFOI", # Estos no se modifican
+    # subtitle="Elevacion con aspecto con ggplot",
+    caption="Fuente: https://developers.google.com/earth-engine/datasets/catalog/CGIAR_SRTM90_V4",
+    color=NULL) +
+  theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 13, hjust=0.5, face = 'italic'))
+
+
+ggsave(plot = Fa ,"Img/Mapa_elevaciones.png", units = "cm", width = 30,height = 22, dpi = 1000)
+```
+
+```{r eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE, out.width="100%", fig.align='center', fig.cap='Figura .'}
+knitr::include_graphics('Img/Mapa_elevaciones.png')
+```
 
 ## R
 
@@ -294,9 +529,13 @@ En este proyecto utilizaremos dos lenguajes de programación, tanto R como Pytho
 ### Librerias de R utilizadas 
 
 ```{r warning=FALSE, message=FALSE, eval=TRUE}
+library(ggspatial)
+library(ggpubr)
+library(openxlsx)
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
+library(sp)
 library(sf)
 library(rgee)
 library(mapedit)
@@ -345,18 +584,17 @@ Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muc
 ***Iniciamos sesion en GEE***
 ```{python eval = FALSE, echo = FALSE}
 Sys.setenv(RETICULATE_PYTHON = "")
-```
-
-```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, comment='', error=FALSE}
 # Inicializando sesion en GEE
 # ee_install()
-ee_Initialize('juliocontreras1', drive =TRUE)
 # ee_clean_pyenv()
-
 # rgee::ee_install_set_pyenv(
   # py_path = "C:/Program Files/QGIS 3.16/bin/python3", # Change it for your own Python PATH
   # py_env = "rgee" # Change it for your own Python ENV
 # )
+```
+
+```{r eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE, comment='', error=FALSE}
+ee_Initialize('juliocontreras1', drive =TRUE)
 ```
 
 # Metodología
@@ -762,7 +1000,134 @@ ndvi_stack <- stack(list.files("RasterData/Resultados/SavGol/", pattern = '.tif$
 writeRaster(ndvi_stack,"RasterData/Resultados/SavGol/savgol_stack.nc")
 ```
 
+```{r eval = FALSE, echo=FALSE}
+ndvi_list  <- list.files("RasterData/MODQ1/Filtrado/", pattern=".tif$", full.names = T)
+ndvi_base <- raster(ndvi_list[1]) # Solo para extraer la caracteristicas de los raster
+
+# Creación de la matriz
+for (i in 1:length(ndvi_list)) {
+  print(i)
+  ndvi = raster(ndvi_list[i]) %>% getValues()
+  if (i == 1) {
+    df = data.frame(ndvi) # Primera columna en forma de NDVI
+  } else {
+    df = cbind(df, ndvi) # Se concatenan las siguientes, apartir del 2do raster
+  }
+}
+
+# Funcion de filtro Savitzky Golay
+
+for (j in 1:nrow(df)) {
+  print(j)
+  pixel = df[j, ] %>% as.numeric() # vector numerico, porsiaca
+  if (any(is.na(pixel) == F)) {
+    pixel[is.na(pixel)] = mean(pixel, na.rm = T) # Completación de vacios con el promedio temporal
+    pixel = sgolayfilt(x = pixel)
+    
+    if (j == 1) {
+      df_SG = matrix(pixel, nrow = 1)
+    } else {
+      df_SG = rbind(df_SG, pixel)
+    }
+    
+    if (j == 1) {
+      df_SG = matrix(rep(NA, ncol(df)), nrow = 1)
+    } else {
+      df_SG = rbind(df_SG, rep(NA), ncol(df))
+    }
+  }
+}
+
+```
+
 <br/>
+
+
+## Preprocesamiento del Modelo Digital de elevación SRTM V4.1
+
+Colocar shp de enmascaramiento.
+
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
+Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
+# Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
+
+Cutervo_dem <- ee$Image('CGIAR/SRTM90_V4')$clip(Cutervo)
+# dem_caja_raster <- ee_as_raster(Cutervo_dem, Cutervo)
+# writeRaster(dem_caja_raster, 'RasterData/SRTM_90/areaSRTM.tif')
+viz <- list(min= 100,
+            max = 4500,
+            palette = cpt(pal = 'gmt_GMT_dem1', n = 10))
+
+# dem_caja_raster[dem_caja_raster <= 0] = 0
+Map$centerObject(Cutervo, zoom = 8)
+Map$addLayer(Cutervo_dem,visParams = viz, name = "DEM_SRTM_V4", legend = TRUE) #+
+  # Map$addLayer(Cutervo, name = "Lim_Cutervo") #+
+  # Map$addLayer(Cajamarca, name = "Cajamarca")
+```
+
+ 
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# Dentro de este apartado vamos a vectorizar el DEM STRM V4 dentro de los intervalos cada 500 m
+dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
+dem[dem == 0] = NA
+dem[dem > 0 & dem < 500] = 1
+dem[dem >= 500 & dem < 1000] = 2
+dem[dem >= 1000 & dem < 1500] = 3
+dem[dem >= 1500 & dem < 2000] = 4
+dem[dem >= 2000 & dem < 2500] = 5
+dem[dem >= 2500 & dem < 3000] = 6
+dem[dem >= 3000 & dem < 3500] = 7
+dem[dem >= 3500 & dem < 4000] = 8
+dem[dem >= 4000 & dem < 4500] = 9
+dem[dem >= 4500] = 10
+plot(dem)
+
+# writeRaster(dem, 'RasterData/SRTM_90/areaAntPoly.tif')
+
+
+# dem_polygon <- rasterToPolygons(dem, dissolve = T) %>% # dissolve = no sigue la forma interna de pixeles
+#   disaggregate() %>% # multipoligon
+#   st_as_sf() 
+
+
+# vec_dem   <- st_read('Materiales/Cutervo_RangoAlt.gpkg') # Raster DEM vectorizado
+# writeRaster(dem, 'RasterData/SRTM_90/areaAntPoly.tif')
+# dem_poly <- rasterToPolygons(dem) %>% st_as_sf()
+
+```
+ 
+
+## Variabilidad de incendios por altitud
+
+El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios, para ello, previamente se realizó el enmascaramiento por rangos de latitud.
+
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
+dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
+
+df <- raster::extract(dem,fires) %>% data.frame()
+names(df) <- 'elev'
+
+X <- ggplot(df, aes(df$elev)) + geom_histogram(binwidth = 100, fill='gray', col='black') +
+  theme_bw() + labs(x = '', y = '') +
+  ggtitle('Number of Fires by Elevation', subtitle = 'from 2000 to 2018\nHistogram') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size=12),
+        axis.text.y   = element_text(size=12),
+        axis.title    = element_text(size=20),
+        panel.border  = element_rect(colour = "black", fill=NA, size=1)) +
+  scale_y_continuous(breaks = seq(0,70,10), limits = c(0, 80), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(0, 5000, 500), limits = c(800, 4800), expand = c(0,0))
+  
+X 
+# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Number_of_Fires_by_Elev.png',
+#        width = 15, height = 15, units = "cm", dpi = 500)
+```
+
+Como podemos observar en el histograma los incendios se registran entre los 1000 y 3000 msnm, pero es entre los 4100 y 4300 principalmente donde la cantidad de incendios supera los 10 registros aproximadamente.
 
 ## Variabilidad estacional de la ocurrecia de incendios
 
@@ -1175,7 +1540,7 @@ Tambien se tomó un año "normal" donde no hay gran cantidad de incendios histó
 </div>
 
 
-### Temperatura maxima mensual
+### Temperatura máxima mensual
 
 Estos valores han sido extraidos del producto grillado PISCO del SENAMHI. Falta argumentar el porqué de su uso.
 
@@ -1217,13 +1582,13 @@ ggplot(data = TEMP, aes(x = date, y = value,
   geom_line(aes(linetype = `Temperatura [°C]`)) +
   geom_point() +
   scale_linetype_manual(values=c("solid", "solid", "solid", "solid", 
-                                 "twodash", "dotted", "twodash")) +
+                                 "dotted", "twodash", "dotted")) +
   scale_colour_manual(values=c("#e9c612", "blue", "#54278f", "#3fce1e", 
                                "red", "black", "red")) +
   scale_alpha_manual(values = c(1, 1, 1, 1, 1, 1, 1)) +
   # scale_size_manual(values=c(0.2, 0.2, 0.2, 0.2, 0.5, 0.5, 0.5)) +
   theme_test() + 
-  ylab(label = '[mm]') +
+  ylab(label = '[Temperatura °C]') +
   xlab(label = '') +
   ggtitle('Temperatura Maxima mensual', subtitle = 'De 1981 hasta 2018') +
   theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
@@ -1427,135 +1792,12 @@ ggplot(data = NDVI, aes(x = date, y = value,
 # X
 ```
 
-
-
 <div style = "text-align: justify"> En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio.</div>
 
 
-```{r eval = FALSE, echo=FALSE}
-ndvi_list  <- list.files("RasterData/MODQ1/Filtrado/", pattern=".tif$", full.names = T)
-ndvi_base <- raster(ndvi_list[1]) # Solo para extraer la caracteristicas de los raster
-
-# Creación de la matriz
-for (i in 1:length(ndvi_list)) {
-  print(i)
-  ndvi = raster(ndvi_list[i]) %>% getValues()
-  if (i == 1) {
-    df = data.frame(ndvi) # Primera columna en forma de NDVI
-  } else {
-    df = cbind(df, ndvi) # Se concatenan las siguientes, apartir del 2do raster
-  }
-}
-
-# Funcion de filtro Savitzky Golay
-
-for (j in 1:nrow(df)) {
-  print(j)
-  pixel = df[j, ] %>% as.numeric() # vector numerico, porsiaca
-  if (any(is.na(pixel) == F)) {
-    pixel[is.na(pixel)] = mean(pixel, na.rm = T) # Completación de vacios con el promedio temporal
-    pixel = sgolayfilt(x = pixel)
-    
-    if (j == 1) {
-      df_SG = matrix(pixel, nrow = 1)
-    } else {
-      df_SG = rbind(df_SG, pixel)
-    }
-    
-    if (j == 1) {
-      df_SG = matrix(rep(NA, ncol(df)), nrow = 1)
-    } else {
-      df_SG = rbind(df_SG, rep(NA), ncol(df))
-    }
-  }
-}
-
-```
-
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
 
-En este estudio la cota de 1500 msnm fue considerada divisoria de la región andina. Este rango es también considerado en otros estudios de la región (Zubieta et al., 2017; Zulkafli et al., 2014). Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental consideramos incluir los rangos de altitud como variable en nuestro CFOI.
-
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
-Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
-# Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
-
-Cutervo_dem <- ee$Image('CGIAR/SRTM90_V4')$clip(Cutervo)
-# dem_caja_raster <- ee_as_raster(Cutervo_dem, Cutervo)
-# writeRaster(dem_caja_raster, 'RasterData/SRTM_90/areaSRTM.tif')
-viz <- list(min= 100,
-            max = 4500,
-            palette = cpt(pal = 'gmt_GMT_dem1', n = 10))
-
-# dem_caja_raster[dem_caja_raster <= 0] = 0
-Map$centerObject(Cutervo, zoom = 8)
-Map$addLayer(Cutervo_dem,visParams = viz, name = "DEM_SRTM_V4", legend = TRUE) #+
-  # Map$addLayer(Cutervo, name = "Lim_Cutervo") #+
-  # Map$addLayer(Cajamarca, name = "Cajamarca")
-```
-
- 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# Dentro de este apartado vamos a vectorizar el DEM STRM V4 dentro de los intervalos cada 500 m
-dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
-dem[dem == 0] = NA
-dem[dem > 0 & dem < 500] = 1
-dem[dem >= 500 & dem < 1000] = 2
-dem[dem >= 1000 & dem < 1500] = 3
-dem[dem >= 1500 & dem < 2000] = 4
-dem[dem >= 2000 & dem < 2500] = 5
-dem[dem >= 2500 & dem < 3000] = 6
-dem[dem >= 3000 & dem < 3500] = 7
-dem[dem >= 3500 & dem < 4000] = 8
-dem[dem >= 4000 & dem < 4500] = 9
-dem[dem >= 4500] = 10
-plot(dem)
-
-# writeRaster(dem, 'RasterData/SRTM_90/areaAntPoly.tif')
-
-
-# dem_polygon <- rasterToPolygons(dem, dissolve = T) %>% # dissolve = no sigue la forma interna de pixeles
-#   disaggregate() %>% # multipoligon
-#   st_as_sf() 
-
-
-# vec_dem   <- st_read('Materiales/Cutervo_RangoAlt.gpkg') # Raster DEM vectorizado
-# writeRaster(dem, 'RasterData/SRTM_90/areaAntPoly.tif')
-# dem_poly <- rasterToPolygons(dem) %>% st_as_sf()
-
-```
- 
-
-### Variabilidad de incendios por altitud
-
-El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios, en la provincia de Cutervo.
-
-
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
-dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
-
-df <- raster::extract(dem,fires) %>% data.frame()
-names(df) <- 'elev'
-
-X <- ggplot(df, aes(df$elev)) + geom_histogram(binwidth = 100, fill='gray', col='black') +
-  theme_bw() + labs(x = '', y = '') +
-  ggtitle('Number of Fires by Elevation', subtitle = 'from 2000 to 2018\nHistogram') +
-  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
-        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
-        axis.text.x   = element_text(size=12),
-        axis.text.y   = element_text(size=12),
-        axis.title    = element_text(size=20),
-        panel.border  = element_rect(colour = "black", fill=NA, size=1)) +
-  scale_y_continuous(breaks = seq(0,70,10), limits = c(0, 80), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(0, 5000, 500), limits = c(800, 4800), expand = c(0,0))
-  
-X 
-# ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Number_of_Fires_by_Elev.png',
-#        width = 15, height = 15, units = "cm", dpi = 500)
-```
-
-Como podemos observar en el histograma los incendios se registran entre los 1000 y 3000 msnm, pero es entre los 4100 y 4300 principalmente donde la cantidad de incendios supera los 10 registros aproximadamente.
+En este estudio la cota de 1500 msnm fue considerada divisoria de la región andina. Este rango es también considerado en otros estudios de la región (Zubieta et al., 2017; Zulkafli et al., 2014). Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental, así se consideró incluir los rangos de altitud como variable en nuestro CFOI.
 
 
 ### Variabilidad estacional de precipitación por elevación
@@ -1712,6 +1954,10 @@ X
 
 
 # Resultados y Análisis
+
+Para analizar los resultados hay que tener en cuenta que los efectos entre las variables no se relacionan de manera directa e inmediata (no se dan de la noche a la mañana), en este estudio las variables a analizar serán la lluvia y la actividad fotosintética (NDVI). Esto quiere decir que, por ejemplo, si hoy llueve el proxy (resultado no medible en campo directamente con unidades) de NDVI no aumenta vigorosamente, lo lógico. Entonces no hay una relación directa inmediata. Lo que sí habrá será una relación *lageada*, o sea se debe esperar un cierto tiempo luego del actuar de la variable independiente (Precipitación) para que la variable dependiente (NDVI) mejore o empeore.
+
+## Análisis de correlaciones rezagadas
 
 ## 2005
 
