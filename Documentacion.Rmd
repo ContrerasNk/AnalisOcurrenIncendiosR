@@ -1994,22 +1994,22 @@ stack_mensual00_18 <- stack(c(enero_ndvi, lista2))
 
 # mensual historico
 lista4 <- list()
-lista5 <- list()
+Ndvi_mensual <- list()
 for (i in 1:12) {
   p = 1
   n = i
-  while (n < length(stack_mensual00_18[1])) {
+  while (n <= length(stack_mensual00_18[1])) {
     lista4[[p]] = lista_mensual00_18[[n]]
     n = n + 12
     p = p + 1
   }
-  lista5[[i]] = mean(stack(lista4))
+  Ndvi_mensual[[i]] = mean(stack(lista4))
   print(i)
 }
 
 # ndvi mensual historica (sin resampl)
-lista5 # lista de raster mensual
-lista5_stack <- stack(lista5)
+Ndvi_mensual # lista de raster mensual
+Ndvi_mensual_stack <- stack(lista5)
 ```
 
 
@@ -2024,22 +2024,22 @@ pp <- stack(pp[[rang]])
 
 # mensual historico
 lista6 <- list()
-lista7 <- list()
+PP_mensual <- list()
 for (i in 1:12) {
   p = 1
   n = i
-  while (n < length(rang)) {
-    lista4[[p]] = lista_mensual00_18[[n]]
+  while (n <= length(rang)) {
+    lista6[[p]] = pp[[n]]
     n = n + 12
     p = p + 1
   }
-  lista5[[i]] = mean(stack(lista4))
+  PP_mensual[[i]] = mean(stack(lista6))
   print(i)
 }
 
-# ndvi mensual historica (sin resampl)
-lista5 # lista de raster mensual
-lista5_stack <- stack(lista5)
+# pp mensual historica (sin resampl)
+PP_mensual # lista de raster mensual
+PP_mensual_stack <- stack(lista7)
 ```
 
 
