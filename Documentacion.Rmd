@@ -23,8 +23,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE)
 
 # Introducción
 
-<div style = "text-align: justify"> Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial, sobre todo en los países con grandes extensiones de áreas forestales (Sabuco, 2013), como es el caso del Perú (FAO, 2004). 
-El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (MINAM, 2019).
+<div style = "text-align: justify"> Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial, sobre todo en los países con grandes extensiones de áreas forestales (Cárdemas, 2013), como es el caso del Perú. 
+
+El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (Segura, 2019).
 
 En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios, desde el año 2000 al 2018.</div>
 
@@ -32,11 +33,9 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 
 ## Planteamiento del problema
 
-<div style = "text-align: justify"> La cobertura vegetal y toda la biodiversidad que alberga, viene siendo afectada por los incendios forestales, ocasionando efectos adversos en los diferentes ecosistemas presentes, ademas de consecuencias en todos los niveles (ecológico, económico, social y humano)en el Perú que derivan de este desastre.
+<div style = "text-align: justify"> Los incendios ocasionan efectos adversos en los diferentes ecosistemas del país y usos de la tierra, así como en los diferentes sectores, originando pérdidas económicas y en algunos casos pérdida de vidas humanas. Si bien es cierto, el desencadenante de un incendio sobre la cobertura vegetal se debe en un 98 % a las acciones del hombre (Manta, 2017), **las condiciones físicas, biológicas y climáticas deben estar presentes para que se produzca la ignición y se propague el fuego.**
 
-Segun los registros historicos del CFOI se puede afirmar que los departamentos con mayor recurrencia de incendios son Cajamarca, Cusco, Puno, Apurímac, Amazonas, Ayacucho y Piura, en estos departamentos todos los años se van a presentar estos eventos entre los meses de junio a enero. 
-
-En el caso de Cajamarca, gran parte de los incendios son por factor antropico, Segun un reportaje de Andina, 2016, la administradora tecnica del ATFFS de Cajamarca, Rosario Alva, explico que la quema constante de los bosques por los pobladores se da en épocas de sequía, al tener una errada idea de que así atraerán lluvias. </div>
+Parte de esta problemática es la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo. <div/>
 
 <br/>
 
@@ -50,14 +49,16 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ### Objetivo general
 
-<div style = "text-align: justify"> El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI).</div>
+<div style = "text-align: justify"> El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI). Producto de esto se generará un laged correlation o correlación rezagada.</div>
 
 ### Objetivos específicos
 
 <div style = "text-align: justify"> 
-* Analizar las variables bioclimáticas (calidad de vegetación, temperatura, preciptación y altitud) de forma interestacional en las zonas con CFOI 
+* Analizar las variables bioclimáticas calidad de vegetación y precipitación de forma interestacional en la zona diagnosticada con mejores CFOIs.
+
 * Ampliar el conocimiento de la influencia de las variables bioclimáticas para las CFOI y así en un futuro generar un modelo de predicción.
-* Generar conocimiento y aprender la técnica de la Teledetección, además de aplicar los conocimientos aprendidos en clase.</div>
+
+* Generar conocimiento y aprender la técnica de Teledetección, además de aplicar los conocimientos aprendidos en el curso.</div>
 
 ## Justificación
 
@@ -1726,7 +1727,7 @@ ggplot(data = NDVI, aes(x = date, y = value,
   theme_test() + 
   ylab(label = '[NDVI]') +
   xlab(label = '') +
-  ggtitle('Precipitacion acumulada mensual', subtitle = 'De 1981 hasta 2018') +
+  ggtitle('NDVI Mensual', subtitle = 'De 2000 hasta 2018') +
   theme(plot.title = element_text(size = 16, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size=13, hjust=0.5, face = 'italic'),
         axis.text.x = element_text(size=11), 
@@ -1805,7 +1806,6 @@ En este estudio la cota de 1500 msnm fue considerada divisoria de la región and
 El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-
 pp_velox <- velox('RasterData/PISCO/PISCOp_v11_area.tif')
 region_elev <- st_read('Materiales/area_alt_group.gpkg') %>% arrange(DN)
 
@@ -1918,7 +1918,7 @@ for(i in 1:length(ndvi_lista)){
 dates <- as.Date(dt$date)
 
 df<-data.frame(date=dates,data)  %>% 
-  mutate(mes = substr(date,6,7)) %>% 
+  mutate(mes = substr(date, 6, 7)) %>% 
   group_by(mes) %>%
   summarise(inter01 = mean(X1, na.rm = T), inter02 = mean(X2, na.rm = T), inter03 = mean(X3, na.rm = T),
             inter04 = mean(X4, na.rm = T), inter05 = mean(X5, na.rm = T),
@@ -1959,6 +1959,91 @@ Para analizar los resultados hay que tener en cuenta que los efectos entre las v
 
 ## Análisis de correlaciones rezagadas
 
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# NDVI -------------------------------
+
+# Generar mensuales pero sin el primero enero, no existe
+date <- seq(as.Date('2000-02-15'), as.Date('2018-12-15'), by = "month")
+ndvi_lista <- list.files("RasterData/Resultados/SavGol/", pattern = '.tif$', full.names = T)
+lista1 <- list()
+lista2 <- list()
+
+for (i in 1:length(date)) {
+  print(i)
+  for (j in 1:length(ndvi_lista)) {
+    if (substr(ndvi_lista[[j]], 31, 34) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 36, 37) == substr(date, 6, 7)[i]) {
+      x = 1
+      lista1[[x]] = raster(ndvi_lista[j])
+      x = x + 1
+    }
+  }
+  lista2[[i]] = mean(stack(lista1))
+}
+
+# Para generar el primer enero
+y = 1
+lista3 <- list()
+for(i in seq(12, 227, 12)) {
+  lista3[[y]] = lista2[[i]]
+  y = y + 1
+}
+enero_ndvi <- mean(stack(lista3))
+
+# stack mensual desde 2000 a 2018
+stack_mensual00_18 <- stack(c(enero_ndvi, lista2))
+
+# mensual historico
+lista4 <- list()
+lista5 <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n < length(stack_mensual00_18[1])) {
+    lista4[[p]] = lista_mensual00_18[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  lista5[[i]] = mean(stack(lista4))
+  print(i)
+}
+
+# ndvi mensual historica (sin resampl)
+lista5 # lista de raster mensual
+lista5_stack <- stack(lista5)
+```
+
+
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# PRECIPITACION -------------------------------
+
+# stack mensual desde 2000 a 2017
+date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month') # fechas del stack pisco pp
+pp <- stack('RasterData/PISCO/PISCOp_v11_area.tif')
+rang <- which(date == '2000-01-01'):which(date == '2017-12-01')
+pp <- stack(pp[[rang]])
+
+# mensual historico
+lista6 <- list()
+lista7 <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n < length(rang)) {
+    lista4[[p]] = lista_mensual00_18[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  lista5[[i]] = mean(stack(lista4))
+  print(i)
+}
+
+# ndvi mensual historica (sin resampl)
+lista5 # lista de raster mensual
+lista5_stack <- stack(lista5)
+```
+
+
+
 ## 2005
 
 ## 2010
@@ -1982,6 +2067,16 @@ Hasta este punto sería todo respecto al análisis de condiciones favorables par
 
 # Referencias
 
-Por ahora las referencias lo encontramos en los antecedentes.
+[Cárdenas, P. S. (2013). La problemática de los incendios forestales y bases para su teledetección en el Perú. Apuntes de Ciencia & Sociedad, 3(2).](http://journals.continental.edu.pe/index.php/apuntes/article/view/198)
+
+[Segura Cuellar, C. K. (2019). Gestión mediante el uso del fuego en los ecosistemas des sistema nacional de áreas naturales protegidas-Perú.](http://diposit.ub.edu/dspace/handle/2445/141502)
+
+[Manta Nolasco, M. I. (2017). Contribución al conocimiento de la prevención de los incendios forestales en la sierra peruana. Universidad Nacional Agraria La Molina.](http://repositorio.lamolina.edu.pe/handle/UNALM/4302)
+
+[Barrios-Calderón, R. D. J., Mata, D. I., Flores-Garnica, J. G., Jong, B. H. J. D., Monzón Alvarado, C., & Maza-Villalobos Méndez, S. (2020). Análisis comparativo de camas de combustibles forestales en un ecosistema de manglar. Madera y bosques, 26(1).](http://www.scielo.org.mx/scielo.php?pid=S1405-04712020000100220&script=sci_arttext)
+
+[Rodríguez, M. P. R. (2010). Manejo del fuego. Havana: Editorial Felix Varela.](https://www.researchgate.net/profile/Marcos-Ramos-Rodriguez/publication/313385091_Manejo_del_Fuego/links/5898d59ba6fdcc32dbdd096c/Manejo-del-Fuego.pdf)
+
+[Mejía Quesada, C. E. (2017). La zonificación de riesgos a incendios forestales en la cuenca del rio Coello en el departamento del Tolima.](http://ridum.umanizales.edu.co/xmlui/bitstream/handle/20.500.12746/3226/MEJIA_CARLOS_2017.pdf?sequence=1&isAllowed=y)
 
 
