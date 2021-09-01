@@ -531,9 +531,9 @@ ggsave(plot = Fa ,"Img/Mapa_elevaciones.png", units = "cm", width = 30,height = 
 knitr::include_graphics('Img/Mapa_elevaciones.png')
 ```
 
-## R
+## R y Python
 
-En este proyecto utilizaremos dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
+En este proyecto se utilizó dos lenguajes de programación, tanto R como Python. Para nuestro propósito se necesitará de varios paquetes, se mencionan a continuación:
  
 
 ### Librerias de R utilizadas 
@@ -566,8 +566,6 @@ library(RColorBrewer)
 library(reshape2)
 ```
 
-## Python
-
 ### Librerias de Python utilizadas 
 
 ```{python warning=FALSE, message=FALSE, eval=FALSE}
@@ -588,10 +586,12 @@ import rasterio as rio # For raster analysis
 ## Google earth engine
 
 <div style = "text-align: justify">
-Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta increíble plataforma nos ayudamos de las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, geemap el cual junto con sus procedimientos reproducibles se encuentran en el siguiente [link](https://drive.google.com/drive/u/1/folders/1GmVLzYTJ2QlTP18KXViBaKMdh28uEeya).
+Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta plataforma se utilizó las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP, los junto con sus procedimientos reproducibles en el lenguaje python, para la descarga de datos de NDVI, se encuentran en el siguiente [enlace](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/blob/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb).
 </div>
 
-***Iniciamos sesion en GEE***
+
+<div style = "text-align: justify"> ***Como ejemplo, para iniciar sesión en la plataforma GEE por medio de RGEE lo hacemos con el siguiente script, conectando además con nuestro DRIVE.***</div>
+
 ```{python eval = FALSE, echo = FALSE}
 Sys.setenv(RETICULATE_PYTHON = "")
 # Inicializando sesion en GEE
@@ -611,27 +611,21 @@ ee_Initialize('juliocontreras1', drive =TRUE)
 
 ## Diagrama de flujo metodológico
 
-<div style = "text-align: justify">Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:</div>
+<div style = "text-align: justify"> Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura: </div>
 
-```{r echo = FALSE, fig.align='center', fig.cap = 'Figura . Metodología del Trabajo.', out.width="70%"}
+```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 17. Metodología de la investigación.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
-<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse para la presentanción final del trabajo, ya que dentro de nuestros objetivos especificos tenemos la idea de crear un modelo de predicción, el cual necesitará de más análisis de variables para que sea más consistente.</div>
+<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse, con el seguimiento para investigaciones posteriores, ya que esta investigación solo es un EDA, el comienzo para generar un modelo de predicción.</div>
 
-
-## Localización del área de estudio
-
-<div style = "text-align: justify"> 
-Nuestra investigación empieza con el análisis de las zonas de incendios (puntos) a lo largo de los años, especificamente en el periodo 2000 al 2018. Para este propósito necesitaremos un área en específico de estudio, pero, ¿realmente sabemos en donde hay mayor probalidad de ocurrencia de incendios?, o mejor dicho, ¿dónde hay una mayor tendencia a ocurrir estos fenómenos?. Entonces, para ello, utilizaremos la información del geoservidor del MINAM que nos proporciona información de incendios históricos, así detallaremos los procedimientos para localizar nuestra área de estudio, a partir de los datos mencionados, en los apartados posteriores.
-</div> 
 
 ## Diagrama de barras de la acumulación de incendios a lo largo del tiempo
 
-<div style = "text-align: justify">Ahora, analizaremos la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, necesitaremos de la estadística, la cual no brida diversas herramientas para nuestro propósito. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan.</div>
+<div style = "text-align: justify"> Se analilzó la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, se necesito de un histograma. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan estos fenómenos.</div>
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="80%", fig.align='center', fig.cap='Figura .'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="80%", fig.align='center', fig.cap='Figura 18. Eventos de incendios a lo largo de los años 2000-2018.'}
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>% 
@@ -679,9 +673,13 @@ X <- ggplot(ts, aes(x=Date, y=nfires)) +
 X
 ```
 
-<div style = "text-align: justify"> Se puede observar, el histograma nos muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráficos tambien nos muestra que en el año 2001, no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
+<div style = "text-align: justify"> Se puedo observar en el histograma, muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir, que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráfico tambien nos muestra que en el año 2001 no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
-Nosotros no nos quedamos con la información del este gráfico, sino buscamos alguna influencia para que se diera este fenómeno. Así, dos de estos años con gran tendencia de incendios coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en este año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
+Adicional a esta información, se buscó información de sequías, para ver si tenía o no relación con el aumento de incendios en los años seleccionados. Así, dos de estos años coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, en especial para Cusco y Puno, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados ni a negativos en nuestro área de estudio. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en ese año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
+
+```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 19. SPI para los años seleccionado para nuestra área de estudio Puno-Cusco.', out.width="70%"}
+knitr::include_graphics('Img/metodologia_4etapas.jpg')
+```
 
 ## Distribución de los incendios por años de 2000 - 2018
 
@@ -695,7 +693,7 @@ Nosotros no nos quedamos con la información del este gráfico, sino buscamos al
 }
 </style>
 
-```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 12.'}
+```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap = 'Figura 20. Mapa interactivo para ver la distribución de incendios por años.'}
 # Incendios acumulados por mes
 Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
@@ -763,11 +761,17 @@ Spp_Map <- Spp_Map %>%
 Spp_Map
 ```
   
-<br/>
 
-## Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
 
-<div style = "text-align: justify"> Se suavizó la serie de incendios, en función a una matriz, en este caso 250 x 250, tambien definido el tamaño del pixel 0.8 s, además se tuvo en cuenta la matriz movil o kernel (3x3, 5x5, etc).
+## Localización del área de estudio
+
+<div style = "text-align: justify"> 
+Para el propósito de la investigación se necesitó un área, en específico, de estudio, pero, ¿realmente sabemos en donde hay mayor probalidad de ocurrencia de incendios?, o mejor dicho, ¿dónde hay una mayor tendencia a ocurrir estos fenómenos?. Entonces, para ello, se utilizó la información del geoservidor del MINAM que proporcionó información de incendios históricos, así detallaremos los procedimientos para localizar nuestra área de estudio, a partir de los datos mencionados.
+</div> 
+
+### Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
+
+<div style = "text-align: justify"> Se suavizó la serie de incendios (puntos), en función a una matriz, en este caso 250 x 250, tambien definido el tamaño del pixel 0.8 s, además se tuvo en cuenta la matriz movil o kernel (3x3, 5x5, etc).
 
 Con el kernel se determinará la probilidad de ocurrencia, ¿y qué quiere decir eso?. Para pixel central del kernel, de nuestra matriz movil, se calculará la probabilidad de ocurrencia respecto al total de incendios de todo el Perú. Así, la matriz movil irá recorriendo cada pixel y calculando dicha probabilidad.
 
@@ -777,7 +781,7 @@ Basicamente, esta función del paquete MASS, en R, varía por ubicación (asigna
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px", fig.cap='Figura. '}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px", fig.cap='Figura 21. Estimación de la densidad para la ver la zonas más probables de incendios.'}
 fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 peru <- st_read('Materiales/Peru.gpkg', quiet = TRUE)
 Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
@@ -817,15 +821,15 @@ leaflet() %>%
   setView(lng = -75, lat = -7.9, zoom = 5)
 ```
 
-<br/>
 
-## Elección del área de estudio
+
+### Elección del área de estudio
 
 Se definió el área de estudió en relación a la distribución de probabilidad. El proceso consistió en rasterizar las áreas probables, previo enmascaramiento de una probabilidad de 5%. Luego, de rasterizado el área, se poligonizó. Se obtuvieron 7 poligonos, se eligió al que se encontraba en la **zona sur**. La zona ya se deifinió anteriormente.
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.cap='Figura. '}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.cap='Figura 22. Zona más problable de ocurrencia de incendios, ubicada en el sur, en la zona Andina oriental.'}
 Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
 Cutervo <- st_read('Materiales/area.gpkg', quiet = TRUE) # abajo el guardado
 
@@ -888,15 +892,15 @@ addControl(html = "<p><strong><em>MAPA DE LA ZONA MÁS PROBABLE PARA EL ESTUDIO<
 
 Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
 
+***La descarga automática de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
 
 ### Filtro por la banda de calidad
 
-<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa**. </div>
+<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa** (de calidad). </div>
 
-En nuestro caso elegimos el $10$ que representa pixeles promedios en el aspecto de aerosoles, pero se tiene que aumentar más los filtros.
 
 ```{r warning=FALSE, cache=FALSE, eval=FALSE}
-#### Indice de Vegetación Diferencial Normalizado 2000 - 2018
+# Indice de Vegetación Diferencial Normalizado 2000 - 2018 ----
 
 dataBIN <- DecToBin(c(1:65535))
 for (i in 1:length(dataBIN)) {
@@ -907,23 +911,23 @@ for (i in 1:length(dataBIN)) {
 dataBIN_DF <- data.frame(bin = dataBIN) %>% mutate(dec = c(1:length(bin))) %>%
                          dplyr::filter(substr(bin ,1,1)  == '1' | substr(bin ,2,2)   == '1'| substr(bin ,3,5)   == '011' | substr(bin ,3,5)  == '000' | substr(bin ,3,5)   == '100' | substr(bin ,3,5)   == '110' | substr(bin ,3,5)  == '111' | substr(bin ,6,6)   == '1'   | substr(bin ,8,8)   == '1'   | substr(bin, 9,10) == '00'  | substr(bin, 9,10)  == '11'  |
 substr(bin, 11,14) == '1100'| substr(bin, 11,14)== '1101'| substr(bin, 11,14) == '1110'|    substr(bin, 11,14) == '1111'| substr(bin, 15,16)== '10'  | substr(bin, 15,16) == '11')
-#--------------------------------------------------------------------------------------------------------------------#
-# FILTRANDO EL INDICE DE VEGETACION A TRAVES DE LA BANDA DE CALIDAD QA
+
+# FILTRANDO EL INDICE DE VEGETACION A TRAVES DE LA BANDA DE CALIDAD QA -----
 qa_list   = list.files("RasterData/Resultados/QA_MOD13Q1/", pattern = 'QA', full.names = T)
 ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI', 
                        full.names = T)
 
  for (k in 1:length(qa_list)) {# EL length puede ser tanto de la banda QA o del NDVI, es la misma cantidad
   print(k)
-  #NOMBRE DEL NUEVO NDVI
+  # NOMBRE DEL NUEVO NDVI
   name = ndvi_list[k] %>% strsplit('_') %>% sapply('[',7)
-  #LLAMANDO A LAS BANDAS QA Y NDVI
+  # LLAMANDO A LAS BANDAS QA Y NDVI
   qa   = raster(qa_list[k])
   ndvi = raster(ndvi_list[k])
-  #BANDA QA A VALORES DE 1 Y NA
+  # BANDA QA A VALORES DE 1 Y NA
   qa[qa %in% dataBIN_DF$dec] = NA
   qa[!is.na(qa)] = 1
-  #FILTRANDO LOS NDVI
+  # FILTRANDO LOS NDVI
   ndvi_filter = ndvi*qa
   writeRaster(ndvi_filter, paste("RasterData/Resultados/Filtered/",'MOD13Q1_NDVI_filtered_', name, '.tif', sep=''), overwrite = T)
   date()
@@ -931,6 +935,8 @@ ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI',
 ```
 
 ### Remuestreo
+
+***Sustentar el remuestreo***
 
 ```{r warning=FALSE, cache=FALSE, eval=TRUE}
 ndvi_raster <- list.files("RasterData/Resultados/Filtered/", pattern=".tif$",
@@ -944,26 +950,12 @@ for(i in ndvi_raster){
 }
 ```
 
-<div style = "text-align: justify">El producto de este código, el NVDI con el filtro, podemos encontrarlo en el siguiente [Drive](https://drive.google.com/drive/u/1/folders/1zOe76MGsXXtgBpC7bpDthYXWu1u5Dcx4)
-</div>
 
 ### Completación de datos con el método Savitzky Golay
 
-La siguiente figuras son solo entendimientos básicos del método Savitzly Golay, adoptados por los autores del presente estudio.
-
-```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap="Figura."}
-knitr::include_graphics('Img/ExplicacionMatriz.jpeg')
-```
-
-```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap="Figura."}
-knitr::include_graphics('Img/ExplicacionMatriz2.jpeg')
-```
-
-<div style = "text-align: justify"> Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en la desktop, y solo para el año 2016. 
+<div style = "text-align: justify"> Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en R.
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
-
-***La descarga automatica de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
 
 ```{r warning=FALSE, cache=FALSE, eval=FALSE}
 ndvi_resamp <- list.files("RasterData/Resultados/Resampled/", pattern=".tif$", 
@@ -971,7 +963,7 @@ ndvi_resamp <- list.files("RasterData/Resultados/Resampled/", pattern=".tif$",
 ndvi_base <- raster(ndvi_resamp[1])
 ndvi_stack <- stack(ndvi_resamp)
 
-## --------- Creando matriz --------------------------------------------------
+# Creación de la matriz ----
 for (i in 1:length(ndvi_resamp)) {
   print(i)
   ndvi = raster(ndvi_resamp[i]) %>% getValues()# obtenemos los valores de cada raster
@@ -979,7 +971,7 @@ for (i in 1:length(ndvi_resamp)) {
 ## El dataframe tiene a cada NDVI como columnas y sus valores como filas (hay 2300)  
 }
 
-## --------- Funcion filtro Savitsky Golay -----------------------------------
+## Funcion filtro Savitsky Golay ----
 for(j in 1:nrow(df)) {
   print(j)
   pixel = df[j,] %>% as.numeric() ## Cada una de las filas representa a un mismo pixel en el dataframe, es decir tenemos la serie del tiempo para cada pixel
@@ -993,7 +985,7 @@ for(j in 1:nrow(df)) {
       }
 }
 
-## ---------- Construccion de Raster  -------------------------------------- ###
+## Construcción de Raster  --------------
 for(i in 1:length(ndvi_resamp)){ 
   name = ndvi_resamp[i] %>% strsplit("_") %>% sapply("[",4) %>% substr(1,10)
   example = ndvi_base
@@ -1047,16 +1039,12 @@ for (j in 1:nrow(df)) {
     }
   }
 }
-
 ```
-
-<br/>
 
 
 ## Preprocesamiento del Modelo Digital de elevación SRTM V4.1
 
-Colocar shp de enmascaramiento.
-
+***Colocar shp de enmascaramiento Figura 23.***
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
@@ -1106,33 +1094,36 @@ plot(dem)
 # dem_poly <- rasterToPolygons(dem) %>% st_as_sf()
 
 ```
- 
+
 
 ## Variabilidad de incendios por altitud
 
 El objetivo de este apartado es elaborar un histograma sobre la distribución altitudinal de los incendios, para ello, previamente se realizó el enmascaramiento por rangos de latitud.
 
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 24. Histograma de las incendios por altitud filtrados cada 500m.'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
 dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
 
 df <- raster::extract(dem,fires) %>% data.frame()
 names(df) <- 'elev'
 
-X <- ggplot(df, aes(df$elev)) + geom_histogram(binwidth = 100, fill='gray', col='black') +
+ggplot(df, aes(df$elev)) + geom_histogram(binwidth = 100, fill='gray', col='black') +
   theme_bw() + labs(x = '', y = '') +
-  ggtitle('Number of Fires by Elevation', subtitle = 'from 2000 to 2018\nHistogram') +
+  ylab(label = 'Número de incendios\n') +
+  xlab(label = 'Altitud [msnm]') + 
+  ggtitle('Número de incendios por elevación', subtitle = 'Desde 2000 al 2018\nHistograma') +
   theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
         plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
         axis.text.x   = element_text(size=12),
         axis.text.y   = element_text(size=12),
         axis.title    = element_text(size=20),
-        panel.border  = element_rect(colour = "black", fill=NA, size=1)) +
+        panel.border  = element_rect(colour = "black", fill=NA, size=1),
+        axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
+        axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) +
   scale_y_continuous(breaks = seq(0,70,10), limits = c(0, 80), expand = c(0,0)) +
   scale_x_continuous(breaks = seq(0, 5000, 500), limits = c(800, 4800), expand = c(0,0))
   
-X 
 # ggsave(plot = X, filename = 'D:/DataBase/Theme_n2/04-Graphics/Number_of_Fires_by_Elev.png',
 #        width = 15, height = 15, units = "cm", dpi = 500)
 ```
@@ -1145,7 +1136,7 @@ Como podemos observar en el histograma los incendios se registran entre los 1000
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 25. Evaluación de la cantidad de incendios en el 2005 con respecto a los históricos.'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2005
@@ -1262,7 +1253,7 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 26. Evaluación de la cantidad de incendios en el 2010 con respecto a los históricos.'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2010
@@ -1325,7 +1316,7 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
   scale_y_continuous(breaks = seq(0,450,50), limits = c(0, 430)) 
 ```
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 27. Evaluación de la cantidad de incendios en el 2016 con respecto a los históricos.'}
 fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 
 yr <- 2016
@@ -1395,13 +1386,12 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
 
 ## Analisis temporal de datos bioclimáticos
 
-<div style = "text-align: justify"> Este se obtendrá del producto grillado PISCO, del Servicio Nacional de Meteorología e Hidrología (SENHAMI) </div>
+<div style = "text-align: justify"> En este apartado se analizará temporalemte el comportamiento tanto del NDVI, precipitación y temperatura, ***para justificar su uso en el analisis posterior.***</div>
 
 ### Precipitacion acumulada mensual
 
-Estos valores han sido extraidos del producto grillado PISCO del SENAMHI.
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center', comment='', error=FALSE}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center', comment='', error=FALSE, fig.cap='Figura 28. Comparación de la precipitación acumulada mensual de los años 2000, 2005, 2010, y 2016 con respecto a los históricos.'}
 pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
@@ -1552,9 +1542,8 @@ Tambien se tomó un año "normal" donde no hay gran cantidad de incendios histó
 
 ### Temperatura máxima mensual
 
-Estos valores han sido extraidos del producto grillado PISCO del SENAMHI. Falta argumentar el porqué de su uso.
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 29. Comparación de la temperatura máxima mensual de los años 2000, 2005, 2010, y 2016 con respecto a los históricos.'}
 temp_velox <- velox("RasterData/PISCO/PISCOmtx_v11_area.tif")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
@@ -1675,9 +1664,9 @@ ggplot(data = TEMP, aes(x = date, y = value,
 
 ### NDVI Mensual
 
-Falta argumentar el porqué de su uso. o
+***Falta argumentar el porqué de su uso. Los anteriores tambien***
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 30. Comparación del NDVI mensual de los años 2004, 2005, 2010, y 2016 con respecto a los históricos.'}
 ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
 
@@ -1807,16 +1796,16 @@ ggplot(data = NDVI, aes(x = date, y = value,
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
 
-En este estudio la cota de 1500 msnm fue considerada divisoria de la región andina. Este rango es también considerado en otros estudios de la región (Zubieta et al., 2017; Zulkafli et al., 2014). Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental, así se consideró incluir los rangos de altitud como variable en nuestro CFOI.
+Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental (donde se encuentra el área de estudio elegido), así se consideró incluir los rangos de altitud como variable en nuestro CFOI.
 
 
 ### Variabilidad estacional de precipitación por elevación
 
-El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio
+El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio.
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 pp_velox <- velox('RasterData/PISCO/PISCOp_v11_area.tif')
-region_elev <- st_read('Materiales/area_alt_group.gpkg') %>% arrange(DN)
+region_elev <- st_read('Materiales/area_alt_group.gpkg', quiet = TRUE) %>% arrange(DN)
 
 date <- seq(as.Date('1981-01-01'), as.Date('2018-02-01'), by = "month")
 
@@ -1838,7 +1827,6 @@ names(df) <- c('mes','elev','pp')
 
 hm.palette <- colorRampPalette(brewer.pal(8, 'YlGnBu'), space='Lab')
 
-Sys.setlocale(category = 'LC_ALL', locale = 'english')
 
 X <- ggplot(df, aes(mes, elev))+ geom_raster(aes(fill=pp)) +
      scale_fill_gradientn(colours = hm.palette(100)) + theme_bw() +
@@ -1871,7 +1859,7 @@ X
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 temp_velox <- velox('RasterData/PISCO/PISCOmtx_v11_area.tif')
-region_elev <- st_read('Materiales/area_alt_group.gpkg') %>% arrange(DN)
+region_elev <- st_read('Materiales/area_alt_group.gpkg', quiet = TRUE) %>% arrange(DN)
 date <- seq(as.Date('1981-01-01'), as.Date('2016-12-01'), by = "month")
 
 data <- temp_velox$extract(sp = region_elev, fun = function(x){ mean(x, na.rm = T) }) %>% t()
@@ -1890,8 +1878,6 @@ df <- df %>% melt(id.vars = 'mes')
 names(df) <- c('mes','elev','temp')
 
 hm.palette <- colorRampPalette(brewer.pal(15, 'Reds'), space='Lab')
-
-Sys.setlocale(category = 'LC_ALL', locale = 'english')
 
 X <- ggplot(df, aes(mes, elev))+ geom_raster(aes(fill=temp)) +
      scale_fill_gradientn(colours = hm.palette(100)) + theme_bw() +
@@ -1915,7 +1901,7 @@ X
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")
-region_elev <- st_read('Materiales/area_alt_group.gpkg') %>% arrange(DN)
+region_elev <- st_read('Materiales/area_alt_group.gpkg', quiet = TRUE) %>% arrange(DN)
 
 data <- ndvi_velox$extract(sp = region_elev, fun = function(x){ mean(x, na.rm = T) }) %>% t()
 
@@ -1942,7 +1928,6 @@ names(df) <- c('mes','elev','ndvi')
 
 hm.palette <- colorRampPalette(brewer.pal(9, 'YlGnBu'), space='Lab')
 
-Sys.setlocale(category = 'LC_ALL', locale = 'english')
 
 X <- ggplot(df, aes(mes, elev))+ geom_raster(aes(fill=ndvi)) +
      scale_fill_gradientn(colours = hm.palette(100)) + theme_bw() +
@@ -1968,7 +1953,7 @@ Para analizar los resultados hay que tener en cuenta que los efectos entre las v
 
 ## Análisis de correlaciones rezagadas
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # NDVI -------------------------------
 
 # Generar mensuales pero sin el primero enero, no existe
@@ -2018,12 +2003,12 @@ for (i in 1:12) {
 
 # ndvi mensual historica (sin resampl)
 Ndvi_mensual # lista de raster mensual
-Ndvi_mensual_stack <- stack(lista5)
+Ndvi_mensual_stack <- stack(Ndvi_mensual)
 # writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico_SnResamp.tif")
 ```
 
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # PRECIPITACION -------------------------------
 
 # stack mensual desde 2000 a 2017
@@ -2049,7 +2034,7 @@ for (i in 1:12) {
 
 # pp mensual historica (sin resampl)
 PP_mensual # lista de raster mensual
-PP_mensual_stack <- stack(lista7)
+PP_mensual_stack <- stack(PP_mensual)
 # writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_Mensual_historico.tif")
 
 ```
@@ -2075,8 +2060,8 @@ PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 
 # writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_MENSUAL.tif")
 # writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_MENSUAL.tif")
-writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
-writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
+# writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
+# writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
 ```
 
 
