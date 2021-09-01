@@ -154,6 +154,9 @@ knitr::include_graphics('Img/incendioforestal.gif')
 
 <div style = "text-align: justify">Se calcula que las actividades humanas ocasionan el 99% de ellos y solo el resto tiene como causa fenómenos naturales como descargas eléctricas y la erupción de volcanes. Dentro de las principales actividades humanas para el origen de un incendio forestal podemos mencionar situaciones accidentales, por ejemplo, rupturas de líneas eléctricas, accidentes automovilísticos, accidentes ferroviarios e incluso accidentes aéreos, también por negligencias como quemas agropecuarios no controladas, fogatas de excursionistas o incluso actividades de fumadores, quema de basura, la limpieza de vías en carreteras y uso del fuego en otras actividades productivas dentro de las áreas forestales, también una de las causas es por situaciones intencionales como quemas por conflictos entre personas o comunidades, también se puede deber a la tala ilegal o incluso por litigios.<div/>
 
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 7. Incendios por causas y motivos conocidos.'}
+knitr::include_graphics('Img/causas_incendios.png')
+```
 
 ## Regiones con mayor cantidad de incendios
 
@@ -174,7 +177,7 @@ for (i in 1:nrow(Departamentos)) {
 st_write(Departamentos[,c(2,6)], "Materiales/DepartamentosIncendios.gpkg")
 ```
 
-```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 7. Conteo de la incidencia de incendios en el Perú desde el 2000 al 2018.'}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Conteo de la incidencia de incendios por regiones en el Perú desde el 2000 al 2018.'}
 knitr::include_graphics('Img/incendiosporregiones.png')
 ```
 
@@ -184,7 +187,7 @@ El monitoreo de bosques a nivel nacional, a partir del uso de sensoramiento remo
 
 <br/>
 
-```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Geoservidor del MINAM, permite el acceso a información más detallada de condiciones favorables para la ocurrencia de incendios.'}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 9. Geoservidor del MINAM, permite el acceso a información más detallada de condiciones favorables para la ocurrencia de incendios.'}
 knitr::include_graphics('Img/monitoreodebosques.png')
 ```
 
@@ -214,6 +217,10 @@ Donde:
 
 <br/>
 
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 10. Estimación de la densidad del kernel utilizando diferentes anchos de banda'}
+knitr::include_graphics('Img/kernel_estimation.gif')
+```
+
 
 ## Filtro Digital Savitzky-Golay
 
@@ -234,53 +241,55 @@ En donde:
 El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el caso de la media móvil, aunque se debe enfatizar que ambos algoritmos tienen "pérdidas", es decir, parte de la información original se pierde o se distorsiona. Este tipo de suavizado es utilizado principalmente para conservar las características de la distribución inicial, los máximos y mínimos relativos y el ancho entre picos en una serie de datos.
 *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
 
+
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 11. La principal ventaja de esta aproximación es que tiende a preservar características de la distribución inicial tales como los máximos y mínimos relativos.'}
+knitr::include_graphics('Img/savitzky_golay.gif')
+```
+
+
 # Descripción del área de estudio
 
 ## Localización
 
-<div style = "text-align: justify"> El área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, se aplicó la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, hasta el momento, tenemos como área de estudio un área que abarca la región de Cusco y Apurimac. La probabilidad que se encuentra en el área es mayor a 5%.</div>
+<div style = "text-align: justify"> El área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, se aplicó la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, tenemos como área de estudio un área que abarca la región de Cusco y Apurimac. La probabilidad que se encuentra en el área es mayor a 5%. </div>
 
 <br/>
 
-```{r echo = FALSE, out.width="100%", fig.align='center', fig.cap='Figura 9.'}
+```{r echo = FALSE, out.width="100%", fig.align='center', fig.cap='Figura 12. Zona de mayor cantidad de incendios ubicada en los Andes orientales.'}
 knitr::include_graphics('Img/mapaubicacion.png')
 ```
-
-## Aspecto generales
-
-Describir nuestra área de estudio, que cubre diversas regiones, más en la zonas altoandina, referenciarse del documento del NIÑO, mencionar ecosistemas
-
-### Ecosistemas
-
-#### Pajonal de puna humeda
-
-#### Matorral andino
-
-#### Zona agrícola
-
-#### Vegetación Secundaria
-
-#### Bosque altimontano (Pluvial) de Yunga
 
 
 # Materiales y herramientas
 
 ## Data histórica de incendios 2000-2018
 
-<div style = "text-align: justify">Este registro abarca los años 2000 a 2018, fueron descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios, con respecto a los históricos que han sido recopilados desde el año 2000 al 2018. Dicha información, después de un proceso de validación con imágenes satelitales se encuentran georeferenciados y pueden ser descargados en formato shapefile.</div>
+<div style = "text-align: justify"> Este registro abarca los años 2000 a 2018, fueron descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios. Dicha información, previo de un proceso de validación con imágenes satelitales, se encuentran georeferenciados y pueden ser descargados en formato shapefile (datos vectoriales).</div>
 
 <br/>
 
-```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura .'}
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 13. Plataforma del geoservidor del MINAM, donde encontramos datos vectoriales-puntos con información de incendios forestales.'}
 knitr::include_graphics('Img/plataforma_incendios2000_2018.png')
 ```
 
 ## Datos MODIS (MOD13Q1)
-Los datos de la versión 6 del espectrorradiómetro de imágenes de resolución moderada (MODIS) Terra (MOD13Q1) se generan cada 16 días a una resolución espacial de 250 metros (m) como un producto de Nivel 3. El producto MOD13Q1 proporciona dos capas de vegetación primarias. El primero es el Índice de Vegetación de Diferencia Normalizada (NDVI), que se conoce como el índice de continuidad del NDVI derivado del Radiómetro Avanzado de Muy Alta Resolución de la Administración Nacional Oceánica y Atmosférica existente (NOAA-AVHRR). 
+
+Los datos de la versión 6 del espectrorradiómetro de imágenes de resolución moderada (MODIS) Terra (MOD13Q1) se generan cada 16 días a una resolución espacial de 250 metros (m) como un producto de Nivel 3. El producto [MOD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1) proporciona dos capas de vegetación primarias. El primero es el Índice de Vegetación de Diferencia Normalizada (NDVI), que se conoce como el índice de continuidad del NDVI derivado del Radiómetro Avanzado de Muy Alta Resolución de la Administración Nacional Oceánica y Atmosférica existente (NOAA-AVHRR). 
 Para nuestra area de estudio, se hara uso del NDVI procesado a resolucion de 250 m, el cual sera filtrado segun su banda de calidad (QA). 
 
+<br/>
+
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 14. MOD13Q1.006 Terra Vegetation Indices 16-Day Global 250m.'}
+knitr::include_graphics('Img/modis_ndvi.gif')
+```
+
 ## Datos PISCO
-El producto grillado PISCO (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima) a paso de tiempo mensual, a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus poductos poseen una escala diaria y mensual y se encuentran disponibles hasta Diciembre del año 2016.  
+
+El producto grillado [PISCO](https://iridl.ldeo.columbia.edu/SOURCES/.SENAMHI/.HSR/.PISCO/?Set-Language=es#info) (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima) a paso de tiempo mensual, a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus poductos poseen una escala diaria y mensual y se encuentran disponibles hasta Diciembre del año 2016.  
+
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 15. Investigadores del senamhi publican artículo científico sobre producto grillado de precipitación..'}
+knitr::include_graphics('Img/pisco_pp.png')
+```
 
 ## DEM SRTM V4.1
 
@@ -518,7 +527,7 @@ Fa <-ggplot() +
 ggsave(plot = Fa ,"Img/Mapa_elevaciones.png", units = "cm", width = 30,height = 22, dpi = 1000)
 ```
 
-```{r eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE, out.width="100%", fig.align='center', fig.cap='Figura .'}
+```{r eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE, out.width="100%", fig.align='center', fig.cap='Figura 16. Mapa de elevaciones del área de estudio para las CFOI. Fuente: Google Earth Engine - SRTM V4.'}
 knitr::include_graphics('Img/Mapa_elevaciones.png')
 ```
 
@@ -1999,7 +2008,7 @@ for (i in 1:12) {
   p = 1
   n = i
   while (n <= length(stack_mensual00_18[1])) {
-    lista4[[p]] = lista_mensual00_18[[n]]
+    lista4[[p]] = stack_mensual00_18[[n]]
     n = n + 12
     p = p + 1
   }
@@ -2010,6 +2019,7 @@ for (i in 1:12) {
 # ndvi mensual historica (sin resampl)
 Ndvi_mensual # lista de raster mensual
 Ndvi_mensual_stack <- stack(lista5)
+# writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico_SnResamp.tif")
 ```
 
 
@@ -2040,8 +2050,34 @@ for (i in 1:12) {
 # pp mensual historica (sin resampl)
 PP_mensual # lista de raster mensual
 PP_mensual_stack <- stack(lista7)
+# writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_Mensual_historico.tif")
+
 ```
 
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# RESAMPLEO Y MISMAS AREAS-------------------------------
+area <- st_read("Materiales/area.gpkg")
+PP_mensual_stack
+crs(PP_mensual_stack)
+crs(Ndvi_mensual_stack)
+
+NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack[[1]], PP_mensual_stack[[1]])
+NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack, PP_mensual_stack)
+# writeRaster(NDVI_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico.tif")
+
+NDVI_MENSUAL <- crop(NDVI_mensual_stack, area, snap = "out")
+PP_MENSUAL <- crop(PP_mensual_stack, area, snap = "out")
+
+NDVI_MENSUAL_MASK <- mask(NDVI_mensual_stack, area)
+PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
+
+
+# writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_MENSUAL.tif")
+# writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_MENSUAL.tif")
+writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
+writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
+```
 
 
 ## 2005
@@ -2079,4 +2115,6 @@ Hasta este punto sería todo respecto al análisis de condiciones favorables par
 
 [Mejía Quesada, C. E. (2017). La zonificación de riesgos a incendios forestales en la cuenca del rio Coello en el departamento del Tolima.](http://ridum.umanizales.edu.co/xmlui/bitstream/handle/20.500.12746/3226/MEJIA_CARLOS_2017.pdf?sequence=1&isAllowed=y)
 
+[Lippok, D., Beck, S. G., Renison, D., Gallegos, S. C., Saavedra, F. V., Hensen, I., & Schleuning, M. (2013). Forest recovery of areas deforested by fire increases with elevation in the tropical Andes. Forest Ecology and Management, 295, 69-76.](https://www.sciencedirect.com/science/article/abs/pii/S0378112713000388?via%3Dihub)
 
+[Savitzky, A., & Golay, M. J. (1964). Smoothing and differentiation of data by simplified least squares procedures. Analytical chemistry, 36(8), 1627-1639.](https://pubs.acs.org/doi/pdf/10.1021/ac60214a047)
