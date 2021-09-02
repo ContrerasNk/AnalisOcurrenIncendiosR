@@ -16,6 +16,11 @@ output:
     fig_height: 6
 ---
 
+<style>
+body {
+text-align: justify}
+</style>
+
 <style type="text/css">
 
 h1.title {
@@ -44,19 +49,19 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE)
 
 # Introducción
 
-<div style = "text-align: justify"> Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial, sobre todo en los países con grandes extensiones de áreas forestales (Cárdemas, 2013), como es el caso del Perú. 
+  Los incendios forestales se han convertido en un problema ambiental de gran relevancia y gravedad en las últimas décadas; se presenta a nivel mundial, sobre todo en los países con grandes extensiones de áreas forestales (Cárdemas, 2013), como es el caso del Perú. 
 
 El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (Segura, 2019).
 
-En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios, desde el año 2000 al 2018.</div>
+En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios, desde el año 2000 al 2018. 
 
 # Identificación del problema
 
 ## Planteamiento del problema
 
-<div style = "text-align: justify"> Los incendios ocasionan efectos adversos en los diferentes ecosistemas del país y usos de la tierra, así como en los diferentes sectores, originando pérdidas económicas y en algunos casos pérdida de vidas humanas. Si bien es cierto, el desencadenante de un incendio sobre la cobertura vegetal se debe en un 98 % a las acciones del hombre (Manta, 2017), **las condiciones físicas, biológicas y climáticas deben estar presentes para que se produzca la ignición y se propague el fuego.**
+  Los incendios ocasionan efectos adversos en los diferentes ecosistemas del país y usos de la tierra, así como en los diferentes sectores, originando pérdidas económicas y en algunos casos pérdida de vidas humanas. Si bien es cierto, el desencadenante de un incendio sobre la cobertura vegetal se debe en un 98 % a las acciones del hombre (Manta, 2017), **las condiciones físicas, biológicas y climáticas deben estar presentes para que se produzca la ignición y se propague el fuego.**
 
-Parte de esta problemática es la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo. <div/>
+Parte de esta problemática es la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.  
 
 
 <br/>
@@ -69,7 +74,7 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ### Objetivo general
 
-<div style = "text-align: justify"> El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI). Producto de esto se generará un laged correlation o correlación rezagada.</div>
+  El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI). Producto de esto se generará un laged correlation o correlación rezagada. 
 
 ### Objetivos específicos
 
@@ -82,7 +87,7 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ## Justificación
 
-<div style = "text-align: justify"> Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.</div>
+  Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo. 
 
 # Antecedentes
 
@@ -111,7 +116,7 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ## Importancia de los bosques
 
-<div style = "text-align: justify"> Es necesario mencionar la importancia de los bosques. Estas zonas con este tipo de vegetación o áreas forestales son una parte imprescindible para la vida en el planeta, además de ser parte fundamental en los ciclos de producción y distribución del agua, los bosques se encargan de purificar el aire que respiramos al capturar dióxido de carbono y liberar oxígeno, de la misma forma también, regulan la temperatura y la humedad con lo que se equilibra el clima (Barrios et a., 2020). Estos tipos de vegetación también proporcionan alimento medicinas y refugio a los seres vivos y son un fuente de materia prima en muchas actividades humanas como las actividades forestales, por ejemplo. <div/>
+  Es necesario mencionar la importancia de los bosques. Estas zonas con este tipo de vegetación o áreas forestales son una parte imprescindible para la vida en el planeta, además de ser parte fundamental en los ciclos de producción y distribución del agua, los bosques se encargan de purificar el aire que respiramos al capturar dióxido de carbono y liberar oxígeno, de la misma forma también, regulan la temperatura y la humedad con lo que se equilibra el clima (Barrios et a., 2020). Estos tipos de vegetación también proporcionan alimento medicinas y refugio a los seres vivos y son un fuente de materia prima en muchas actividades humanas como las actividades forestales, por ejemplo.  
 
 <br/>
 
@@ -121,7 +126,7 @@ knitr::include_graphics('Img/importanciaforestal.jpg')
 
 ## Amenazas forestales
 
-<div style = "text-align: justify"> La vegetación forestal tiene muchos beneficios, sin embargo todos estos procesos vitales se ven amenazados por diversos factores ajenos a las actividades forestales como la degradación de suelos, la deforestación, la tala inmoderada y los fuegos no controlados que muchas veces están relacionados con otras actividades como la agricultura, la ganadería y el desarrollo urbano. Si bien, usualmente, el fuego en los bosques tiene una connotación negativa, el fuego puede tener una influencia positiva en la naturaleza pues ayuda a mantener la biodiversidad e incluso es necesario para la germinación de ciertas plantas. No obstante esta estrategia que tienen algunas plantas de ser estimuladas por el fuego fue producto de la evolución y producto de algunos fuegos estacionales que se producen de manera natural, pero cuando estos fuegos se producen de manera muy frecuente o son provocados por un uso irresponsable o son producto de alguna negligencia puede convertirse en un incendio forestal con unas consecuencias devastadoras para el medio ambiente e incluso para la salud y seguridad de las personas. <div/>
+  La vegetación forestal tiene muchos beneficios, sin embargo todos estos procesos vitales se ven amenazados por diversos factores ajenos a las actividades forestales como la degradación de suelos, la deforestación, la tala inmoderada y los fuegos no controlados que muchas veces están relacionados con otras actividades como la agricultura, la ganadería y el desarrollo urbano. Si bien, usualmente, el fuego en los bosques tiene una connotación negativa, el fuego puede tener una influencia positiva en la naturaleza pues ayuda a mantener la biodiversidad e incluso es necesario para la germinación de ciertas plantas. No obstante esta estrategia que tienen algunas plantas de ser estimuladas por el fuego fue producto de la evolución y producto de algunos fuegos estacionales que se producen de manera natural, pero cuando estos fuegos se producen de manera muy frecuente o son provocados por un uso irresponsable o son producto de alguna negligencia puede convertirse en un incendio forestal con unas consecuencias devastadoras para el medio ambiente e incluso para la salud y seguridad de las personas.  
 
 <br/>
 
@@ -131,7 +136,7 @@ knitr::include_graphics('Img/amenazasforestales.jpg')
 
 ## Fuego
 
-<div style = "text-align: justify"> Según Rodríguez (2010), el fuego se define como la liberación de energía en forma de luz y calor producida por la combustión de un cuerpo, lo que lleva a una descomposición rápida del combustible originada por una temperatura elevada y la presencia de oxígeno. <div/>
+  Según Rodríguez (2010), el fuego se define como la liberación de energía en forma de luz y calor producida por la combustión de un cuerpo, lo que lleva a una descomposición rápida del combustible originada por una temperatura elevada y la presencia de oxígeno.  
 
 <br/>
 
@@ -141,7 +146,7 @@ knitr::include_graphics('Img/fuego.gif')
 
 ## Triángulo del fuego (origen)
 
-<div style = "text-align: justify"> Para que el fuego se pueda presentar se necesita de tres elementos: Combustible, calor y oxígeno. Si no llegase a presentarse uno de estos, la conflagración no se produciría. La (Figura) en el recuadro (a.) muestra esta representación. 
+  Para que el fuego se pueda presentar se necesita de tres elementos: Combustible, calor y oxígeno. Si no llegase a presentarse uno de estos, la conflagración no se produciría. La (Figura) en el recuadro (a.) muestra esta representación. 
 
 
 * **Combustible.** El combustible se define como cualquier sólido, líquido o gas que puede ser oxidado. La mayoría de los combustibles o agentes reductores contienen un gran porcentaje de carbono e hidrógeno. 
@@ -150,7 +155,7 @@ knitr::include_graphics('Img/fuego.gif')
 
 * **Calor.** La temperatura es la medida de actividad molecular dentro de una sustancia. En presencia de una gente oxidante, un combustible con un nivel de energía lo suficientemente alto puede arder. 
 
-* **La Gran Triada.** Otra representación característica es la gran tríada en la cual se relacionan los combustibles, el tiempo atmosférico y la topografía, donde el primero de estos es el único elemento donde el hombre puede actuar directamente, a diferencia de los dos últimos, los cuales no pueden modificarse. La (Figura 5) en el recuadro (b.) muestra esta representación. <div/>
+* **La Gran Triada.** Otra representación característica es la gran tríada en la cual se relacionan los combustibles, el tiempo atmosférico y la topografía, donde el primero de estos es el único elemento donde el hombre puede actuar directamente, a diferencia de los dos últimos, los cuales no pueden modificarse. La (Figura 5) en el recuadro (b.) muestra esta representación.  
 
 <br/>
 
@@ -160,9 +165,9 @@ knitr::include_graphics('Img/triadafuego.png')
 
 ## Incendio forestal (IFs)
 
-<div style = "text-align: justify"> Los incendios forestales se pueden definir como aquella situación cuando un fuego sin control se propaga libremente afectando a diversas áreas como selvas, bosques y vegetación de zonas áridas y semiáridas. Una manera más simple de definir un incendio forestal sería como la combustión de la vegetación forestal sin control.
+  Los incendios forestales se pueden definir como aquella situación cuando un fuego sin control se propaga libremente afectando a diversas áreas como selvas, bosques y vegetación de zonas áridas y semiáridas. Una manera más simple de definir un incendio forestal sería como la combustión de la vegetación forestal sin control.
 
-El estudio de IFs sigue siendo un desafío para la ciencia y el manejo forestal, debido a la interacción entre factores naturales y antrópicos (Lippok et a., 2013). <div/>
+El estudio de IFs sigue siendo un desafío para la ciencia y el manejo forestal, debido a la interacción entre factores naturales y antrópicos (Lippok et a., 2013).  
 
 <br/>
 
@@ -172,7 +177,7 @@ knitr::include_graphics('Img/incendioforestal.gif')
 
 ## Causas de los incendios forestales
 
-<div style = "text-align: justify">Se calcula que las actividades humanas ocasionan el 99% de ellos y solo el resto tiene como causa fenómenos naturales como descargas eléctricas y la erupción de volcanes. Dentro de las principales actividades humanas para el origen de un incendio forestal podemos mencionar situaciones accidentales, por ejemplo, rupturas de líneas eléctricas, accidentes automovilísticos, accidentes ferroviarios e incluso accidentes aéreos, también por negligencias como quemas agropecuarios no controladas, fogatas de excursionistas o incluso actividades de fumadores, quema de basura, la limpieza de vías en carreteras y uso del fuego en otras actividades productivas dentro de las áreas forestales, también una de las causas es por situaciones intencionales como quemas por conflictos entre personas o comunidades, también se puede deber a la tala ilegal o incluso por litigios.<div/>
+ Se calcula que las actividades humanas ocasionan el 99% de ellos y solo el resto tiene como causa fenómenos naturales como descargas eléctricas y la erupción de volcanes. Dentro de las principales actividades humanas para el origen de un incendio forestal podemos mencionar situaciones accidentales, por ejemplo, rupturas de líneas eléctricas, accidentes automovilísticos, accidentes ferroviarios e incluso accidentes aéreos, también por negligencias como quemas agropecuarios no controladas, fogatas de excursionistas o incluso actividades de fumadores, quema de basura, la limpieza de vías en carreteras y uso del fuego en otras actividades productivas dentro de las áreas forestales, también una de las causas es por situaciones intencionales como quemas por conflictos entre personas o comunidades, también se puede deber a la tala ilegal o incluso por litigios. 
 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.cap='Figura 7. Incendios por causas y motivos conocidos.'}
 knitr::include_graphics('Img/causas_incendios.png')
@@ -180,7 +185,7 @@ knitr::include_graphics('Img/causas_incendios.png')
 
 ## Regiones con mayor cantidad de incendios
 
-<div style = "text-align: justify"> En los últimos años los IFs han impactado severamente varias regiones del Perú, como Cusco, Apurímac, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018). <div/>
+  En los últimos años los IFs han impactado severamente varias regiones del Perú, como Cusco, Apurímac, Lambayeque, Piura y Cajamarca (INDECI, 2013; El Comercio, 2018).  
 
 <br/>
 
@@ -214,7 +219,7 @@ knitr::include_graphics('Img/monitoreodebosques.png')
 
 ## Función kernel
 
-<div style = "text-align: justify">Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la región de estudio*. Para esto usaremos una función bidimensional sobre los eventos considerados, generando una superficie cuyo valor será proporcional a la *intensidad de muestras por unidad de área*. Esta función realiza un conteo de todos los puntos dentro de una región de influencia, ponderándolos por la distancia de cada uno con respecto a la localización de interés.
+ Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la región de estudio*. Para esto usaremos una función bidimensional sobre los eventos considerados, generando una superficie cuyo valor será proporcional a la *intensidad de muestras por unidad de área*. Esta función realiza un conteo de todos los puntos dentro de una región de influencia, ponderándolos por la distancia de cada uno con respecto a la localización de interés.
 
 Para conocer el comportamiento de esta función no parámetrica de probabilidad, plateamos unas carácteristicas:
 
@@ -225,7 +230,7 @@ Para conocer el comportamiento de esta función no parámetrica de probabilidad,
 * Usaremos el $n$ para definir el número de observaciones que analizaremos (donde cada dato es el centro donde se coloca un kernel)
 * Tanto el $n$ como el $h$ determinarán el area de influencia de los puntos a ser interpolados. 
 
-La ecuación para la estimación de la densidad para un punto $x$ sería: </div>
+La ecuación para la estimación de la densidad para un punto $x$ sería:  
 
 $${\displaystyle {\widehat {f}}_{h}(x)={\frac {1}{n}}\sum _{i=1}^{n}K_{h}(x-x_{i})={\frac {1}{nh}}\sum _{i=1}^{n}K{\Big (}{\frac {x-x_{i}}{h}}{\Big )}}$$
 
@@ -244,22 +249,22 @@ knitr::include_graphics('Img/kernel_estimation.gif')
 
 ## Filtro Digital Savitzky-Golay
 
-<div style = "text-align: justify">Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. 
+ Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. 
 El filtro de Savitsky-Golay se basa en el ajuste por minimo cudarados de pequeños conjuntos de datos de longitud $2n +1$ para calcular un polinomio local y tomar al punto central de esa curva polinomial ajustada como el nuevo punto de datos suavizado. 
-Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$ podrían derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $Y_{k_{suavizado}}$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación: <div/>
+Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$ podrían derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $Y_{k_{suavizado}}$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación:  
 
 $$Y_{k_{suavizado}}=\frac{\displaystyle\sum_{i=-n}^{n}A_{i}\cdot Y_{k+i}}{\displaystyle\sum_{i=-n}^{n}A_{i}}$$
 
 
 En donde: 
 
-<div style = "text-align: justify">
+ 
 * $2n+1$: Es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $p$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $k$ equivale a n en la posicion 0.
 
 * ${({Y}_{k+i})}$: Es la funcion polinomial ajustada de grado $p$ empleada para la posicion $k+i$ o simplemente $i$.  
 
 El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el caso de la media móvil, aunque se debe enfatizar que ambos algoritmos tienen "pérdidas", es decir, parte de la información original se pierde o se distorsiona. Este tipo de suavizado es utilizado principalmente para conservar las características de la distribución inicial, los máximos y mínimos relativos y el ancho entre picos en una serie de datos.
-*Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.* </div>
+*Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.*  
 
 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 11. La principal ventaja de esta aproximación es que tiende a preservar características de la distribución inicial tales como los máximos y mínimos relativos.'}
@@ -271,7 +276,7 @@ knitr::include_graphics('Img/savitzky_golay.gif')
 
 ## Localización
 
-<div style = "text-align: justify"> El área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, se aplicó la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, tenemos como área de estudio un área que abarca la región de Cusco y Apurimac. La probabilidad que se encuentra en el área es mayor a 5%. </div>
+  El área de estudio será sustenta con los procedimientos de nuestra metodología, para ello, se aplicó la función kernel de densidad para estimar los lugares en donde se darían más los incendios. Así, tenemos como área de estudio un área que abarca la región de Cusco y Apurimac. La probabilidad que se encuentra en el área es mayor a 5%.  
 
 <br/>
 
@@ -284,7 +289,7 @@ knitr::include_graphics('Img/mapaubicacion.png')
 
 ## Data histórica de incendios 2000-2018
 
-<div style = "text-align: justify"> Este registro abarca los años 2000 a 2018, fueron descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios. Dicha información, previo de un proceso de validación con imágenes satelitales, se encuentran georeferenciados y pueden ser descargados en formato shapefile (datos vectoriales).</div>
+  Este registro abarca los años 2000 a 2018, fueron descargados del [Geoservidor del Ministerio del Ambiente (MINAM)](https://geoservidor.minam.gob.pe/monitoreo-y-evaluacion/registros-historicos-cfoi/). Esta es la información que viene gestionando el MINAM referido a los registros de ocurrencias de incendios. Dicha información, previo de un proceso de validación con imágenes satelitales, se encuentran georeferenciados y pueden ser descargados en formato shapefile (datos vectoriales). 
 
 <br/>
 
@@ -606,12 +611,12 @@ import rasterio as rio # For raster analysis
 
 ## Google earth engine
 
-<div style = "text-align: justify">
+ 
 Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta plataforma se utilizó las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP, los junto con sus procedimientos reproducibles en el lenguaje python, para la descarga de datos de NDVI, se encuentran en el siguiente [enlace](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/blob/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb).
-</div>
+ 
 
 
-<div style = "text-align: justify"> ***Como ejemplo, para iniciar sesión en la plataforma GEE por medio de RGEE lo hacemos con el siguiente script, conectando además con nuestro DRIVE.***</div>
+  ***Como ejemplo, para iniciar sesión en la plataforma GEE por medio de RGEE lo hacemos con el siguiente script, conectando además con nuestro DRIVE.*** 
 
 ```{python eval = FALSE, echo = FALSE}
 Sys.setenv(RETICULATE_PYTHON = "")
@@ -632,17 +637,17 @@ ee_Initialize('juliocontreras1', drive =TRUE)
 
 ## Diagrama de flujo metodológico
 
-<div style = "text-align: justify"> Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura: </div>
+  Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:  
 
 ```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 17. Metodología de la investigación.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
-<div style = "text-align: justify">Cabe mencionar que esta metodología podría extenderse, con el seguimiento para investigaciones posteriores, ya que esta investigación solo es un EDA, el comienzo para generar un modelo de predicción.</div>
+ Cabe mencionar que esta metodología podría extenderse, con el seguimiento para investigaciones posteriores, ya que esta investigación solo es un EDA, el comienzo para generar un modelo de predicción. 
 
 
 ## Diagrama de barras de la acumulación de incendios a lo largo del tiempo
 
-<div style = "text-align: justify"> Se analilzó la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, se necesito de un histograma. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan estos fenómenos.</div>
+  Se analilzó la tendencia de la ocurrencia de los incendios a lo largo del tiempo, para ello, se necesito de un histograma. En este apartado generaremos un histograma de cantidad de incendios en el tiempo. Tendremos como resultado en qué años predominan estos fenómenos. 
 
 <br/>
 
@@ -695,9 +700,9 @@ ggplot(ts, aes(x=Date, y=nfires)) +
 
 ```
 
-<div style = "text-align: justify"> Se puedo observar en el histograma, muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir, que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráfico tambien nos muestra que en el año 2001 no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
+  Se puedo observar en el histograma, muestra que hay un cierta tendencia en los años 2005, 2010 y 2016. Esto quiere decir, que han habido gran cantidad de incendios en esas épocas. Vale decir que este gráfico tambien nos muestra que en el año 2001 no hubo recopilación de estos fenómenos por parte de la entidad encarga, o si lo hubo, no han sido publicados. Esta información nos servirá para hacer los análisis temporales a lo largo de los años, y tener presente solo tres años en particular, los ya mencionados.
 
-Adicional a esta información, se buscó información de sequías, para ver si tenía o no relación con el aumento de incendios en los años seleccionados. Así, dos de estos años coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, en especial para Cusco y Puno, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados ni a negativos en nuestro área de estudio. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en ese año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS).</div>
+Adicional a esta información, se buscó información de sequías, para ver si tenía o no relación con el aumento de incendios en los años seleccionados. Así, dos de estos años coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, en especial para Cusco y Puno, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados ni a negativos en nuestro área de estudio. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en ese año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS). 
 
 ```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 19. SPI para los años seleccionado para nuestra área de estudio Puno-Cusco.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
@@ -705,7 +710,7 @@ knitr::include_graphics('Img/metodologia_4etapas.jpg')
 
 ## Distribución de los incendios por años de 2000 - 2018
 
-<div style = "text-align: justify"> En el apartado anterior generamos un histograma con el fin de ver el comportamiento acumulativo de los incendios desde 2000 al 2018, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver también, cómo se comporta la distribución de incendios a traves de los años de estudio. <div/>
+  En el apartado anterior generamos un histograma con el fin de ver el comportamiento acumulativo de los incendios desde 2000 al 2018, para que se entienda mejor la distribución de los puntos de incendios se procedió a plotear los puntos de una manera más interactiva, así ver también, cómo se comporta la distribución de incendios a traves de los años de estudio.  
 
 <br/>
 
@@ -787,19 +792,19 @@ Spp_Map
 
 ## Localización del área de estudio
 
-<div style = "text-align: justify"> 
+  
 Para el propósito de la investigación se necesitó un área, en específico, de estudio, pero, ¿realmente sabemos en donde hay mayor probalidad de ocurrencia de incendios?, o mejor dicho, ¿dónde hay una mayor tendencia a ocurrir estos fenómenos?. Entonces, para ello, se utilizó la información del geoservidor del MINAM que proporcionó información de incendios históricos, así detallaremos los procedimientos para localizar nuestra área de estudio, a partir de los datos mencionados.
-</div> 
+  
 
 ### Estimación de densidad de probabilidad 2D: función de densidad no paramétrica
 
-<div style = "text-align: justify"> Se suavizó la serie de incendios (puntos), en función a una matriz, en este caso 250 x 250, tambien definido el tamaño del pixel 0.8 s, además se tuvo en cuenta la matriz movil o kernel (3x3, 5x5, etc).
+  Se suavizó la serie de incendios (puntos), en función a una matriz, en este caso 250 x 250, tambien definido el tamaño del pixel 0.8 s, además se tuvo en cuenta la matriz movil o kernel (3x3, 5x5, etc).
 
 Con el kernel se determinará la probilidad de ocurrencia, ¿y qué quiere decir eso?. Para pixel central del kernel, de nuestra matriz movil, se calculará la probabilidad de ocurrencia respecto al total de incendios de todo el Perú. Así, la matriz movil irá recorriendo cada pixel y calculando dicha probabilidad.
 
 Las funciones de densidad parámetricas dependen de la varianza o media muestral, por ejemplo, la función de probabilidad normal. En este caso la función kernel estima la densidad de probabilidad para calcular en porcentaje la posibilidad de ocurrencia de incendios para cada pixel, clusterizando las regiones con mayor probabilidad por sobre un umbral definido, además se muestra la región a partir de la cual se basará nuestros graficos de análisis posteriores.
 
-Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), sus argumentos de coordenadas son los límites de la matriz ya definida. <div/>
+Basicamente, esta función del paquete MASS, en R, varía por ubicación (asignandole peso), sus argumentos de coordenadas son los límites de la matriz ya definida.  
 
 <br/>
 
@@ -909,16 +914,16 @@ addControl(html = "<p><strong><em>MAPA DE LA ZONA MÁS PROBABLE PARA EL ESTUDIO<
 
 ## Preprocesamiento para NDVI del MOD13Q1
 
-<div style = "text-align: justify"> Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
+  Este se obtendrá del producto del sensor MODIS (MOD13Q1) del sensor Terra, 2000 - 2018. Este producto es un compuesto de 16 días, bajo el método de valor máximo, tiene una resolución espacial de 250 m, puede encontrarlo en [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1?hl=en)
 
 
-Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$.</div>
+Dentro del producto se tiene sub data sets, donde podemos encontrar el NDVI (006) y EVI, y las bandas que se utilizaron para sus calculos, así mismo encontrarás la banda $qa$ o banda de calidad. La banda de calidad (qa) te muestra el estado de los píxeles, según la presencia de artefactos como las nubes, sombras, cobertura de nieve. Aquí filtraremos los datos de NDVI a través de la ***qa*** (0-65535) con una resolución radiométrica de 16 bits $2^{16}$. 
 
 ***La descarga automática de los datos MOD13Q1 es reproducible y se encuentra disponible en el [repositorio de Github](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/tree/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb) del proyecto.***
 
 ### Filtro por la banda de calidad
 
-<div style = "text-align: justify">Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa** (de calidad). </div>
+ Para entender como se interpreta un banda de calidad no dirigimos a la página de [GRASS GIS](https://grass.osgeo.org/grass78/manuals/i.modis.qc.html), donde nos ofrece un descripción de la ***qa***. Tenemos que pasar nuestros ND de un sistema decimal a uno binario (ahí es donde se hace la interpretación) donde nos resultará 16 dígitos. Los códigos a continuación creará un función filtro **qa** (de calidad).  
 
 
 ```{r warning=FALSE, cache=FALSE, eval=FALSE}
@@ -975,7 +980,7 @@ for(i in ndvi_raster){
 
 ### Completación de datos con el método Savitzky Golay
 
-<div style = "text-align: justify"> Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en R.
+  Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en R.
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
 
@@ -1154,7 +1159,7 @@ Como podemos observar en el histograma los incendios se registran entre los 1000
 
 ## Variabilidad estacional de la ocurrecia de incendios
 
-<div style = "text-align: justify"> Se verá el comportamiento estacional, promedio y máximo, para un registro de incendios. La idea es identificar los meses de cada año, donde el registro mensual se comporte igual o cerca de los máximos históricos y que superen los promedios historicos, esos meses debieron tener la mejores condiciones favorables para la ocurrencia de indencios.</div>
+  Se verá el comportamiento estacional, promedio y máximo, para un registro de incendios. La idea es identificar los meses de cada año, donde el registro mensual se comporte igual o cerca de los máximos históricos y que superen los promedios historicos, esos meses debieron tener la mejores condiciones favorables para la ocurrencia de indencios. 
 
 <br/>
 
@@ -1407,12 +1412,12 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
 
 <br/>
 
-<div style = "text-align: justify"> En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre.</div>
+  En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre. 
 
 
 ## Analisis temporal de datos bioclimáticos
 
-<div style = "text-align: justify"> En este apartado se analizará temporalemte el comportamiento tanto del NDVI, precipitación y temperatura, ***para justificar su uso en el analisis posterior.***</div>
+  En este apartado se analizará temporalemte el comportamiento tanto del NDVI, precipitación y temperatura, ***para justificar su uso en el analisis posterior.*** 
 
 ### Precipitacion acumulada mensual
 
@@ -1559,12 +1564,12 @@ ggplot(data = PP, aes(x = date, y = value,
 ```
 <br/>
 
-<div style = "text-align: justify"> De esto podemos inferir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
+  De esto podemos inferir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
 
 Se ve que el mes de octubre es la excepción, donde la precipitación supera a la media histórica. Aunque, en el gráfico de número de incendios por meses, se ve justo en ese mes dismuye, para luego crecer con gran pendiente en el mes de noviembre, esto para todos los años seleccionados.
 
 Tambien se tomó un año "normal" donde no hay gran cantidad de incendios históricos y se ve un comportamiento donde la precipitación del año supera a la media histórica, justo en la estación de mayor cantidad de incendios.
-</div>
+ 
 
 
 ### Temperatura máxima mensual
@@ -1688,7 +1693,7 @@ ggplot(data = TEMP, aes(x = date, y = value,
 ```
 <br/>
 
-<div style = "text-align: justify"> Podemos inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre.</div>
+  Podemos inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre. 
 
 
 ### NDVI Mensual
@@ -1821,7 +1826,7 @@ ggplot(data = NDVI, aes(x = date, y = value,
 ```
 <br/>
 
-<div style = "text-align: justify"> En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio.</div>
+  En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
 
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
