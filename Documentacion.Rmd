@@ -2161,7 +2161,9 @@ df_pp <-data.frame(date=date,data_pp)  %>%
 ## Matriz PP de 2000 - 2017
 pp.matrix <- as.matrix(df_pp[,2:13])
 
+## Vista gráfica de la distribución de las variables ---
 hist(pp.matrix)
+hist(ndvi.matrix)
 
 ## Test de Shapiro-Wilk --------------------------------
 shapiro.test(pp.matrix)
@@ -2177,15 +2179,20 @@ y <- ndvi.matrix
 
 lag <- 3
 
-a <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
-## Verificar si la correlación es significativa -------
+## Generar la correlación rezagadas y su significancia -----
+a <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))  
+colnames(a) <- c(1:12)
 b <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
-
-## Correlación sin lags --------------------------------
+colnames(b) <- c(1:12)
+## Variable meses -----------------------------------------
+c <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
+colnames(c) <- c(1:12)
+## Correlación sin lags -----------------------------------
 for(j in 1:ncol(y)){
         a[1,j] = cor(x[,j],y[,j],method="spearman")
         b[1,j] = cor.test(x[,j],y[,j],method="spearman")[3] %>% 
                  as.numeric()
+        c[1,j] = j
 }        
 
 ## Correlación con lags --------------------------------
@@ -2193,16 +2200,54 @@ for(k in 1:lag){
    for(j in 1:ncol(y)){
       if(j+k <= 12){
            a[k+1,j] = cor(x[,j],y[,j+ k],method="spearman")
-           b[k+1,j] = cor.test(x[,j],y[,j+ k],method="spearman")[3] %>%                       as.numeric()           
+           b[k+1,j] = cor.test(x[,j],y[,j+ k],method="spearman")[3] %>%                       as.numeric() 
+           c[k+1,j] = j + k
            
       } else{
            a[k+1,j] = cor(x[,j],y[,(j+k)-12],method="spearman")
            b[k+1,j] =cor.test(x[,j],y[,(j+k)-12],
                               method="spearman")[3]%>% 
-                              as.numeric()  
+                              as.numeric()
+           c[k+1,j] = (j + k) -12
          }
     }
 } 
+
+## Graficando la correlacion rezagada ---------------------
+## Convirtiendo a meses
+
+months <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep",
+            "Oct","Nov","Dec")
+# Corr ----------------------------------------------------
+melted_a <- reshape2::melt(a)
+melted_a$variable2 = melt(c)$value %>% as.vector()
+
+melted_a$variable <- factor(month.abb[melted_a$variable],
+                            levels = months)            
+melted_a$variable2 <- factor(month.abb[melted_a$variable2], 
+                             levels = months)
+names(melted_a) <- c('pp','corr','ndvi')
+
+## p-value -------------------------------------------------
+melted_b <- reshape2::melt(b)
+melted_b$variable2 = melt(c)$value %>% as.vector()
+melted_b$variable <- factor(month.abb[melted_b$variable],
+                            levels = months)            
+melted_b$variable2 <- factor(month.abb[melted_b$variable2], 
+                             levels = months)
+names(melted_b) <- c('pp','pvalue','ndvi')
+
+
+# Heatmap corr ----------------------------------------------------
+
+ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
+   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                        midpoint = 0, limit = c(-1,1), space = "Lab", name="Non parametric\nSpearman Correlation") +
+     ggtitle('Correlación rezagada de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
+     labs(x = 'Precipitación acumulada mensual\n[mm/mes]', y = 'NDVI', fill='')
+
+ # Heatmap pvalue ------------------------------------------------
+ggplot(melted_b, aes(pp,ndvi))+ geom_raster(aes(fill=pvalue<0.05))
 
 ```
 
