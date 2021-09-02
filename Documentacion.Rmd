@@ -2134,7 +2134,7 @@ dates <- as.Date(dt$date)
 df_ndvi<-data.frame(date=dates,data_ndvi)  %>% 
   mutate(month = substr(date, 6, 7), year = substr(date, 1, 4)) %>%
   group_by(year,month) %>% 
-  summarize(ndvi = mean(data_ndvi,na.rm = T)) %>% 
+  summarise(ndvi = mean(data_ndvi,na.rm = T)) %>% 
   pivot_wider(names_from = month, values_from= ndvi) %>% 
   relocate("01", .after= year) %>% 
   dplyr::filter(year %in% seq("2000","2017"))
@@ -2161,6 +2161,8 @@ df_pp <-data.frame(date=date,data_pp)  %>%
 ## Matriz PP de 2000 - 2017
 pp.matrix <- as.matrix(df_pp[,2:13])
 
+hist(pp.matrix)
+
 ## Test de Shapiro-Wilk --------------------------------
 shapiro.test(pp.matrix)
 shapiro.test(ndvi.matrix)
@@ -2169,11 +2171,28 @@ shapiro.test(ndvi.matrix)
 ad.test(pp.matrix)
 ad.test(ndvi.matrix)
 
-## Creación de variables lageadas ----------------------
-y <- pp.matrix
-x <- ndvi.matrix
+## Creación de variables  ------------------------------
+x <- pp.matrix
+y <- ndvi.matrix
 
-a <- data.frame(matrix(nrow = 1, ncol = ncol(x)))
+lag <- 3
+
+a <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
+
+## Correlación sin lags --------------------------------
+for(j in 1:ncol(y)){
+        a[1,j] = cor(x[,j],y[,j],method="spearman")
+}        
+## Correlación con lags --------------------------------
+for(k in 1:lag){
+   for(j in 1:ncol(y)){
+      if(j+k <= 12){
+           a[k+1,j] = cor(x[,j],y[,j+ k],method="spearman")  
+      } else{
+           a[k+1,j] = cor(x[,j],y[,(j+k)-12],method="spearman")  
+         }
+    }
+} 
 ```
 
 
