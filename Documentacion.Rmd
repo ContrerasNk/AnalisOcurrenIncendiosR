@@ -2178,22 +2178,34 @@ y <- ndvi.matrix
 lag <- 3
 
 a <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
+## Verificar si la correlación es significativa -------
+b <- data.frame(matrix(nrow = lag+1, ncol = ncol(y)))
 
 ## Correlación sin lags --------------------------------
 for(j in 1:ncol(y)){
         a[1,j] = cor(x[,j],y[,j],method="spearman")
+        b[1,j] = cor.test(x[,j],y[,j],method="spearman")[3] %>% 
+                 as.numeric()
 }        
+
 ## Correlación con lags --------------------------------
 for(k in 1:lag){
    for(j in 1:ncol(y)){
       if(j+k <= 12){
-           a[k+1,j] = cor(x[,j],y[,j+ k],method="spearman")  
+           a[k+1,j] = cor(x[,j],y[,j+ k],method="spearman")
+           b[k+1,j] = cor.test(x[,j],y[,j+ k],method="spearman")[3] %>%                       as.numeric()           
+           
       } else{
-           a[k+1,j] = cor(x[,j],y[,(j+k)-12],method="spearman")  
+           a[k+1,j] = cor(x[,j],y[,(j+k)-12],method="spearman")
+           b[k+1,j] =cor.test(x[,j],y[,(j+k)-12],
+                              method="spearman")[3]%>% 
+                              as.numeric()  
          }
     }
 } 
+
 ```
+
 
 
 
