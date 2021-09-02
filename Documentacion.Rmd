@@ -6,9 +6,9 @@ output:
   html_document:
     fig_caption: yes
     toc: yes
-    toc_depth: 6 
+    toc_depth: 6
     toc_float:
-      collapsed: true 
+      collapsed: true
       smooth_scroll: true 
     number_sections: true
     theme: journal 
@@ -58,13 +58,12 @@ En este análisis se evaluará la estacionalidad de las variables bioclimáticas
 
 Parte de esta problemática es la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo. <div/>
 
+
 <br/>
 
 ```{r echo = FALSE, fig.align='center', out.width="70%", fig.cap='Figura 1. Incendios forestales por la quema de malezas o residuos agrículas.'}
 knitr::include_graphics('Img/planteamientoproblema.jpg')
 ```
-
-
 
 ## Objetivos
 
@@ -74,19 +73,19 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ### Objetivos específicos
 
-<div style = "text-align: justify"> 
+
 * Analizar las variables bioclimáticas calidad de vegetación y precipitación de forma interestacional en la zona diagnosticada con mejores CFOIs.
 
 * Ampliar el conocimiento de la influencia de las variables bioclimáticas para las CFOI y así en un futuro generar un modelo de predicción.
 
-* Generar conocimiento y aprender la técnica de Teledetección, además de aplicar los conocimientos aprendidos en el curso.</div>
+* Generar conocimiento y aprender la técnica de Teledetección, además de aplicar los conocimientos aprendidos en el curso.
 
 ## Justificación
 
 <div style = "text-align: justify"> Este proyecto de investigación se justifica en lo poco explorado que estan siendo los datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.</div>
 
-
 # Antecedentes
+
 
 * [Monitoreo de las condiciones favorables para la ocurrencia de incendios sobre la cobertura vegetal - CFOI](https://repositoriodigital.minam.gob.pe/bitstream/handle/123456789/652/Monitoreo-CFOI_CV.pdf?sequence=1&isAllowed=y)
 
@@ -100,7 +99,7 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 * [Uso de estimados de densidad Kernell en  la investigación de grupos cerámicos del Periodo Formativo provenientes de Chavín de Huantar](https://revistasinvestigacion.unmsm.edu.pe/index.php/Arqueo/article/view/12339/11039)  
 
-* [Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)  
+* [Estadística no paramétrica I - youtube](https://www.youtube.com/watch?v=Q40ESwQbJO8)
 
 * [La problemática de los incendios forestales y bases para su teledetección en el Perú](http://journals.continental.edu.pe/index.php/apuntes/article/view/198/196)
 
@@ -585,6 +584,7 @@ library(signal)
 library(foreach)
 library(RColorBrewer)
 library(reshape2)
+library(nortest)
 ```
 
 ### Librerias de Python utilizadas 
@@ -2098,6 +2098,81 @@ PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 ```
 
 
+## Cor.lag 
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+# Extracción de datos -------------------------------------
+
+## Área en común
+region <- st_read("Materiales/area.gpkg", quiet = TRUE)
+
+## Cargando raster de precipitación.
+pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")
+
+## Raster de NDVI.
+ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")
+
+### NDVI
+data_ndvi <- ndvi_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>%
+  as.vector()
+
+ndvi_lista <- list.files("RasterData/Resultados/SavGol/", pattern = '.tif$')
+
+for(i in 1:length(ndvi_lista)){ 
+  date = ndvi_lista[i] %>% strsplit("_") %>% sapply("[",1) %>% substr(1,10) 
+  if (i == 1) {dt = data.frame(date)} else{dt = rbind(dt,date)}
+}
+
+dates <- as.Date(dt$date)
+
+df_ndvi<-data.frame(date=dates,data_ndvi)  %>% 
+  mutate(month = substr(date, 6, 7), year = substr(date, 1, 4)) %>%
+  group_by(year,month) %>% 
+  summarize(ndvi = mean(data_ndvi,na.rm = T)) %>% 
+  pivot_wider(names_from = month, values_from= ndvi) %>% 
+  relocate("01", .after= year) %>% 
+  dplyr::filter(year %in% seq("2000","2017"))
+
+## Calculando enero del 2000
+df_ndvi[1,2] <- mean(as.numeric(df_ndvi[1,2:13]),na.rm=T)
+
+## Matriz NDVI de 2000 - 2017
+ndvi.matrix <- as.matrix(df_ndvi[,2:13])
+
+### PP
+date <- seq(as.Date('1981-01-01'), as.Date('2018-02-01'), by = "month")
+
+data_pp <- pp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
+
+df_pp <-data.frame(date=date,data_pp)  %>% 
+  mutate(month = substr(date, 6, 7), year = substr(date, 1, 4)) %>%
+  group_by(year,month) %>% 
+  summarize(pp = mean(data_pp,na.rm = T)) %>% 
+  pivot_wider(names_from = month, values_from= pp) %>% 
+  relocate("01", .after= year) %>% 
+  dplyr::filter(year %in% seq("2000","2017"))
+
+## Matriz PP de 2000 - 2017
+pp.matrix <- as.matrix(df_pp[,2:13])
+
+## Test de Shapiro-Wilk --------------------------------
+shapiro.test(pp.matrix)
+shapiro.test(ndvi.matrix)
+
+## Test de Anderson Darling ----------------------------
+ad.test(pp.matrix)
+ad.test(ndvi.matrix)
+
+## Creación de variables lageadas ----------------------
+y <- pp.matrix
+x <- ndvi.matrix
+
+a <- data.frame(matrix(nrow = 1, ncol = ncol(x)))
+```
+
+
+
 ## 2005
 
 ## 2010
@@ -2118,6 +2193,7 @@ De lo expuesto anteriormente, se concluye que es importante carácterizar nuestr
 Por ultimo el comportamiento estacional del NDVI, aún no ha sido analizado de esta forma.
 
 Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
+
 
 # Referencias
 
