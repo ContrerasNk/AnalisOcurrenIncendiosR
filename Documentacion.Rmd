@@ -1,6 +1,6 @@
 ---
-title: Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000-2018 
-author:  Contreras Huerta Julio y Flores Farfan Jair 
+title: "<center> <h1> *Análisis de las condiciones favorables para la ocurrencia de incendios en el Perú para los años 2000 - 2018* </h1> </center>"
+author:  "Contreras Huerta Julio y Flores Farfan Jair"
 date: "***`r format(Sys.time(), '%B %d, %Y')`***"
 output:
   html_document:
@@ -659,13 +659,13 @@ ggplot(ts, aes(x=Date, y=nfires)) +
            colour="#f03b20") +
   theme_test() + 
   ylab(label = 'Número de incendios\n') +  
-  xlab(label = 'Temporalidad') +
+  xlab(label = '') +
   ggtitle(paste('Eventos de incendios \ndel año 2000 al 2018', sep = '')) +
   theme(plot.title = element_text(hjust = 0.5, face = 'bold', size=15, color = "#020722"),
         axis.text.x  = element_text(size=9, angle = 75, hjust = 1, color = "#020722"),
         axis.text.y  = element_text(size=9, color = "#020722"),
         axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
-        axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) + 
+        axis.title.x = element_text(size = 0.1, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) + 
   scale_x_date(limits = c(as.Date('2000-07-01'),
                           as.Date('2019-01-01')),
                date_labels = ("%Y"), 
