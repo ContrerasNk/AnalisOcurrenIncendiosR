@@ -277,9 +277,7 @@ knitr::include_graphics('Img/savgol.gif')
 ## Correlación rezagada (Lagged correlation)
   La correlación rezagada calcula el grado de asociación entre dos o más variables a través de lags o retrasos temporales definidos a escala diaria, quincenal o mensual. Estos lags son por lo tanto la cantidad de tiempo necesario en donde las variables poseen un mayor grado de correlación. 
   Este concepto tiene aplicaciones útiles para caracterizar las variables bioclimáticas ya que los efectos entre estas no se relacionan de manera directa e inmediata. 
-  Cabe destacar que la correlación no implica una causalidad o dependencia entre las variables.
-  
-  El tipo de correlación utilizada será paramétrica si las variables de estudio son variables aleatorias independientes e identicamente distribuidas bajo una distribución normal. 
+  Cabe destacar que la correlación no implica una causalidad o dependencia entre las variables. 
   
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 12. Se muestra un ejemplo de relación rezagada con un lag máximo de tres meses entre las variables de anomalía mensual del NDVI y de precipitación mensual para determinadas coberturas vegetales'}
 knitr::include_graphics('Img/LaggedCorrelation.jpg')
@@ -294,7 +292,7 @@ knitr::include_graphics('Img/LaggedCorrelation.jpg')
 
 <br/>
 
-```{r echo = FALSE, out.width="100%", fig.align='center', fig.cap='Figura 12. Zona de mayor cantidad de incendios ubicada en los Andes orientales.'}
+```{r echo = FALSE, out.width="100%", fig.align='center', fig.cap='Figura 13. Zona de mayor cantidad de incendios ubicada en los Andes orientales.'}
 knitr::include_graphics('Img/mapaubicacion.png')
 ```
 
@@ -307,7 +305,7 @@ knitr::include_graphics('Img/mapaubicacion.png')
 
 <br/>
 
-```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 13. Plataforma del geoservidor del MINAM, donde encontramos datos vectoriales-puntos con información de incendios forestales.'}
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 14. Plataforma del geoservidor del MINAM, donde encontramos datos vectoriales-puntos con información de incendios forestales.'}
 knitr::include_graphics('Img/plataforma_incendios2000_2018.png')
 ```
 
@@ -318,7 +316,7 @@ Para nuestra área de estudio, se hará uso del NDVI procesado a resolucion de 2
 
 <br/>
 
-```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 14. MOD13Q1.006 Terra Vegetation Indices 16-Day Global 250m.'}
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 15. MOD13Q1.006 Terra Vegetation Indices 16-Day Global 250m.'}
 knitr::include_graphics('Img/modis_ndvi.gif')
 ```
 
@@ -326,7 +324,7 @@ knitr::include_graphics('Img/modis_ndvi.gif')
 
 El producto grillado [PISCO](https://iridl.ldeo.columbia.edu/SOURCES/.SENAMHI/.HSR/.PISCO/?Set-Language=es#info) (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima), a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus productos poseen una escala diaria y mensual y se encuentran disponibles hasta Febrero del año 2018.  
 
-```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 15. Investigadores del senamhi publican artículo científico sobre producto grillado de precipitación..'}
+```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 16. Investigadores del senamhi publican artículo científico sobre producto grillado de precipitación..'}
 knitr::include_graphics('Img/pisco_pp.png')
 ```
 
@@ -566,7 +564,7 @@ Fa <-ggplot() +
 ggsave(plot = Fa ,"Img/Mapa_elevaciones.png", units = "cm", width = 30,height = 22, dpi = 1000)
 ```
 
-```{r eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE, out.width="100%", fig.align='center', fig.cap='Figura 16. Mapa de elevaciones del área de estudio para las CFOI. Fuente: Google Earth Engine - SRTM V4.'}
+```{r eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE, out.width="100%", fig.align='center', fig.cap='Figura 17. Mapa de elevaciones del área de estudio para las CFOI. Fuente: Google Earth Engine - SRTM V4.'}
 knitr::include_graphics('Img/Mapa_elevaciones.png')
 ```
 
@@ -653,7 +651,7 @@ ee_Initialize('juliocontreras1', drive =TRUE)
 
   Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:  
 
-```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 17. Metodología de la investigación.', out.width="70%"}
+```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 18. Metodología de la investigación.', out.width="70%"}
 knitr::include_graphics('Img/METODOLOGIA-FINAL.jpg')
 ```
  Cabe mencionar que esta metodología podría extenderse, con el seguimiento para investigaciones posteriores, ya que esta investigación solo es un EDA, el comienzo para generar un modelo de predicción. 
@@ -665,7 +663,7 @@ knitr::include_graphics('Img/METODOLOGIA-FINAL.jpg')
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="80%", fig.align='center', fig.cap='Figura 18. Eventos de incendios a lo largo de los años 2000-2018.'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="80%", fig.align='center', fig.cap='Figura 19. Eventos de incendios a lo largo de los años 2000-2018.'}
 # Incendios acumulados por mes
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
 fires <- st_read(shp, quiet = TRUE) %>% 
@@ -718,7 +716,7 @@ ggplot(ts, aes(x=Date, y=nfires)) +
 
 Adicional a esta información, se buscó información de sequías, para ver si tenía o no relación con el aumento de incendios en los años seleccionados. Así, dos de estos años coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, en especial para Cusco y Puno, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados ni a negativos en nuestro área de estudio. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en ese año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS). 
 
-```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 19. SPI para los años seleccionado para nuestra área de estudio Puno-Cusco.', out.width="70%"}
+```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 20. SPI para los años seleccionado para nuestra área de estudio Puno-Cusco.', out.width="70%"}
 knitr::include_graphics('Img/metodologia_4etapas.jpg')
 ```
 
@@ -734,7 +732,7 @@ knitr::include_graphics('Img/metodologia_4etapas.jpg')
 }
 </style>
 
-```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap = 'Figura 20. Mapa interactivo para ver la distribución de incendios por años.'}
+```{r leaflet, eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap = 'Figura 21. Mapa interactivo para ver la distribución de incendios por años.'}
 # Incendios acumulados por mes
 Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
 shp   <- 'Materiales/registro_incendios_2000_2018.gpkg'
@@ -822,7 +820,7 @@ Basicamente, esta función del paquete MASS, en R, varía por ubicación (asigna
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 21. Estimación de la densidad para la ver la zonas más probables de incendios.'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, comment=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 22. Estimación de la densidad para la ver la zonas más probables de incendios.'}
 fires  <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 peru <- st_read('Materiales/Peru.gpkg', quiet = TRUE)
 Departamentos <- st_read('Materiales/DepartamentosIncendios.gpkg', quiet = TRUE)
@@ -870,7 +868,7 @@ Se definió el área de estudió en relación a la distribución de probabilidad
 
 <br/>
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 22. Zona más problable de ocurrencia de incendios, ubicada en el sur, en la zona Andina oriental.'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px", fig.align='center', fig.cap='Figura 23. Zona más problable de ocurrencia de incendios, ubicada en el sur, en la zona Andina oriental.'}
 Provincias <- st_read('Materiales/Provincias.gpkg', quiet = TRUE)
 Cutervo <- st_read('Materiales/area.gpkg', quiet = TRUE) # abajo el guardado
 
@@ -1834,7 +1832,7 @@ ggplot(data = NDVI, aes(x = date, y = value,
 ```
 <br/>
 
-  En la anterior gráfica podemos observar el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor ocurrencia de incendios, en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
+  En la anterior gráfica podemos observar el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en una estacionalidad marcada de mayo a noviembre, los meses de mayor ocurrencia de incendios, en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
 
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
@@ -2000,6 +1998,10 @@ Para analizar los resultados hay que tener en cuenta que los efectos entre las v
 
 ## Análisis de correlaciones rezagadas
 
+Luego de analizar graficamente la estacionalidad de las variables bioclimáticas y su compartamiento en función de los rangos de elevación se identificó un comportamiento similar en las variables de precipitación acumulada y NDVI mensual para ambos casos, debido a ello se propuso verificar si existe algun grado de asociación entre ellas en el área de estudio.
+
+Para lograr aquello, se dispuso en primer lugar de calcular las anomalías para ambas variables ya que Wilks, D. S., (1995) sugiere que debido a la variación estacional de los eventos climáticos el uso de datos de anomalía estandarizada en lugar de valores medios es más conveniente para estimar la relación entre estos eventos.
+
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # NDVI Promedios históricos -------------------------------
 
@@ -2066,10 +2068,10 @@ Ndvi_mensual_stack <- stack(Ndvi_mensual)
 # Ndvi_mensual_stack <- crop(Ndvi_mensual_stack, area, snap = "out")
 # 
 writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_MEAN_MENSUAL.tif")
+```
 
 
-
-{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # NDVI SD historicas -------------------------------
 
 # desviación mensual historico
@@ -2247,73 +2249,17 @@ for (i in 1:12) {
 write.csv(df_cov_pp, "RasterData/VarCorrelation/PP_ANOM.csv")
 ```
 
+
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 # Extracción de datos -------------------------------------
-
-## Área en común
-region <- st_read("Materiales/area.gpkg", quiet = TRUE)
-
-## Cargando raster de precipitación.
-pp_velox <- velox("RasterData/PISCO/PISCOp_v11_area.tif")
-
-## Raster de NDVI.
-ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")
-
-### NDVI
-data_ndvi <- ndvi_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>%
-  as.vector()
-
-ndvi_lista <- list.files("RasterData/Resultados/SavGol/", pattern = '.tif$')
-
-for(i in 1:length(ndvi_lista)){ 
-  date = ndvi_lista[i] %>% strsplit("_") %>% sapply("[",1) %>% substr(1,10) 
-  if (i == 1) {dt = data.frame(date)} else{dt = rbind(dt,date)}
-}
-
-dates <- as.Date(dt$date)
-
-df_ndvi<-data.frame(date=dates,data_ndvi)  %>% 
-  mutate(month = substr(date, 6, 7), year = substr(date, 1, 4)) %>%
-  group_by(year,month) %>% 
-  summarise(ndvi = mean(data_ndvi,na.rm = T)) %>% 
-  pivot_wider(names_from = month, values_from= ndvi) %>% 
-  relocate("01", .after= year) %>% 
-  dplyr::filter(year %in% seq("2000","2017"))
-
-## Calculando enero del 2000
-df_ndvi[1,2] <- mean(as.numeric(df_ndvi[1,2:13]),na.rm=T)
-
 ## Matriz NDVI de 2000 - 2017
-ndvi.matrix <- as.matrix(df_ndvi[,2:13])
-
-### PP
-date <- seq(as.Date('1981-01-01'), as.Date('2018-02-01'), by = "month")
-
-data_pp <- pp_velox$extract(sp = region, fun = function(x){ mean(x, na.rm = T) }) %>% as.vector()
-
-df_pp <-data.frame(date=date,data_pp)  %>% 
-  mutate(month = substr(date, 6, 7), year = substr(date, 1, 4)) %>%
-  group_by(year,month) %>% 
-  summarize(pp = mean(data_pp,na.rm = T)) %>% 
-  pivot_wider(names_from = month, values_from= pp) %>% 
-  relocate("01", .after= year) %>% 
-  dplyr::filter(year %in% seq("2000","2017"))
+df_ndvi <- read.csv("RasterData/VarCorrelation/NDVI_ANOM.csv")
+ndvi.matrix <- as.matrix(df_ndvi[1:18,3:14])
 
 ## Matriz PP de 2000 - 2017
-pp.matrix <- as.matrix(df_pp[,2:13])
-
-## Vista gráfica de la distribución de las variables ---
-hist(pp.matrix)
-hist(ndvi.matrix)
-
-## Test de Shapiro-Wilk --------------------------------
-shapiro.test(pp.matrix)
-shapiro.test(ndvi.matrix)
-
-## Test de Anderson Darling ----------------------------
-ad.test(pp.matrix)
-ad.test(ndvi.matrix)
+df_pp <- read.csv("RasterData/VarCorrelation/PP_ANOM.csv")
+pp.matrix <- as.matrix(df_pp[,3:14])
 
 ## Creación de variables  ------------------------------
 x <- pp.matrix
@@ -2354,6 +2300,28 @@ for(k in 1:lag){
          }
     }
 } 
+```
+
+Aca van los histogramas
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+## Vista gráfica de la distribución de las variables ---
+hist(pp.matrix)
+hist(ndvi.matrix)
+```
+
+Aca van los resultados del test de normalidad
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+## Test de Shapiro-Wilk --------------------------------
+shapiro.test(pp.matrix)
+shapiro.test(ndvi.matrix)
+
+## Test de Anderson Darling ----------------------------
+ad.test(pp.matrix)
+ad.test(ndvi.matrix)
+```
+
+Grafica de correlación rezagada
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 ## Graficando la correlacion rezagada ---------------------
 ## Convirtiendo a meses
@@ -2386,13 +2354,12 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", name="Non parametric\nSpearman Correlation") +
      ggtitle('Correlación rezagada de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
-     labs(x = 'Precipitación acumulada mensual\n[mm/mes]', y = 'NDVI', fill='')
+     labs(x = 'Anomalía de precipitación acumulada mensual\n[mm/mes]', y = 'Anomalía de NDVI mensual', fill='')
 
  # Heatmap pvalue ------------------------------------------------
 ggplot(melted_b, aes(pp,ndvi))+ geom_raster(aes(fill=pvalue<0.05))
-
 ```
-En esta gráfica se aprecia la correlación de la precipitación acumulada mensual con respecto al NDVI con un retraso máximo de 3 meses, se observan correlaciones negativas en los meses de Enero a Abril, esto nos da ...
+En esta gráfica se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra área de estudio con un lag máximo de 3 meses. se observan correlaciones significativas (pvalue < 0.05) principalmente en los meses de Julio y Noviembre 
 
 
 # Discusión de resultados
