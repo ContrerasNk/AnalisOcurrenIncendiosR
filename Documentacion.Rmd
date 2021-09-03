@@ -2001,7 +2001,7 @@ X
 Esta variable tiene una marcada estacionalidad, además de un marcado cambio al aumento de altitud (disminuye). 
 
 
-# Resultados y Discusión
+# Resultados y Análisis 
 
 Para analizar los resultados hay que tener en cuenta que los efectos entre las variables no se relacionan de manera directa e inmediata (no se dan de la noche a la mañana), en este estudio las variables a analizar serán la lluvia y la actividad fotosintética (NDVI). Esto quiere decir que, por ejemplo, si hoy llueve el proxy (resultado no medible en campo directamente con unidades) de NDVI no aumenta vigorosamente, lo lógico. Entonces no hay una relación directa inmediata. Lo que sí habrá será una relación *lageada*, o sea se debe esperar un cierto tiempo luego del actuar de la variable independiente (Precipitación) para que la variable dependiente (NDVI) mejore o empeore.
 
@@ -2103,9 +2103,6 @@ Ndvi_mensual_stack <- stack(Ndvi_mensual)
 
 writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_SD_MENSUAL.tif")
 
-
-
-{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # PRECIPITACION MEAN -------------------------------
 
 # stack mensual desde 2000 a 2017
@@ -2139,8 +2136,6 @@ for (i in 1:12) {
 PP_mensual_stack <- stack(PP_mensual)
 writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_MEAN_MENSUAL.tif")
 
-
-{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # PRECIPITACION SD -------------------------------
 
 # mensual historico
@@ -2162,9 +2157,6 @@ for (i in 1:12) {
 PP_mensual_stack <- stack(PP_mensual)
 writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_SD_MENSUAL.tif")
 
-
-
-{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # RESAMPLEO Y MISMAS AREAS-------------------------------
 area <- st_read("Materiales/area.gpkg")
 PP_mensual_stack
@@ -2187,9 +2179,6 @@ PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 # writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_SD_MENSUAL_MASK.tif")
 # writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_SD_MENSUAL_MASK.tif")
 
-
-
-{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # ANOMALIAS  -------------------------------
 
 # Datos
@@ -2273,8 +2262,8 @@ pp.matrix <- as.matrix(df_pp[,3:14])
 Una vez obtenida las anomalías mensuales promediadas del NDVI y precipitación acumulada para el área de estudio se procede a evaluar el tipo de distribución, el cual nos determinará si la correlación utilizada será paramétrica o no paramétrica.
 Se analiza en primer momento la gráfica de estas variables a través de un histograma, donde se aprecia visualmente la distribución siendo para el caso del NDVI una distribución normal en donde la mayor frecuencia de valores dentro del rango de la media igual a 0. 
 
-ndvi anomalias histogramas
 ```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
+
 # arriba pp.matrix esta definidaaaaaa
 
 data_frame(val = as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]) %>% 
@@ -2297,10 +2286,7 @@ ggplot(aes(val)) +
 
 ```
 
-
-pp anomalias histogramas
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# arriba pp.matrix esta definida
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 data_frame(val = as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]) %>% # filtro <= a 1
 ggplot(aes(val)) + 
@@ -2340,15 +2326,13 @@ El $p_{value}$, es una cantidad que nos indica qué tan insólitos, extraños, r
 
 Los test de normalidad utilizados fueron Shapiro-Wilk y Anderson Darling.
 
-
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Test de Shapiro-Wilk --------------------------------
 NDVI.Anomalias <- as.vector(pp.matrix)[as.vector(pp.matrix) <= 1] 
 PRECIPITACION.Anomalias <- as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]
 ```
 
-Aca van los resultados del test de normalidad
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', comment= '', results='hold'}
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Test de Shapiro-Wilk --------------------------------
 shapiro.test(NDVI.Anomalias) 
 shapiro.test(PRECIPITACION.Anomalias)
@@ -2360,10 +2344,9 @@ ad.test(PRECIPITACION.Anomalias)
 
 Vemos que en ambos casos el valor de probabilidad $p_{value}$ para las anomalías del NDVI es  superior a nuestro nivel de significación $\alpha = 0.05$ por lo que no rechazamos la hipótesis nula. Mientras que para el caso de las anomalías de precipitación es inferior a nuestro nivel de significación $\alpha = 0.05$ por lo que rechazamos la hipótesis nula. Por lo tanto la anomalía de NDVI y precipitación acumulada no sigue en conjunto una normalidad bivariada.
 
-Por ello, la correlación no paramétrica de Spearman fue aplicada a las variables con un lag máximo de 3 meses, asímismo la correlación aplicada ...
+Por ello, la correlación no paramétrica de Spearman fue aplicada a las variables con un lag máximo de 3 meses tal y como se muestra en la siguiente gráfica.
 
-Grafica de correlación rezagada
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Creación de variables  ------------------------------
 x <- pp.matrix
 y <- ndvi.matrix
@@ -2406,7 +2389,6 @@ for(k in 1:lag){
 ```
 
 
-Grafica de correlación rezagada
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 ## Graficando la correlacion rezagada ---------------------
@@ -2448,49 +2430,40 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
         axis.text.y   = element_text(size = 10),
         axis.title.y  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5),
         axis.title.x  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5)) +
-  geom_text(aes(2, 2, label = "x"), color = "black", size = 6) + 
-  geom_text(aes(3, 3, label = "x"), color = "black", size = 6) + 
-  geom_text(aes(3, 5, label = "x"), color = "black", size = 6) +
-  geom_text(aes(5, 5, label = "x"), color = "black", size = 6) +
-  geom_text(aes(7, 7, label = "x"), color = "black", size = 6) +
-  geom_text(aes(7, 8, label = "x"), color = "black", size = 6) +
-  geom_text(aes(7, 9, label = "x"), color = "black", size = 6) +
-  geom_text(aes(7, 10, label = "x"), color = "black", size = 6) + 
-  geom_text(aes(9, 9, label = "x"), color = "black", size = 6) + 
-  geom_text(aes(9, 9, label = "x"), color = "black", size = 6) +
-  geom_text(aes(11,1, label = "x"), color = "black", size = 6) +
-  geom_text(aes(11, 11, label = "x"), color = "black", size = 6) +
-  geom_text(aes(11, 12, label = "x"), color = "black", size = 6) 
+  geom_text(aes(2, 2, label = "X"), color = "black", size = 6) + 
+  geom_text(aes(3, 3, label = "X"), color = "black", size = 6) + 
+  geom_text(aes(3, 5, label = "X"), color = "black", size = 6) +
+  geom_text(aes(5, 5, label = "X"), color = "black", size = 6) +
+  geom_text(aes(7, 7, label = "X"), color = "black", size = 6) +
+  geom_text(aes(7, 8, label = "X"), color = "black", size = 6) +
+  geom_text(aes(7, 9, label = "X"), color = "black", size = 6) +
+  geom_text(aes(7, 10, label = "X"), color = "black", size = 6) + 
+  geom_text(aes(9, 9, label = "X"), color = "black", size = 6) + 
+  geom_text(aes(9, 9, label = "X"), color = "black", size = 6) +
+  geom_text(aes(11,1, label = "X"), color = "black", size = 6) +
+  geom_text(aes(11, 11, label = "X"), color = "black", size = 6) +
+  geom_text(aes(11, 12, label = "X"), color = "black", size = 6) 
+
 ```
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# Heatmap pvalue ------------------------------------------------
-ggplot(melted_b, aes(pp,ndvi)) + 
-  geom_raster(aes(fill=pvalue<0.05)) +
-  ggtitle('Correlación rezagada significativa de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
-  labs(x = 'Anomalía de precipitación acumulada mensual\n[mm/mes]', y = 'Anomalía de NDVI mensual', fill='') +
-  theme_bw() +
-  theme(plot.title    = element_text(size = 15, hjust = 0.5, face = 'bold'),
-        plot.subtitle = element_text(size = 11, hjust = 0.5, face = 'italic'),
-        axis.text.x   = element_text(size = 10, hjust = 1),
-        axis.text.y   = element_text(size = 10),
-        axis.title.y  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5),
-        axis.title.x  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5))
-```
+Se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra 
+área de estudio con un lag máximo de 3 meses, en donde las marcadas con ✇ corresponden a las correlaciones significativas $(p_{value} < 0.05)$ que se dan principalmente en los meses de Abril y Noviembre, se podría decir que de Mayo a Noviembre los valores poseen una correlación positiva principalmente en las correlaciones con lag 0 y 1.
 
-En esta gráfica se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra área de estudio con un lag máximo de 3 meses. se observan correlaciones significativas (pvalue < 0.05) principalmente en los meses de Julio y Noviembre 
+# Discusión de resultados
+* SERFOR debería realizar la gestión de quema controlada de residuos agrícolas.
 
+* Se debería de contar con datos puntuales de la distribución de las quemas puede ser del INDECI. Con ello se pueden generar ROIs.
+
+* La data es dudosa, para el año 2019 (sobre registro de incendios) es atípico ya que los incendios se triplican en algunos meses pero hasta el momento no ha habido algún estudio en el que se diga que el año 2019 ha sido considerado como año de sequía extrema (como en el caso del año 2005, 2010 y 2016).
 
 
 # Conclusión
 
-De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 3250 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
-Por ultimo el comportamiento estacional del NDVI, al igual que la temperatura máxima pierde homogeneidad a partir de los 3250 msnm con un notorio contrastre de los meses de junio a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.35 de NDVI, entonces podemos llgar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
-
-Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
-
-De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios con aquel constraste estacional de precipitaciones acumuladas mensuales por debajo de 200 mm, para los meses de invierno, y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 2300 msnm, ya por este umbral se denota un contraste entre la varibilidad estacional y la constancia de este paraámetros, esto nos podría indicar que si bien a esa altitud ya no varía la temperatura máxima, eso donde se dan los mayores incendios en Cutervo.
-Por ultimo el comportamiento estacional del NDVI, aún no ha sido analizado de esta forma.
+De lo expuesto anteriormente, se concluye que es importante caracterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios, aquel constraste estacional desaparece registrandose precipitaciones acumuladas mensuales por debajo de 200 mm y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 2500 msnm, ya por este umbral se denota un ligero contraste entre la epoca seca y la época húmeda.
+Los meses de abril a noviembre respecto a los demás, siendo estos considerados como el periodo con menor actividad fotosintética y condición favorable para la ocurrencia de incendios, con valores debajo de los 0.40 de NDVI.
+Por útimo el comportamiento estacional del NDVI sigue un patrón estacional similar al de la precipitación en cuanto al rango de elevación y estacionalidad, esta correlación fue verificada a través de una correlación rezagada que generó correlaciones positivas y significativas para las variables con retrasos de 0 y 1 meses. 
+Entonces podemos llegar a la conclusión que si analizamos el comportamiento estacional de distintas variables, podemos construir un modelos de pronóstico de incendios, el cual puede llegar a ser un optima herramienta de gestion y conservación de ecosistemas vulnerables frente al cambio climático y la acción antrópica.
+    
 
 # Referencias
 
