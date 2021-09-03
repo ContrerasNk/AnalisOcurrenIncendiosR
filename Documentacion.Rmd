@@ -717,7 +717,7 @@ ggplot(ts, aes(x=Date, y=nfires)) +
 Adicional a esta información, se buscó información de sequías, para ver si tenía o no relación con el aumento de incendios en los años seleccionados. Así, dos de estos años coinciden con eventos extremos de sequía, en un estudio realizado por el [Senamhi](https://bit.ly/3hX0K8a), se determinó que el año 2005 y 2016, ocurrieron grandes sequías en las zonas altoandinas, en especial para Cusco y Puno, para ello, se utilizó el índice estandarizado de precipitación (SPI). El año 2010, tiene también un relativo SPI negativo, pero no llega a niveles extremos como en los años mencionados ni a negativos en nuestro área de estudio. Además, mencionamos que el 2004 es el año con mayor SPI, en el rango de los años de estudio, pero las sequías evidenciadas en ese año se dieron durante la fase neutra del ENOS. En los demás años (7) de sequías extremas pertenecieron a la fase cálida del El Niño Oscilación Sur (ENOS). 
 
 ```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 20. SPI para los años seleccionado para nuestra área de estudio Puno-Cusco.', out.width="70%"}
-knitr::include_graphics('Img/metodologia_4etapas.jpg')
+knitr::include_graphics('Img/spi_desertificacion.png')
 ```
 
 ## Distribución de los incendios por años de 2000 - 2018
@@ -1079,7 +1079,6 @@ for (j in 1:nrow(df)) {
 ```
 
 
-## Preprocesamiento del Modelo Digital de elevación SRTM V4.1
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
@@ -1742,7 +1741,7 @@ ndvi <- melt(ndvi, id.vars = c("mes"))
 ndvis <- data.frame(tserie, value = col_ndvi) %>% 
   mutate(mes = substr(tserie, 6, 7)) %>%
   dplyr::filter(substr(tserie, 1, 4) %in% c(2004, 2005, 2010, 2016)) %>% 
-  add_column(variable = rep(c("NDVI 2000", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
+  add_column(variable = rep(c("NDVI 2004", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
   dplyr::select(-tserie)
 
 # Union filas
@@ -2262,7 +2261,7 @@ pp.matrix <- as.matrix(df_pp[,3:14])
 Una vez obtenida las anomalías mensuales promediadas del NDVI y precipitación acumulada para el área de estudio se procede a evaluar el tipo de distribución, el cual nos determinará si la correlación utilizada será paramétrica o no paramétrica.
 Se analiza en primer momento la gráfica de estas variables a través de un histograma, donde se aprecia visualmente la distribución siendo para el caso del NDVI una distribución normal en donde la mayor frecuencia de valores dentro del rango de la media igual a 0. 
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
 
 # arriba pp.matrix esta definidaaaaaa
 
@@ -2286,7 +2285,7 @@ ggplot(aes(val)) +
 
 ```
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
 
 data_frame(val = as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]) %>% # filtro <= a 1
 ggplot(aes(val)) + 
@@ -2326,13 +2325,13 @@ El $p_{value}$, es una cantidad que nos indica qué tan insólitos, extraños, r
 
 Los test de normalidad utilizados fueron Shapiro-Wilk y Anderson Darling.
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', comment= '', results='hold'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', comment= '', results='hold'}
 ## Test de Shapiro-Wilk --------------------------------
 NDVI.Anomalias <- as.vector(pp.matrix)[as.vector(pp.matrix) <= 1] 
 PRECIPITACION.Anomalias <- as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]
 ```
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', comment= '', results='hold'}
 ## Test de Shapiro-Wilk --------------------------------
 shapiro.test(NDVI.Anomalias) 
 shapiro.test(PRECIPITACION.Anomalias)
