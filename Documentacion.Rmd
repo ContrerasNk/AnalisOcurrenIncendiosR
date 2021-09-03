@@ -2346,7 +2346,7 @@ Vemos que en ambos casos el valor de probabilidad $p_{value}$ para las anomalía
 
 Por ello, la correlación no paramétrica de Spearman fue aplicada a las variables con un lag máximo de 3 meses tal y como se muestra en la siguiente gráfica.
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Creación de variables  ------------------------------
 x <- pp.matrix
 y <- ndvi.matrix
@@ -2450,6 +2450,7 @@ Se aprecia la correlación de las anomalías de precipitación acumulada mensual
 área de estudio con un lag máximo de 3 meses, en donde las marcadas con ✇ corresponden a las correlaciones significativas $(p_{value} < 0.05)$ que se dan principalmente en los meses de Abril y Noviembre, se podría decir que de Mayo a Noviembre los valores poseen una correlación positiva principalmente en las correlaciones con lag 0 y 1.
 
 # Discusión de resultados
+
 * SERFOR debería realizar la gestión de quema controlada de residuos agrícolas.
 
 * Se debería de contar con datos puntuales de la distribución de las quemas puede ser del INDECI. Con ello se pueden generar ROIs.
