@@ -53,16 +53,13 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE)
 
 El impacto de los incendios reduce la tasa de crecimiento de los bosques, genera muerte y migración de la fauna silvestre, pérdida de la biodiversidad, trasformación de los suelos e incremento de la erosión, contaminación del aire, reducción de servicios de regulación hídrica del ecosistema, mayor incidencia en derrumbes e inundaciones, incluso la aparición de plagas y enfermedades en los bosques debilitados por dichos incendios. (Segura, 2019).
 
-En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen a la ocurrencia de incendios, desde el año 2000 al 2018. 
+En este análisis se evaluará la estacionalidad de las variables bioclimáticas que favorecen la ocurrencia de incendios, desde el año 2000 al 2018. 
 
 # Identificación del problema
 
 ## Planteamiento del problema
 
   Los incendios ocasionan efectos adversos en los diferentes ecosistemas del país y usos de la tierra, así como en los diferentes sectores, originando pérdidas económicas y en algunos casos pérdida de vidas humanas. Si bien es cierto, el desencadenante de un incendio sobre la cobertura vegetal se debe en un 98 % a las acciones del hombre (Manta, 2017), **las condiciones físicas, biológicas y climáticas deben estar presentes para que se produzca la ignición y se propague el fuego.**
-
-Parte de esta problemática es la carencia de datos estadísticos relacionados al registro histórico de incendios y su distribución espacial, así como su relación con las condiciones favorables que se encuentran presentes en el momento de la aparición del incendio, aspecto que debe ser la base para el entendimiento de este fenómeno y de la generación de las políticas de Estado para atenderlo, desde una óptica de prevención y reducción del riesgo.  
-
 
 <br/>
 
@@ -74,16 +71,22 @@ knitr::include_graphics('Img/planteamientoproblema.jpg')
 
 ### Objetivo general
 
-  El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas como la temperatura máxima, precipitación, NDVI y altitud en el marco del estudio de las condiciones favorables para la ocurrencia de incendios (CFOI). Producto de esto se generará un laged correlation o correlación rezagada. 
+  El objetivo principal de este estudio es analizar la estacionalidad de variables bioclimáticas para la posterior aplicación de un modelo predictivo para las zonas con condiciones favorables para la ocurrencia de incendios. 
 
 ### Objetivos específicos
 
+* Conocer el comportamiento de los incendios a escala mensual y anual para el período 2000 - 2018.
 
-* Analizar las variables bioclimáticas calidad de vegetación y precipitación de forma interestacional en la zona diagnosticada con mejores CFOIs.
+* Definir nuestra área de estudio como una de las regiones con mayor probabilidad de incendios.
 
-* Ampliar el conocimiento de la influencia de las variables bioclimáticas para las CFOI y así en un futuro generar un modelo de predicción.
+* Realizar un análisis temporal con las variables bioclimáticas de precipitación acumulada, temperatura máxima y calidad de la vegetación.     
+* Analizar el comportamiento estacional de las variables bioclimáticas por rangos de elevación.
 
-* Generar conocimiento y aprender la técnica de Teledetección, además de aplicar los conocimientos aprendidos en el curso.
+* Verificar si existe alguna relación entre las variables bioclimáticas en el área de estudio.
+
+* Generar una metodología reproducible de investigación el cual sirva a posteriori para generar un modelo predictivo.
+
+* Aplicar los conocimientos, nociones y conceptos adquiridos en el curso de Teledetección.
 
 ## Justificación
 
@@ -202,7 +205,7 @@ for (i in 1:nrow(Departamentos)) {
 st_write(Departamentos[,c(2,6)], "Materiales/DepartamentosIncendios.gpkg")
 ```
 
-```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Conteo de la incidencia de incendios por regiones en el Perú desde el 2000 al 2018.'}
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 8. Cantidad de incendios registrados por regiones en el Perú desde el 2000 al 2018.'}
 knitr::include_graphics('Img/incendiosporregiones.png')
 ```
 
@@ -217,11 +220,11 @@ knitr::include_graphics('Img/monitoreodebosques.png')
 ```
 
 
-## Función kernel
+## Función Kernel
 
- Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la región de estudio*. Para esto usaremos una función bidimensional sobre los eventos considerados, generando una superficie cuyo valor será proporcional a la *intensidad de muestras por unidad de área*. Esta función realiza un conteo de todos los puntos dentro de una región de influencia, ponderándolos por la distancia de cada uno con respecto a la localización de interés.
+ Una alternativa simple para analizar el comportamiento de patrones de puntos, es estimar la *intensidad puntual del proceso en toda la región de estudio*. Para esto usaremos una función bidimensional sobre los eventos considerados, generando una superficie cuyo valor será proporcional a la *intensidad de muestras por unidad de área*. Esta función realiza un conteo de todos los puntos dentro de una región de influencia ponderándolos por la distancia de cada uno con respecto al centro del Kernel.
 
-Para conocer el comportamiento de esta función no parámetrica de probabilidad, plateamos unas carácteristicas:
+Para conocer el comportamiento de esta función no parámetrica de probabilidad, plateamos las siguientes caracteristicas:
 
 * Aveces, el Kernel es una funcion de ventana (window function), esto quiere decir que si hay valores que caen dentro de esa ventana (área) tendrá un valor peso asignado.
 * Una función ventana fuera de cierto intervalo adopta el valor 0, normalmente, u otro peso.
@@ -251,7 +254,7 @@ knitr::include_graphics('Img/kernel_estimation.gif')
 
  Tiene como objetivo la disminucion del ruido de una curva. Esta curva la definimos como los valores de cada pixel a lo largo de un periodo dado, en nuestro caso el valor del píxel será el NDVI. 
 El filtro de Savitsky-Golay se basa en el ajuste por minimo cudarados de pequeños conjuntos de datos de longitud $2n +1$ para calcular un polinomio local y tomar al punto central de esa curva polinomial ajustada como el nuevo punto de datos suavizado. 
-Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$ podrían derivarse y se utilizan como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $Y_{k_{suavizado}}$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación:  
+Savitzky y Golay (A. Savitzky and M. J. E. Golay, Anal. Chem., 1964) demostraron que un conjunto de numeros enteros $({A}_{-n},{A}_{-(n-1)},...,{A}_{n-1},{A}_{n})$ podrían derivarse y utilizarse como coeficientes de ponderacion para realizar la operacion de suavizado. El uso de estos coeficientes de ponderación, conocidos como enteros de convolución, resulta ser exactamente equivalente a ajustar los datos a un polinomio, como se acaba de describir y es computacionalmente más efectivo y mucho más rápido. Por lo tanto, el punto de datos suavizado $Y_{k_{suavizado}}$ por el algoritmo de Savitzky-Golay viene dado por la siguiente ecuación:  
 
 $$Y_{k_{suavizado}}=\frac{\displaystyle\sum_{i=-n}^{n}A_{i}\cdot Y_{k+i}}{\displaystyle\sum_{i=-n}^{n}A_{i}}$$
 
@@ -259,18 +262,29 @@ $$Y_{k_{suavizado}}=\frac{\displaystyle\sum_{i=-n}^{n}A_{i}\cdot Y_{k+i}}{\displ
 En donde: 
 
  
-* $2n+1$: Es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $p$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $k$ equivale a n en la posicion 0.
+* $2n+1$: Es el ancho del filtro, es decir los puntos necesarios para calcular la curva polinomial ajustada de grado $p$, generalmente n es igual a 5 por lo tanto el ancho del filtro son 11 puntos, donde el punto central $k$ de la curva polinomial.
 
-* ${({Y}_{k+i})}$: Es la funcion polinomial ajustada de grado $p$ empleada para la posicion $k+i$ o simplemente $i$.  
+* ${({Y}_{k+i})}$: Es la funcion polinomial ajustada de grado $p$ empleada para la posicion $k+i$.  
 
 El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el caso de la media móvil, aunque se debe enfatizar que ambos algoritmos tienen "pérdidas", es decir, parte de la información original se pierde o se distorsiona. Este tipo de suavizado es utilizado principalmente para conservar las características de la distribución inicial, los máximos y mínimos relativos y el ancho entre picos en una serie de datos.
 *Este método nos servirá para completar los datos del índice NDVI, para lo años de estudio.*  
 
 
-```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 11. La principal ventaja de esta aproximación es que tiende a preservar características de la distribución inicial tales como los máximos y mínimos relativos.'}
-knitr::include_graphics('Img/savitzky_golay.gif')
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 11.Animación que muestra la aplicación de suavizado, pasando los datos de izquierda a derecha. La línea roja representa el polinomio local que se utiliza para ajustar un subconjunto de datos. Los valores suavizados se muestran como círculos.'}
+knitr::include_graphics('Img/savgol.gif')
 ```
 
+## Correlación rezagada (Lagged correlation)
+  La correlación rezagada calcula el grado de asociación entre dos o más variables a través de lags o retrasos temporales definidos a escala diaria, quincenal o mensual. Estos lags son por lo tanto la cantidad de tiempo necesario en donde las variables poseen un mayor grado de correlación. 
+  Este concepto tiene aplicaciones útiles para caracterizar las variables bioclimáticas ya que los efectos entre estas no se relacionan de manera directa e inmediata. 
+  Cabe destacar que la correlación no implica una causalidad o dependencia entre las variables.
+  
+  El tipo de correlación utilizada será paramétrica si las variables de estudio son variables aleatorias independientes e identicamente distribuidas bajo una distribución normal. 
+  
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 12. Se muestra un ejemplo de relación rezagada con un lag máximo de tres meses entre las variables de anomalía mensual del NDVI y de precipitación mensual para determinadas coberturas vegetales'}
+knitr::include_graphics('Img/LaggedCorrelation.jpg')
+```  
+<br/>
 
 # Descripción del área de estudio
 
@@ -300,7 +314,7 @@ knitr::include_graphics('Img/plataforma_incendios2000_2018.png')
 ## Datos MODIS (MOD13Q1)
 
 Los datos de la versión 6 del espectrorradiómetro de imágenes de resolución moderada (MODIS) Terra (MOD13Q1) se generan cada 16 días a una resolución espacial de 250 metros (m) como un producto de Nivel 3. El producto [MOD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD13Q1) proporciona dos capas de vegetación primarias. El primero es el Índice de Vegetación de Diferencia Normalizada (NDVI), que se conoce como el índice de continuidad del NDVI derivado del Radiómetro Avanzado de Muy Alta Resolución de la Administración Nacional Oceánica y Atmosférica existente (NOAA-AVHRR). 
-Para nuestra area de estudio, se hara uso del NDVI procesado a resolucion de 250 m, el cual sera filtrado segun su banda de calidad (QA). 
+Para nuestra área de estudio, se hará uso del NDVI procesado a resolucion de 250 m, el cual será filtrado según su banda de calidad (QA). 
 
 <br/>
 
@@ -310,7 +324,7 @@ knitr::include_graphics('Img/modis_ndvi.gif')
 
 ## Datos PISCO
 
-El producto grillado [PISCO](https://iridl.ldeo.columbia.edu/SOURCES/.SENAMHI/.HSR/.PISCO/?Set-Language=es#info) (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima) a paso de tiempo mensual, a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus poductos poseen una escala diaria y mensual y se encuentran disponibles hasta Diciembre del año 2016.  
+El producto grillado [PISCO](https://iridl.ldeo.columbia.edu/SOURCES/.SENAMHI/.HSR/.PISCO/?Set-Language=es#info) (Peruvian Interpolated data of the SENAMHI’s Climatological and hydrological Observations) es una base de datos espacial  de precipitación acumulada y temperatura (maxima y minima), a una resolución de grilla de 0.05º(5 km) para una serie que se inicia en enero de 1981. Sus productos poseen una escala diaria y mensual y se encuentran disponibles hasta Febrero del año 2018.  
 
 ```{r echo = FALSE, out.width="70%", fig.align='center', fig.cap='Figura 15. Investigadores del senamhi publican artículo científico sobre producto grillado de precipitación..'}
 knitr::include_graphics('Img/pisco_pp.png')
@@ -609,14 +623,14 @@ from scipy import signal ## Aplying Savistky Golay
 import rasterio as rio # For raster analysis
 ```
 
-## Google earth engine
+## Google Earth Engine
 
  
-Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta plataforma se utilizó las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python, GEEMAP, los junto con sus procedimientos reproducibles en el lenguaje python, para la descarga de datos de NDVI, se encuentran en el siguiente [enlace](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/blob/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb).
+Cabe mencionar que todos los procesos "pesados" que normalmente consumirían muchos recursos de una computadora convencional, lo realizamos en la plataforma ***Google Earth Engine (GEE)***. Para conectar con esta plataforma se utilizó las APIS para los lenguages seleccionados. Con R usamos el paquete RGEE y para Python geemap, los  procedimientos reproducibles en el lenguaje Python, para la descarga de datos de NDVI, se encuentran en el siguiente [enlace](https://github.com/ContrerasNk/AnalisOcurrenIncendiosR/blob/master/RasterData/Resultados/Script/NDVI_MODIS.ipynb).
  
 
 
-  ***Como ejemplo, para iniciar sesión en la plataforma GEE por medio de RGEE lo hacemos con el siguiente script, conectando además con nuestro DRIVE.*** 
+  ***Como ejemplo, para iniciar sesión en la plataforma GEE por medio de RGEE lo hacemos con el siguiente script, conectando además con nuestra cuenta de Google Drive.*** 
 
 ```{python eval = FALSE, echo = FALSE}
 Sys.setenv(RETICULATE_PYTHON = "")
@@ -640,7 +654,7 @@ ee_Initialize('juliocontreras1', drive =TRUE)
   Nuestra metodología se resume en cuatro principales etapas, tal y como se describe en la siguiente figura:  
 
 ```{r echo = FALSE, fig.align='center', fig.cap = 'Figura 17. Metodología de la investigación.', out.width="70%"}
-knitr::include_graphics('Img/metodologia_4etapas.jpg')
+knitr::include_graphics('Img/METODOLOGIA-FINAL.jpg')
 ```
  Cabe mencionar que esta metodología podría extenderse, con el seguimiento para investigaciones posteriores, ya que esta investigación solo es un EDA, el comienzo para generar un modelo de predicción. 
 
@@ -963,7 +977,7 @@ ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI',
 
 ### Remuestreo
 
-***Sustentar el remuestreo***
+Una vez filtrado el raster de NDVI por su banda QA, por coste computacional es necesario hacer un resampleo considerando una resolución igual a la proporcionada por el producto grillado PISCO.
 
 ```{r warning=FALSE, cache=FALSE, eval=TRUE}
 ndvi_raster <- list.files("RasterData/Resultados/Filtered/", pattern=".tif$",
@@ -979,8 +993,6 @@ for(i in ndvi_raster){
 
 
 ### Completación de datos con el método Savitzky Golay
-
-  Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en R.
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
 
@@ -1070,8 +1082,6 @@ for (j in 1:nrow(df)) {
 
 
 ## Preprocesamiento del Modelo Digital de elevación SRTM V4.1
-
-***Colocar shp de enmascaramiento Figura 23.***
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
@@ -1698,8 +1708,6 @@ ggplot(data = TEMP, aes(x = date, y = value,
 
 ### NDVI Mensual
 
-***Falta argumentar el porqué de su uso. Los anteriores tambien***
-
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 30. Comparación del NDVI mensual de los años 2004, 2005, 2010, y 2016 con respecto a los históricos.'}
 ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
@@ -1735,7 +1743,7 @@ ndvi <- melt(ndvi, id.vars = c("mes"))
 ndvis <- data.frame(tserie, value = col_ndvi) %>% 
   mutate(mes = substr(tserie, 6, 7)) %>%
   dplyr::filter(substr(tserie, 1, 4) %in% c(2004, 2005, 2010, 2016)) %>% 
-  add_column(variable = rep(c("NDVI 2004", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
+  add_column(variable = rep(c("NDVI 2000", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
   dplyr::select(-tserie)
 
 # Union filas
@@ -1826,7 +1834,7 @@ ggplot(data = NDVI, aes(x = date, y = value,
 ```
 <br/>
 
-  En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
+  En la anterior gráfica podemos observar el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor ocurrencia de incendios, en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
 
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
@@ -1989,6 +1997,7 @@ X
 
 Para analizar los resultados hay que tener en cuenta que los efectos entre las variables no se relacionan de manera directa e inmediata (no se dan de la noche a la mañana), en este estudio las variables a analizar serán la lluvia y la actividad fotosintética (NDVI). Esto quiere decir que, por ejemplo, si hoy llueve el proxy (resultado no medible en campo directamente con unidades) de NDVI no aumenta vigorosamente, lo lógico. Entonces no hay una relación directa inmediata. Lo que sí habrá será una relación *lageada*, o sea se debe esperar un cierto tiempo luego del actuar de la variable independiente (Precipitación) para que la variable dependiente (NDVI) mejore o empeore.
 
+
 ## Análisis de correlaciones rezagadas
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
@@ -2057,10 +2066,10 @@ Ndvi_mensual_stack <- stack(Ndvi_mensual)
 # Ndvi_mensual_stack <- crop(Ndvi_mensual_stack, area, snap = "out")
 # 
 writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_MEAN_MENSUAL.tif")
-```
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # NDVI SD historicas -------------------------------
 
 # desviación mensual historico
@@ -2082,10 +2091,10 @@ Ndvi_mensual_stack <- stack(Ndvi_mensual)
 
 
 writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_SD_MENSUAL.tif")
-```
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # PRECIPITACION MEAN -------------------------------
 
 # stack mensual desde 2000 a 2017
@@ -2118,9 +2127,9 @@ for (i in 1:12) {
 # PP_mensual # lista de raster mensual
 PP_mensual_stack <- stack(PP_mensual)
 writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_MEAN_MENSUAL.tif")
-```
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # PRECIPITACION SD -------------------------------
 
 # mensual historico
@@ -2141,10 +2150,10 @@ for (i in 1:12) {
 
 PP_mensual_stack <- stack(PP_mensual)
 writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_SD_MENSUAL.tif")
-```
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # RESAMPLEO Y MISMAS AREAS-------------------------------
 area <- st_read("Materiales/area.gpkg")
 PP_mensual_stack
@@ -2166,10 +2175,10 @@ PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 # writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_SD_MENSUAL.tif")
 # writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_SD_MENSUAL_MASK.tif")
 # writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_SD_MENSUAL_MASK.tif")
-```
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # ANOMALIAS  -------------------------------
 
 # Datos
@@ -2237,9 +2246,6 @@ for (i in 1:12) {
 }
 write.csv(df_cov_pp, "RasterData/VarCorrelation/PP_ANOM.csv")
 ```
-
-
-## Cor.lag 
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
@@ -2386,15 +2392,7 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
 ggplot(melted_b, aes(pp,ndvi))+ geom_raster(aes(fill=pvalue<0.05))
 
 ```
-
-
-
-
-## 2005
-
-## 2010
-
-## 2016
+En esta gráfica se aprecia la correlación de la precipitación acumulada mensual con respecto al NDVI con un retraso máximo de 3 meses, se observan correlaciones negativas en los meses de Enero a Abril, esto nos da ...
 
 
 # Discusión de resultados
@@ -2408,9 +2406,6 @@ Hasta este punto sería todo respecto al análisis de condiciones favorables par
 
 De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios con aquel constraste estacional de precipitaciones acumuladas mensuales por debajo de 200 mm, para los meses de invierno, y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 2300 msnm, ya por este umbral se denota un contraste entre la varibilidad estacional y la constancia de este paraámetros, esto nos podría indicar que si bien a esa altitud ya no varía la temperatura máxima, eso donde se dan los mayores incendios en Cutervo.
 Por ultimo el comportamiento estacional del NDVI, aún no ha sido analizado de esta forma.
-
-Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
-
 
 # Referencias
 
