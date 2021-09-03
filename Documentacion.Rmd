@@ -2261,11 +2261,11 @@ pp.matrix <- as.matrix(df_pp[,3:14])
 Una vez obtenida las anomalías mensuales promediadas del NDVI y precipitación acumulada para el área de estudio se procede a evaluar el tipo de distribución, el cual nos determinará si la correlación utilizada será paramétrica o no paramétrica.
 Se analiza en primer momento la gráfica de estas variables a través de un histograma, donde se aprecia visualmente la distribución siendo para el caso del NDVI una distribución normal en donde la mayor frecuencia de valores dentro del rango de la media igual a 0. 
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
 
 # arriba pp.matrix esta definidaaaaaa
 
-data_frame(val = as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]) %>% 
+data_frame(val = as.vector(ndvi.matrix)) %>% 
 ggplot(aes(val)) + 
   geom_histogram(binwidth = 0.1, fill='gray', col='black') +
   theme_bw() +
@@ -2280,14 +2280,13 @@ ggplot(aes(val)) +
         panel.border  = element_rect(colour = "black", fill=NA, size=1),
         axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
         axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) +
-  scale_y_continuous(breaks = seq(0,40,5), limits = c(0, 40), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(-1, 1, 0.1), limits = c(-1, 1.1), expand = c(0,0))
-
+  scale_y_continuous(breaks = seq(0,25,5), limits = c(0, 40), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-1.7, 1.7, 0.3), limits = c(-1.7, 1.7), expand = c(0,0))
 ```
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de precipitación acumulada mensual promediado sobre el área para el período 2000 - 2017"}
 
-data_frame(val = as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]) %>% # filtro <= a 1
+data_frame(val = as.vector(pp.matrix)) %>% 
 ggplot(aes(val)) + 
   geom_histogram(binwidth = 0.1, fill='gray', col='black') +
   theme_bw() + labs(x = '', y = '') +
@@ -2302,9 +2301,8 @@ ggplot(aes(val)) +
         panel.border  = element_rect(colour = "black", fill=NA, size=1),
         axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
         axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) +
-  scale_y_continuous(breaks = seq(0,40,5), limits = c(0, 40), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(-1, 1, 0.1), limits = c(-1, 1.1), expand = c(0,0))
-
+  scale_y_continuous(breaks = seq(0,40,5), limits = c(0, 30), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-1, 3, 0.2), limits = c(-1, 2.5),expand = c(0,0))
 ```
 
 Si y solo si nuestras dos variables son variables aleatorias independientes e identicamente distribuidas (vaiid's) bajo una distribución normal, se procederá a realizar la prueba de normalidad bivariada para verificar si en efecto es posible realizar una correlación paramétrica entre estas.
