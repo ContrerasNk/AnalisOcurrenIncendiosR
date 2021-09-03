@@ -277,7 +277,13 @@ knitr::include_graphics('Img/savgol.gif')
 ## Correlación rezagada (Lagged correlation)
   La correlación rezagada calcula el grado de asociación entre dos o más variables a través de lags o retrasos temporales definidos a escala diaria, quincenal o mensual. Estos lags son por lo tanto la cantidad de tiempo necesario en donde las variables poseen un mayor grado de correlación. 
   Este concepto tiene aplicaciones útiles para caracterizar las variables bioclimáticas ya que los efectos entre estas no se relacionan de manera directa e inmediata. 
-  Cabe destacar que la correlación no implica una causalidad o dependencia entre las variables y que debe ser utilizada una correlación paramétrica (Pearson) si las variables en conjunto cumplen con el supuesto de normalidad bivariada si no por el contrario se elige una correlación no paramétrica (Spearman). 
+  Cabe destacar que la correlación no implica una causalidad o dependencia entre las variables.
+  
+  El tipo de correlación utilizada será paramétrica si las variables de estudio son variables aleatorias independientes e identicamente distribuidas bajo una distribución normal. 
+  
+```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 12. Se muestra un ejemplo de relación rezagada con un lag máximo de tres meses entre las variables de anomalía mensual del NDVI y de precipitación mensual para determinadas coberturas vegetales'}
+knitr::include_graphics('Img/LaggedCorrelation.jpg')
+```  
 <br/>
 
 # Descripción del área de estudio
@@ -1077,8 +1083,6 @@ for (j in 1:nrow(df)) {
 
 ## Preprocesamiento del Modelo Digital de elevación SRTM V4.1
 
-***Colocar shp de enmascaramiento Figura 23.***
-
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, out.width="825px"}
 Cutervo <- st_read('Materiales/area.gpkg') %>% st_geometry() %>% sf_as_ee()
 # Cajamarca <- st_read('Materiales/Cajamarca.gpkg') %>% st_geometry() %>% sf_as_ee()
@@ -1704,8 +1708,6 @@ ggplot(data = TEMP, aes(x = date, y = value,
 
 ### NDVI Mensual
 
-***Falta argumentar el porqué de su uso. Los anteriores tambien***
-
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 30. Comparación del NDVI mensual de los años 2004, 2005, 2010, y 2016 con respecto a los históricos.'}
 ndvi_velox <- velox("RasterData/Resultados/SavGol/savgol_stack.nc")                 
 region <- st_read("Materiales/area.gpkg", quiet = TRUE)
@@ -1995,10 +1997,11 @@ X
 
 Para analizar los resultados hay que tener en cuenta que los efectos entre las variables no se relacionan de manera directa e inmediata (no se dan de la noche a la mañana), en este estudio las variables a analizar serán la lluvia y la actividad fotosintética (NDVI). Esto quiere decir que, por ejemplo, si hoy llueve el proxy (resultado no medible en campo directamente con unidades) de NDVI no aumenta vigorosamente, lo lógico. Entonces no hay una relación directa inmediata. Lo que sí habrá será una relación *lageada*, o sea se debe esperar un cierto tiempo luego del actuar de la variable independiente (Precipitación) para que la variable dependiente (NDVI) mejore o empeore.
 
+
 ## Análisis de correlaciones rezagadas
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# NDVI -------------------------------
+# NDVI Promedios históricos -------------------------------
 
 # Generar mensuales pero sin el primero enero, no existe
 date <- seq(as.Date('2000-02-15'), as.Date('2018-12-15'), by = "month")
@@ -2009,7 +2012,7 @@ lista2 <- list()
 for (i in 1:length(date)) {
   print(i)
   for (j in 1:length(ndvi_lista)) {
-    if (substr(ndvi_lista[[j]], 31, 34) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 36, 37) == substr(date, 6, 7)[i]) {
+    if (substr(ndvi_lista[[j]], 30, 33) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 35, 36) == substr(date, 6, 7)[i]) {
       x = 1
       lista1[[x]] = raster(ndvi_lista[j])
       x = x + 1
@@ -2030,36 +2033,80 @@ enero_ndvi <- mean(stack(lista3))
 # stack mensual desde 2000 a 2018
 stack_mensual00_18 <- stack(c(enero_ndvi, lista2))
 
+# stack_mensual00_18
+
+ppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif") # cargamos el modelo a seguir
+area <- st_read("Materiales/area.gpkg")
+NDVI_Mensual_2000_2018 <- raster::resample(stack_mensual00_18, ppp)
+NDVI_Mensual_2000_2018 <- crop(NDVI_Mensual_2000_2018, area, snap = "out")
+# 
+# writeRaster(NDVI_Mensual_2000_2018, "RasterData/VarCorrelation/Variables/NDVI_Mensual_2000_2018.tif")
+
 # mensual historico
 lista4 <- list()
 Ndvi_mensual <- list()
 for (i in 1:12) {
   p = 1
   n = i
-  while (n <= length(stack_mensual00_18[1])) {
-    lista4[[p]] = stack_mensual00_18[[n]]
+  while (n <= nlayers(NDVI_Mensual_2000_2018)) {
+    lista4[[p]] = NDVI_Mensual_2000_2018[[n]]
     n = n + 12
     p = p + 1
   }
-  Ndvi_mensual[[i]] = mean(stack(lista4))
+  Ndvi_mensual[[i]] = calc(stack(lista4), fun = mean)
   print(i)
 }
 
 # ndvi mensual historica (sin resampl)
-Ndvi_mensual # lista de raster mensual
+# Ndvi_mensual # lista de raster mensual
 Ndvi_mensual_stack <- stack(Ndvi_mensual)
-# writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico_SnResamp.tif")
-```
+# area <- st_read("Materiales/area.gpkg")
+# pppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif")
+# Ndvi_mensual_stack <- raster::resample(Ndvi_mensual_stack, pppp)
+# Ndvi_mensual_stack <- crop(Ndvi_mensual_stack, area, snap = "out")
+# 
+writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_MEAN_MENSUAL.tif")
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# PRECIPITACION -------------------------------
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# NDVI SD historicas -------------------------------
+
+# desviación mensual historico
+lista4 <- list()
+Ndvi_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(NDVI_Mensual_2000_2018)) {
+    lista4[[p]] = NDVI_Mensual_2000_2018[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  Ndvi_mensual[[i]] = calc(stack(lista4), fun = sd)
+  print(i)
+}
+
+Ndvi_mensual_stack <- stack(Ndvi_mensual)
+
+
+writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/Variables/NDVI_SD_MENSUAL.tif")
+
+
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# PRECIPITACION MEAN -------------------------------
 
 # stack mensual desde 2000 a 2017
 date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month') # fechas del stack pisco pp
 pp <- stack('RasterData/PISCO/PISCOp_v11_area.tif')
 rang <- which(date == '2000-01-01'):which(date == '2017-12-01')
-pp <- stack(pp[[rang]])
+pp <- pp[[rang]]
+
+
+area <- st_read("Materiales/area.gpkg")
+pp_Mensual_2000_2018 <- crop(pp, area, snap = "out")
+writeRaster(pp_Mensual_2000_2018, "RasterData/VarCorrelation/Variables/PP_Mensual_2000_2018.tif")
 
 # mensual historico
 lista6 <- list()
@@ -2068,7 +2115,7 @@ for (i in 1:12) {
   p = 1
   n = i
   while (n <= length(rang)) {
-    lista6[[p]] = pp[[n]]
+    lista6[[p]] = pp_Mensual_2000_2018[[n]]
     n = n + 12
     p = p + 1
   }
@@ -2077,21 +2124,43 @@ for (i in 1:12) {
 }
 
 # pp mensual historica (sin resampl)
-PP_mensual # lista de raster mensual
+# PP_mensual # lista de raster mensual
 PP_mensual_stack <- stack(PP_mensual)
-# writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_Mensual_historico.tif")
-
-```
+writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_MEAN_MENSUAL.tif")
 
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# PRECIPITACION SD -------------------------------
+
+# mensual historico
+lista6 <- list()
+PP_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= length(rang)) {
+    lista6[[p]] = pp_Mensual_2000_2018[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  PP_mensual[[i]] = calc(stack(lista6), fun = sd)
+  print(i)
+}
+
+
+PP_mensual_stack <- stack(PP_mensual)
+writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/Variables/PP_SD_MENSUAL.tif")
+
+
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 # RESAMPLEO Y MISMAS AREAS-------------------------------
 area <- st_read("Materiales/area.gpkg")
 PP_mensual_stack
 crs(PP_mensual_stack)
 crs(Ndvi_mensual_stack)
 
-NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack[[1]], PP_mensual_stack[[1]])
+# NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack[[1]], PP_mensual_stack[[1]])
 NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack, PP_mensual_stack)
 # writeRaster(NDVI_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico.tif")
 
@@ -2102,14 +2171,81 @@ NDVI_MENSUAL_MASK <- mask(NDVI_mensual_stack, area)
 PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 
 
-# writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_MENSUAL.tif")
-# writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_MENSUAL.tif")
-# writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
-# writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
+# writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_SD_MENSUAL.tif")
+# writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_SD_MENSUAL.tif")
+# writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_SD_MENSUAL_MASK.tif")
+# writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_SD_MENSUAL_MASK.tif")
+
+
+
+{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# ANOMALIAS  -------------------------------
+
+# Datos
+
+## NDVI y PP mensual 2000 - 2018
+NDVI_2000_2018 <- stack("RasterData/VarCorrelation/Variables/NDVI_Mensual_2000_2018.tif")
+PP_2000_2018 <- stack("RasterData/VarCorrelation/Variables/PP_Mensual_2000_2018.tif")
+
+# k <- list()
+# k[1] = NDVI_2000_2018
+# k[2] = PP_2000_2018
+
+## Promedios NDVI y PP crop
+NDVI_MEAN <- stack("RasterData/VarCorrelation/Variables/NDVI_MEAN_MENSUAL.tif")
+PP_MEAN <- stack("RasterData/VarCorrelation/Variables/PP_MEAN_MENSUAL.tif")
+
+## Sds NDVI y PP crop
+NDVI_SD <- stack("RasterData/VarCorrelation/Variables/NDVI_SD_MENSUAL.tif")
+PP_SD <- stack("RasterData/VarCorrelation/Variables/PP_SD_MENSUAL.tif")
+
+# En crop NDVI ----------------------------------------
+# area <- st_read("Materiales/area.gpkg")
+v4 <- c()
+# hist_monthly <- list()
+Ndvi_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(NDVI_2000_2018)) {
+    dd = (NDVI_2000_2018[[n]] - NDVI_MEAN[[i]]) / NDVI_SD[[i]]
+    v4[p] = mean(getValues(dd))
+    n = n + 12
+    p = p + 1
+  }
+  Ndvi_mensual[[i]] = v4
+  print(i)
+}
+
+df_cov_ndvi <- data.frame(1:19)
+for (i in 1:12) {
+  df_cov_ndvi[,1+i] = Ndvi_mensual[[i]]
+}
+write.csv(df_cov_ndvi, "RasterData/VarCorrelation/NDVI_ANOM.csv")
+
+# En crop PP ----------------------------------------
+v5 <- c()
+# hist_monthly <- list()
+Pp_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(PP_2000_2018)) {
+    dd = (PP_2000_2018[[n]] - PP_MEAN[[i]]) / PP_SD[[i]]
+    v5[p] = mean(getValues(dd))
+    n = n + 12
+    p = p + 1
+  }
+  Pp_mensual[[i]] = v5
+  print(i)
+}
+
+df_cov_pp <- data.frame(1:18)
+for (i in 1:12) {
+  df_cov_pp[,1+i] = Pp_mensual[[i]]
+}
+write.csv(df_cov_pp, "RasterData/VarCorrelation/PP_ANOM.csv")
 ```
-
-
-## Cor.lag 
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
@@ -2256,15 +2392,7 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
 ggplot(melted_b, aes(pp,ndvi))+ geom_raster(aes(fill=pvalue<0.05))
 
 ```
-
-
-
-
-## 2005
-
-## 2010
-
-## 2016
+En esta gráfica se aprecia la correlación de la precipitación acumulada mensual con respecto al NDVI con un retraso máximo de 3 meses, se observan correlaciones negativas en los meses de Enero a Abril, esto nos da ...
 
 
 # Discusión de resultados
@@ -2278,9 +2406,6 @@ Hasta este punto sería todo respecto al análisis de condiciones favorables par
 
 De lo expuesto anteriormente, se concluye que es importante carácterizar nuestras variables bioclimáticas por rangos de elevación, en el caso de la precipitación, no hay gran cambio en base a la altitud, pero si sigue un patron estacional, coincidiendo con el gráfico estacional incendios con aquel constraste estacional de precipitaciones acumuladas mensuales por debajo de 200 mm, para los meses de invierno, y conviertiendose en condición favorable para la ocurrencia de incendios, en el caso de la temperatura máxima, por su parte, se observa una homogeneidad de sus valores hasta los 2300 msnm, ya por este umbral se denota un contraste entre la varibilidad estacional y la constancia de este paraámetros, esto nos podría indicar que si bien a esa altitud ya no varía la temperatura máxima, eso donde se dan los mayores incendios en Cutervo.
 Por ultimo el comportamiento estacional del NDVI, aún no ha sido analizado de esta forma.
-
-Hasta este punto sería todo respecto al análisis de condiciones favorables para la ocurrencia de incendios
-
 
 # Referencias
 
