@@ -1992,7 +1992,7 @@ Para analizar los resultados hay que tener en cuenta que los efectos entre las v
 ## Análisis de correlaciones rezagadas
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# NDVI -------------------------------
+# NDVI Promedios históricos -------------------------------
 
 # Generar mensuales pero sin el primero enero, no existe
 date <- seq(as.Date('2000-02-15'), as.Date('2018-12-15'), by = "month")
@@ -2003,7 +2003,7 @@ lista2 <- list()
 for (i in 1:length(date)) {
   print(i)
   for (j in 1:length(ndvi_lista)) {
-    if (substr(ndvi_lista[[j]], 31, 34) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 36, 37) == substr(date, 6, 7)[i]) {
+    if (substr(ndvi_lista[[j]], 30, 33) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 35, 36) == substr(date, 6, 7)[i]) {
       x = 1
       lista1[[x]] = raster(ndvi_lista[j])
       x = x + 1
@@ -2024,6 +2024,13 @@ enero_ndvi <- mean(stack(lista3))
 # stack mensual desde 2000 a 2018
 stack_mensual00_18 <- stack(c(enero_ndvi, lista2))
 
+# ppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif") # cargamos el modelo a seguir
+# area <- st_read("Materiales/area.gpkg")
+# NDVI_Mensual_2000_2018 <- raster::resample(stack_mensual00_18, ppp)
+# NDVI_Mensual_2000_2018 <- crop(NDVI_Mensual_2000_2018, area, snap = "out")
+
+# writeRaster(NDVI_Mensual_2000_2018, "RasterData/VarCorrelation/NDVI_Mensual_2000_2018.tif")
+
 # mensual historico
 lista4 <- list()
 Ndvi_mensual <- list()
@@ -2042,18 +2049,88 @@ for (i in 1:12) {
 # ndvi mensual historica (sin resampl)
 Ndvi_mensual # lista de raster mensual
 Ndvi_mensual_stack <- stack(Ndvi_mensual)
-# writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico_SnResamp.tif")
+area <- st_read("Materiales/area.gpkg")
+pppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif")
+Ndvi_mensual_stack <- raster::resample(Ndvi_mensual_stack, pppp)
+Ndvi_mensual_stack <- crop(Ndvi_mensual_stack, area, snap = "out")
+
+writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_MEAN_MENSUAL.tif")
 ```
 
 
 ```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-# PRECIPITACION -------------------------------
+# NDVI SD historicas -------------------------------
+
+# Generar mensuales pero sin el primero enero, no existe
+date <- seq(as.Date('2000-02-15'), as.Date('2018-12-15'), by = "month")
+ndvi_lista <- list.files("RasterData/Resultados/SavGol/", pattern = '.tif$', full.names = T)
+lista1 <- list()
+lista2 <- list()
+
+for (i in 1:length(date)) {
+  print(i)
+  for (j in 1:length(ndvi_lista)) {
+    if (substr(ndvi_lista[[j]], 30, 33) == substr(date, 1, 4)[i] & substr(ndvi_lista[[j]], 35, 36) == substr(date, 6, 7)[i]) { # substr(ndvi_lista[[j]], 31, 34) for linux (un numero menos)
+      x = 1
+      lista1[[x]] = raster(ndvi_lista[j])
+      x = x + 1
+    }
+  }
+  lista2[[i]] = mean(stack(lista1))
+}
+
+# Para generar el primer enero
+y = 1
+lista3 <- list()
+for(i in seq(12, 227, 12)) {
+  lista3[[y]] = lista2[[i]]
+  y = y + 1
+}
+enero_ndvi <- mean(stack(lista3))
+
+# stack mensual desde 2000 a 2018
+stack_mensual00_18 <- stack(c(enero_ndvi, lista2))
+
+# desviación mensual historico
+lista4 <- list()
+Ndvi_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(stack_mensual00_18)) {
+    lista4[[p]] = stack_mensual00_18[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  Ndvi_mensual[[i]] = calc(stack(lista4), fun = sd)
+  print(i)
+}
+
+# ndvi mensual historica (sin resampl)
+Ndvi_mensual # lista de raster mensual
+Ndvi_mensual_stack <- stack(Ndvi_mensual)
+area <- st_read("Materiales/area.gpkg")
+pppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif")
+Ndvi_mensual_stack <- raster::resample(Ndvi_mensual_stack, pppp)
+Ndvi_mensual_stack <- crop(Ndvi_mensual_stack, area, snap = "out")
+
+writeRaster(Ndvi_mensual_stack, "RasterData/VarCorrelation/NDVI_SD_MENSUAL.tif")
+```
+
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# PRECIPITACION MEAN -------------------------------
 
 # stack mensual desde 2000 a 2017
 date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month') # fechas del stack pisco pp
 pp <- stack('RasterData/PISCO/PISCOp_v11_area.tif')
 rang <- which(date == '2000-01-01'):which(date == '2017-12-01')
-pp <- stack(pp[[rang]])
+pp <- pp[[rang]]
+
+
+# area <- st_read("Materiales/area.gpkg")
+# pp_Mensual_2000_2018 <- crop(pp, area, snap = "out")
+# writeRaster(pp_Mensual_2000_2018, "RasterData/VarCorrelation/PP_Mensual_2000_2018.tif")
 
 # mensual historico
 lista6 <- list()
@@ -2073,8 +2150,46 @@ for (i in 1:12) {
 # pp mensual historica (sin resampl)
 PP_mensual # lista de raster mensual
 PP_mensual_stack <- stack(PP_mensual)
-# writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_Mensual_historico.tif")
+area <- st_read("Materiales/area.gpkg")
+# pppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif")
+# Ndvi_mensual_stack <- raster::resample(Ndvi_mensual_stack, pppp)
+PP_mensual_stack <- crop(PP_mensual_stack, area, snap = "out")
+writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_MEAN_MENSUAL.tif")
+```
 
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# PRECIPITACION SD -------------------------------
+
+# stack mensual desde 2000 a 2017
+date <- seq(as.Date('1981-01-01'),as.Date('2018-02-01'), by='month') # fechas del stack pisco pp
+pp <- stack('RasterData/PISCO/PISCOp_v11_area.tif')
+rang <- which(date == '2000-01-01'):which(date == '2017-12-01')
+pp <- stack(pp[[rang]])
+
+# mensual historico
+lista6 <- list()
+PP_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= length(rang)) {
+    lista6[[p]] = pp[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  PP_mensual[[i]] = calc(stack(lista6), fun = sd)
+  print(i)
+}
+
+
+# pp mensual historica (sin resampl)
+# PP_mensual # lista de raster mensual
+PP_mensual_stack <- stack(PP_mensual)
+area <- st_read("Materiales/area.gpkg")
+# pppp <- stack("RasterData/PISCO/PISCOp_v11_area.tif")
+# Ndvi_mensual_stack <- raster::resample(Ndvi_mensual_stack, pppp)
+PP_mensual_stack <- crop(PP_mensual_stack, area, snap = "out")
+writeRaster(PP_mensual_stack, "RasterData/VarCorrelation/PP_SD_MENSUAL.tif")
 ```
 
 
@@ -2085,7 +2200,7 @@ PP_mensual_stack
 crs(PP_mensual_stack)
 crs(Ndvi_mensual_stack)
 
-NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack[[1]], PP_mensual_stack[[1]])
+# NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack[[1]], PP_mensual_stack[[1]])
 NDVI_mensual_stack <- raster::resample(Ndvi_mensual_stack, PP_mensual_stack)
 # writeRaster(NDVI_mensual_stack, "RasterData/VarCorrelation/NDVI_Mensual_historico.tif")
 
@@ -2096,10 +2211,75 @@ NDVI_MENSUAL_MASK <- mask(NDVI_mensual_stack, area)
 PP_MENSUAL_MASK <- mask(PP_mensual_stack, area)
 
 
-# writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_MENSUAL.tif")
-# writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_MENSUAL.tif")
-# writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
-# writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
+# writeRaster(NDVI_MENSUAL, "RasterData/VarCorrelation/NDVI_SD_MENSUAL.tif")
+# writeRaster(PP_MENSUAL, "RasterData/VarCorrelation/PP_SD_MENSUAL.tif")
+# writeRaster(NDVI_MENSUAL_MASK, "RasterData/VarCorrelation/NDVI_SD_MENSUAL_MASK.tif")
+# writeRaster(PP_MENSUAL_MASK, "RasterData/VarCorrelation/PP_SD_MENSUAL_MASK.tif")
+```
+
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# ANOMALIAS  -------------------------------
+
+# Datos
+
+## NDVI y PP mensual 2000 - 2018
+NDVI_2000_2018 <- stack("RasterData/VarCorrelation/Variables/NDVI_Mensual_2000_2018.tif")
+PP_2000_2018 <- stack("RasterData/VarCorrelation/Variables/PP_Mensual_2000_2018.tif")
+
+# k <- list()
+# k[1] = NDVI_2000_2018
+# k[2] = PP_2000_2018
+
+## Promedios NDVI y PP crop
+NDVI_MEAN <- stack("RasterData/VarCorrelation/Variables/NDVI_MEAN_MENSUAL.tif")
+PP_MEAN <- stack("RasterData/VarCorrelation/Variables/PP_MEAN_MENSUAL.tif")
+
+## Sds NDVI y PP crop
+NDVI_SD <- stack("RasterData/VarCorrelation/Variables/NDVI_SD_MENSUAL.tif")
+PP_SD <- stack("RasterData/VarCorrelation/Variables/PP_SD_MENSUAL.tif")
+
+# ## Promedios mask
+# NDVI_MEAN_MK <- raster("RasterData/VarCorrelation/NDVI_MENSUAL_MASK.tif")
+# PP_MEAN_MK <- raster("RasterData/VarCorrelation/PP_MENSUAL_MASK.tif")
+
+# ## Sds mask
+# NDVI_SD_MK <- raster("RasterData/VarCorrelation/NDVI_SD_MENSUAL_MASK.tif")
+# PP_SD_MK <- raster("RasterData/VarCorrelation/PP_SD_MENSUAL_MASK.tif")
+
+# NDVI -------------------------------------------------------------------------
+lista4 <- list()
+# hist_monthly <- list()
+Ndvi_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(NDVI_2000_2018)) {
+    lista4[[p]] = NDVI_2000_2018[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  Ndvi_mensual[[i]] = ((stack(lista4) - NDVI_MEAN[[i]]) / NDVI_SD[[i]])
+  print(i)
+}
+
+
+
+# PP -------------------------------------------------------------------------
+lista5 <- list()
+# hist_monthly <- list()
+Pp_mensual <- list()
+for (i in 1:12) {
+  p = 1
+  n = i
+  while (n <= nlayers(PP_2000_2018)) {
+    lista5[[p]] = PP_2000_2018[[n]]
+    n = n + 12
+    p = p + 1
+  }
+  Pp_mensual[[i]] = ((stack(lista4) - PP_MEAN[[i]]) / PP_SD[[i]])
+  print(i)
+}
 ```
 
 
