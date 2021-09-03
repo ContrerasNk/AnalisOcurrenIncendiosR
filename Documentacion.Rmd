@@ -1137,7 +1137,7 @@ El objetivo de este apartado es elaborar un histograma sobre la distribución al
 
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 24. Histograma de las incendios por altitud filtrados cada 500m.'}
-fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg')
+fires <- st_read('Materiales/registro_incendios_2000_2018.gpkg', quiet = TRUE)
 dem   <- raster('RasterData/SRTM_90/areaSRTM.tif')
 
 df <- raster::extract(dem,fires) %>% data.frame()
@@ -1420,12 +1420,12 @@ ggplot(data = df, aes(x = Date, y = value, fill = Incendios,
 
 <br/>
 
-  En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y noviembre. 
+  En lo gráficos generados tanto para los años 2005, 2010 y 2016, las barras con contorno rojo representan los registros máximos históricos mensuales entre el 2000 y el 2018. Las barras azules representan el número promedio de incendios mensuales y las barras grises representan el registro mensual instantaneo para los años en mención. Ahora vemos que en el año 2005 los meses en los que se supera el registro promedio mensual son julio, agosto, septiembre y noviembre, siendo julio y septiembre los que alcanzan los maximos historicos. En el año 2010, por su parte los meses de junio, agosto, septiembre, octubre y noviembre, son los que superan el promedio, siendo agosto el que alcanza el máximo histórico. Por ultimo, en le 2016, los meses de julio, agosto, septiembre y noviembre son los que superan el promedio historico, siendo septiembre y noviembre los que alcanzan los maximos históricos. En conclusion, lo meses con los más altos registros de incendios, estan comprendidos entre julio y enero. 
 
 
-## Analisis temporal de datos bioclimáticos
+## Análisis temporal de datos bioclimáticos
 
-  En este apartado se analizará temporalemte el comportamiento tanto del NDVI, precipitación y temperatura, ***para justificar su uso en el analisis posterior.*** 
+En este apartado se analizará temporalemte el comportamiento tanto del NDVI, precipitación y temperatura. La importancia de este análisis es ver la estacionalidad de estas 3 variables, para determinar cual o cuales tienden a comportarse anomalamente justo en los meses con mayor tendencia de incendios. Es importante mencionar que el año 2000, 2003 para el NDVI, solo es una muestra de que los años con pocos incendios ocurridos tiene un comportamiento diferente a los que acumulan muchos incendios.
 
 ### Precipitacion acumulada mensual
 
@@ -1572,11 +1572,11 @@ ggplot(data = PP, aes(x = date, y = value,
 ```
 <br/>
 
-  De esto podemos inferir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
+Se puede inferir que en los meses de mayor incendios (de julio a enero) se presentaron valores  por debajo de la media, alcanzando incluso  a los mínimos históricos de precipitación acumulada mensual.
 
-Se ve que el mes de octubre es la excepción, donde la precipitación supera a la media histórica. Aunque, en el gráfico de número de incendios por meses, se ve justo en ese mes dismuye, para luego crecer con gran pendiente en el mes de noviembre, esto para todos los años seleccionados.
+Se ve que el mes de octubre es la excepción (2010 y 2016), donde la precipitación supera a la media histórica. Aunque, en el gráfico de número de incendios por meses, se ve justo en ese mes hay gran cantidad de incendios, bordeando los 150, para luego crecer con gran pendiente en el mes de noviembre, llegando mas de 400. Esto hace pensar que una pequeña variación en la precipitación, aprox de 30mm, afecta de una manera considerable a la cantidad de incendios.
 
-Tambien se tomó un año "normal" donde no hay gran cantidad de incendios históricos y se ve un comportamiento donde la precipitación del año supera a la media histórica, justo en la estación de mayor cantidad de incendios.
+El año "normal" donde no hay gran cantidad de incendios históricos, el año 2000, tiene un comportamiento donde la mayoría de los meses supera la media histórica.
  
 
 
@@ -1701,8 +1701,9 @@ ggplot(data = TEMP, aes(x = date, y = value,
 ```
 <br/>
 
-  Podemos inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre. 
+Se puede inferir que en los meses de mayores incendios (de julio a enero) se presentaron valores  por encima de la media, alcanzando incluso a los máximos históricos de temperatura máxima. Aunque vemos que el año 2005 no sigue esa tendencia, solo para los meses setiembre y octubre. 
 
+También se puede ver que la estacionalidad no es tan marcada, como la precipitación, incluso la temperatura tiene una tendencia creciente en los meses con menor cantidad de incendios.
 
 ### NDVI Mensual
 
@@ -1832,17 +1833,20 @@ ggplot(data = NDVI, aes(x = date, y = value,
 ```
 <br/>
 
-  En la anterior gráfica podemos observar el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en una estacionalidad marcada de mayo a noviembre, los meses de mayor ocurrencia de incendios, en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
+Se observan caídas en la actividad fotosintética en una estacionalidad marcada de mayo a noviembre, los meses de mayor ocurrencia de incendios (julio a enero), en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en la zona de estudio.
+
+Igual que la precipitación tiene una tendencia marcada, esto haría pensar que ambas variables tiene una relación más próxima, sin incluir la precipitación.
+
+Se realizará más observaciones, pero ahora las varibles bioclimáticas estacionales con las altitudes.
 
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
 
-Debido a que la distribución espacial de IFs en el Perú se concentra en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental (donde se encuentra el área de estudio elegido), así se consideró incluir los rangos de altitud como variable en nuestro CFOI.
+Debido a que la distribución espacial de IFs, en el Perú, concentrada en regiones de alta montaña (entre 1500 y 4000 msnm) y en la región andina oriental (donde se encuentra el área de estudio elegido), así se consideró incluir los rangos de altitud como variable en nuestro CFOI.
 
+El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia, temperatura máxima y el NDVI por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio.
 
 ### Variabilidad estacional de precipitación por elevación
-
-El objetivo de este apartado es poder graficar la variabilidad mensual de la lluvia por rangos altitudinales y así establecer un umbral de elevación, a partir del cual dicho contrastre estacional deja de ser notorio.
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 31. Variabilidad estacional de precipitación por elevación.'}
 pp_velox <- velox('RasterData/PISCO/PISCOp_v11_area.tif')
@@ -1897,6 +1901,8 @@ X
 
 <br/>
 
+Al igual que el gráfico estacional anterior, de esta variable, tiene una marcada estacionalidad y a mayor altitud tiende a disminuir, pero no es tan marcado.
+
 ### Variabilidad estacional de temperatura máxima por elevación
 
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap='Figura 32. Variabilidad estacional de temperatura máxima por elevación.'}
@@ -1939,6 +1945,8 @@ X
 #        width = 15, height = 15, units = "cm", dpi = 500)
 ```
 <br/>
+
+En este gráfico, vemos que la variable es más progresiva respecto a la altitud, también, hay un aumento repentino en el mes de noviembre, justo el mes de mayor cantidad de incendios.
 
 ### Variabilidad estacional del NDVI por elevacion
 
@@ -1990,6 +1998,7 @@ X
 #        width = 15, height = 15, units = "cm", dpi = 500)
 ```
 
+Esta variable tiene una marcada estacionalidad, además de un marcado cambio al aumento de altitud (disminuye). 
 
 # Resultados y Análisis
 
@@ -2302,22 +2311,70 @@ for(k in 1:lag){
 } 
 ```
 
-Aca van los histogramas
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
-## Vista gráfica de la distribución de las variables ---
-hist(pp.matrix)
-hist(ndvi.matrix)
+# arriba pp.matrix esta definida
+
+data_frame(val = as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]) %>% 
+ggplot(aes(val)) + 
+  geom_histogram(binwidth = 0.1, fill='gray', col='black') +
+  theme_bw() +
+  ylab(label = 'Frecuencia de anomalías\n') +
+  xlab(label = '') + 
+  ggtitle('Anomalías del NDVI mensual', subtitle = 'Desde 2000 al 2017\nHistograma') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size=12),
+        axis.text.y   = element_text(size=12),
+        axis.title    = element_text(size=20),
+        panel.border  = element_rect(colour = "black", fill=NA, size=1),
+        axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
+        axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) +
+  scale_y_continuous(breaks = seq(0,40,5), limits = c(0, 40), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-1, 1, 0.1), limits = c(-1, 1.1), expand = c(0,0))
+
 ```
 
-Aca van los resultados del test de normalidad
+
+pp anomalias histogramas
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# arriba pp.matrix esta definida
+
+data_frame(val = as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]) %>% # filtro <= a 1
+ggplot(aes(val)) + 
+  geom_histogram(binwidth = 0.1, fill='gray', col='black') +
+  theme_bw() + labs(x = '', y = '') +
+  ylab(label = 'Frecuencia de anomalías\n') +
+  xlab(label = '') + 
+  ggtitle('Anomalías de precipitación acumulada mensual', subtitle = 'Desde 2000 al 2017\nHistograma') +
+  theme(plot.title    = element_text(size = 20, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size=12),
+        axis.text.y   = element_text(size=12),
+        axis.title    = element_text(size=20),
+        panel.border  = element_rect(colour = "black", fill=NA, size=1),
+        axis.title.y = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722"),
+        axis.title.x = element_text(size = 12, hjust = 0.5, face = 'bold', vjust = 0.5, color = "#020722")) +
+  scale_y_continuous(breaks = seq(0,40,5), limits = c(0, 40), expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-1, 1, 0.1), limits = c(-1, 1.1), expand = c(0,0))
+
+```
+
+
 ```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Test de Shapiro-Wilk --------------------------------
-shapiro.test(pp.matrix)
-shapiro.test(ndvi.matrix)
+NDVI.Anomalias <- as.vector(pp.matrix)[as.vector(pp.matrix) <= 1] 
+PRECIPITACION.Anomalias <- as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (as.vector(pp.matrix) <= 1)]
+
+```
+Aca van los resultados del test de normalidad
+```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
+## Test de Shapiro-Wilk --------------------------------
+shapiro.test(NDVI.Anomalias) # as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]
+shapiro.test(PRECIPITACION.Anomalias)
 
 ## Test de Anderson Darling ----------------------------
-ad.test(pp.matrix)
-ad.test(ndvi.matrix)
+ad.test(NDVI.Anomalias)
+ad.test(PRECIPITACION.Anomalias)
 ```
 
 Grafica de correlación rezagada
@@ -2351,14 +2408,47 @@ names(melted_b) <- c('pp','pvalue','ndvi')
 # Heatmap corr ----------------------------------------------------
 
 ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
-   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", name="Non parametric\nSpearman Correlation") +
-     ggtitle('Correlación rezagada de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
-     labs(x = 'Anomalía de precipitación acumulada mensual\n[mm/mes]', y = 'Anomalía de NDVI mensual', fill='')
-
- # Heatmap pvalue ------------------------------------------------
-ggplot(melted_b, aes(pp,ndvi))+ geom_raster(aes(fill=pvalue<0.05))
+  ggtitle('Correlación rezagada de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
+  labs(x = 'Anomalía de precipitación acumulada mensual\n[mm/mes]', y = 'Anomalía de NDVI mensual', fill='') +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 15, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 11, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 10, hjust = 1),
+        axis.text.y   = element_text(size = 10),
+        axis.title.y  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5),
+        axis.title.x  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5)) +
+  geom_text(aes(2, 2, label = "✇"), color = "black", size = 6) + 
+  geom_text(aes(3, 3, label = "✇"), color = "black", size = 6) + 
+  geom_text(aes(3, 5, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(5, 5, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(7, 7, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(7, 8, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(7, 9, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(7, 10, label = "✇"), color = "black", size = 6) + 
+  geom_text(aes(9, 9, label = "✇"), color = "black", size = 6) + 
+  geom_text(aes(9, 9, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(11,1, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(11, 11, label = "✇"), color = "black", size = 6) +
+  geom_text(aes(11, 12, label = "✇"), color = "black", size = 6) 
 ```
+
+```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+# Heatmap pvalue ------------------------------------------------
+ggplot(melted_b, aes(pp,ndvi)) + 
+  geom_raster(aes(fill=pvalue<0.05)) +
+  ggtitle('Correlación rezagada significativa de Precipitación con NDVI', subtitle = 'De 2000 a 2017') +
+  labs(x = 'Anomalía de precipitación acumulada mensual\n[mm/mes]', y = 'Anomalía de NDVI mensual', fill='') +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 15, hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(size = 11, hjust = 0.5, face = 'italic'),
+        axis.text.x   = element_text(size = 10, hjust = 1),
+        axis.text.y   = element_text(size = 10),
+        axis.title.y  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5),
+        axis.title.x  = element_text(size = 11, hjust = 0.5, face = 'bold', vjust = 0.5))
+```
+
 En esta gráfica se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra área de estudio con un lag máximo de 3 meses. se observan correlaciones significativas (pvalue < 0.05) principalmente en los meses de Julio y Noviembre 
 
 
