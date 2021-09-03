@@ -2001,7 +2001,7 @@ X
 Esta variable tiene una marcada estacionalidad, además de un marcado cambio al aumento de altitud (disminuye). 
 
 
-# Resultados y Análisis
+# Resultados y Análisis 
 
 Para analizar los resultados hay que tener en cuenta que los efectos entre las variables no se relacionan de manera directa e inmediata (no se dan de la noche a la mañana), en este estudio las variables a analizar serán la lluvia y la actividad fotosintética (NDVI). Esto quiere decir que, por ejemplo, si hoy llueve el proxy (resultado no medible en campo directamente con unidades) de NDVI no aumenta vigorosamente, lo lógico. Entonces no hay una relación directa inmediata. Lo que sí habrá será una relación *lageada*, o sea se debe esperar un cierto tiempo luego del actuar de la variable independiente (Precipitación) para que la variable dependiente (NDVI) mejore o empeore.
 
@@ -2247,7 +2247,7 @@ for (i in 1:12) {
 write.csv(df_cov_pp, "RasterData/VarCorrelation/PP_ANOM.csv")
 ```
 
-```{r eval=FALSE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
 
 # Extracción de datos -------------------------------------
 ## Matriz NDVI de 2000 - 2017
@@ -2287,7 +2287,6 @@ ggplot(aes(val)) +
 ```
 
 ```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
-# arriba pp.matrix esta definida
 
 data_frame(val = as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]) %>% # filtro <= a 1
 ggplot(aes(val)) + 
@@ -2315,10 +2314,11 @@ Por el contrario, si nuestras variables de manera independiente no cumplen la di
 
 Para ello, estimaremos si una variable tiene una distribución normal o no planteando la hipótesis nula $(H_0)$ de que una muestra proviene de una distribución normal, es decir:
 
-$H_0: X \sim \mathcal{N}(\mu,\sigma^2)$
+$$H_0: X \sim \mathcal{N}(\mu,\sigma^2)$$
 
 Y una hipótesis alternativa, donde la distriución no es normal:
-$H_1: X \nsim \mathcal{N}(\mu,\sigma^2)$
+
+$$H_1: X \nsim \mathcal{N}(\mu,\sigma^2)$$
 
 Antes de evaluar los test de normalidad, el $p_{value}$ se debe de conocer definir nivel de significanza $\alpha$  como la probabilidad de rechazar la hipótesis nula $(H_0)$ cuando ésta es verdadera, conocido también como Error tipo I. Normalmente esta probabilidad posee el valor de $0.05$.
 
@@ -2334,7 +2334,7 @@ PRECIPITACION.Anomalias <- as.vector(pp.matrix)[(as.vector(pp.matrix) >= -1) & (
 
 ```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center'}
 ## Test de Shapiro-Wilk --------------------------------
-shapiro.test(NDVI.Anomalias) # as.vector(pp.matrix)[as.vector(pp.matrix) <= 1]
+shapiro.test(NDVI.Anomalias) 
 shapiro.test(PRECIPITACION.Anomalias)
 
 ## Test de Anderson Darling ----------------------------
@@ -2443,17 +2443,19 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
   geom_text(aes(11,1, label = "X"), color = "black", size = 6) +
   geom_text(aes(11, 11, label = "X"), color = "black", size = 6) +
   geom_text(aes(11, 12, label = "X"), color = "black", size = 6) 
+
 ```
 
 Se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra 
 área de estudio con un lag máximo de 3 meses, en donde las marcadas con ✇ corresponden a las correlaciones significativas $(p_{value} < 0.05)$ que se dan principalmente en los meses de Abril y Noviembre, se podría decir que de Mayo a Noviembre los valores poseen una correlación positiva principalmente en las correlaciones con lag 0 y 1.
 
-# Discusion de resultados
+# Discusión de resultados
 * SERFOR debería realizar la gestión de quema controlada de residuos agrícolas.
 
 * Se debería de contar con datos puntuales de la distribución de las quemas puede ser del INDECI. Con ello se pueden generar ROIs.
 
 * La data es dudosa, para el año 2019 (sobre registro de incendios) es atípico ya que los incendios se triplican en algunos meses pero hasta el momento no ha habido algún estudio en el que se diga que el año 2019 ha sido considerado como año de sequía extrema (como en el caso del año 2005, 2010 y 2016).
+
 
 # Conclusión
 
