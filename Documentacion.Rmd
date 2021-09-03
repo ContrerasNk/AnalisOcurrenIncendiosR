@@ -273,6 +273,7 @@ El efecto suavizante del algoritmo Savitzky-Golay no es tan agresivo como en el 
 ```{r echo = FALSE, fig.align='center', comment='', out.width="70%", fig.align='center', fig.cap='Figura 11.Animación que muestra la aplicación de suavizado, pasando los datos de izquierda a derecha. La línea roja representa el polinomio local que se utiliza para ajustar un subconjunto de datos. Los valores suavizados se muestran como círculos.'}
 knitr::include_graphics('Img/savgol.gif')
 ```
+
 ## Correlación rezagada (Lagged correlation)
   La correlación rezagada calcula el grado de asociación entre dos o más variables a través de lags o retrasos temporales definidos a escala diaria, quincenal o mensual. Estos lags son por lo tanto la cantidad de tiempo necesario en donde las variables poseen un mayor grado de correlación. 
   Este concepto tiene aplicaciones útiles para caracterizar las variables bioclimáticas ya que los efectos entre estas no se relacionan de manera directa e inmediata. 
@@ -970,7 +971,7 @@ ndvi_list = list.files("RasterData/Resultados/NDVI_MOD13Q1/", pattern = 'NDVI',
 
 ### Remuestreo
 
-***Sustentar el remuestreo***
+Una vez filtrado el raster de NDVI por su banda QA, por coste computacional es necesario hacer un resampleo considerando una resolución igual a la proporcionada por el producto grillado PISCO.
 
 ```{r warning=FALSE, cache=FALSE, eval=TRUE}
 ndvi_raster <- list.files("RasterData/Resultados/Filtered/", pattern=".tif$",
@@ -986,8 +987,6 @@ for(i in ndvi_raster){
 
 
 ### Completación de datos con el método Savitzky Golay
-
-  Este método en el servidor del google earth engine se encuentra en el ejemplo de [David Montero](https://github.com/davemlz/GEE_TimeSeries/blob/master/GEE_TimeSeries_SavGol.py) en **Python**, para este avance se tratará de aplicarlo en R.
 
 Este filtro se basa en el cálculo de una regresión polinómica local, donde su principal ventaja en la aproximación que tiende a conservar la características de la distribución iniciales tales como los máximos y mínimos relativos, así como los anchos y picos, que normalmente desaparecen en otras técnicas de filtrado como la *media movil*. Por lo tanto, obtenemos como resultado, datos del NDVI sin vacios, a excepción de los cuerpos de agua que no tuvieron registro alguno de actividad fotosintética.
 
@@ -1742,7 +1741,7 @@ ndvi <- melt(ndvi, id.vars = c("mes"))
 ndvis <- data.frame(tserie, value = col_ndvi) %>% 
   mutate(mes = substr(tserie, 6, 7)) %>%
   dplyr::filter(substr(tserie, 1, 4) %in% c(2004, 2005, 2010, 2016)) %>% 
-  add_column(variable = rep(c("NDVI 2004", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
+  add_column(variable = rep(c("NDVI 2000", "NDVI 2005", "NVDI 2010", "NDVI 2016"), each = 12)) %>%
   dplyr::select(-tserie)
 
 # Union filas
@@ -1833,7 +1832,7 @@ ggplot(data = NDVI, aes(x = date, y = value,
 ```
 <br/>
 
-  En la anterior gráfica podemos observar la el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor actividad fotosintética, entre junio a diciembre, ninguno ha superado el mínimo histórico sin embargo podemos concluir que la actividad fotosintética y por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
+  En la anterior gráfica podemos observar el NDVI, como indicador de la actividad fotosintética de la zona, máxima y mínima (de color rojo) y promedio histórico (en negro) entre los años 2000 - 2018, asímismo las líneas marrón, gris y verde representan la evolucion mensual de los años 2005, 2010 y 2016 respectivamente. Se observan caídas en la actividad fotosintética en los meses de mayor ocurrencia de incendios, en donde los valores para el año 2005 están muy próximos a superar el mnimo histórico, por lo tanto la calidad de la vegetación se ve afectada en los meses de incendios en nuestra zona de estudio. 
 
 
 ## Análisis de comportamiento estacional de variables bioclimáticas por rangos de elevación
