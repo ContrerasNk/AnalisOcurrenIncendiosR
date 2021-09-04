@@ -2246,7 +2246,7 @@ for (i in 1:12) {
 write.csv(df_cov_pp, "RasterData/VarCorrelation/PP_ANOM.csv")
 ```
 
-```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center'}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, fig.align='center'}
 
 # Extracción de datos -------------------------------------
 ## Matriz NDVI de 2000 - 2017
@@ -2261,7 +2261,7 @@ pp.matrix <- as.matrix(df_pp[,3:14])
 Una vez obtenida las anomalías mensuales promediadas del NDVI y precipitación acumulada para el área de estudio se procede a evaluar el tipo de distribución, el cual nos determinará si la correlación utilizada será paramétrica o no paramétrica.
 Se analiza en primer momento la gráfica de estas variables a través de un histograma, donde se aprecia visualmente la distribución siendo para el caso del NDVI una distribución normal en donde la mayor frecuencia de valores dentro del rango de la media igual a 0. 
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap="Figura 34. Histograma de las anomalías de NDVI mensual promediado sobre el área para el período 2000 - 2017"}
 
 # arriba pp.matrix esta definidaaaaaa
 
@@ -2284,7 +2284,7 @@ ggplot(aes(val)) +
   scale_x_continuous(breaks = seq(-1.7, 1.7, 0.3), limits = c(-1.7, 1.7), expand = c(0,0))
 ```
 
-```{r eval=TRUE, message=FALSE, echo = TRUE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de precipitación acumulada mensual promediado sobre el área para el período 2000 - 2017"}
+```{r eval=TRUE, message=FALSE, echo = FALSE, warning=FALSE, cache=FALSE, fig.align='center', fig.cap= "Figura 35. Histograma de las anomalías de precipitación acumulada mensual promediado sobre el área para el período 2000 - 2017"}
 
 data_frame(val = as.vector(pp.matrix)) %>% 
 ggplot(aes(val)) + 
@@ -2444,7 +2444,7 @@ ggplot(melted_a, aes(pp,ndvi))+ geom_raster(aes(fill=corr)) +
 ```
 
 Se aprecia la correlación de las anomalías de precipitación acumulada mensual con respecto a las anomalías mensuales de NDVI promediadas sobrenuestra 
-área de estudio con un lag máximo de 3 meses, en donde las marcadas con ✇ corresponden a las correlaciones significativas $(p_{value} < 0.05)$ que se dan principalmente en los meses de Abril y Noviembre los valores poseen una correlación positiva principalmente en las correlaciones con lag 0 y 1.
+área de estudio con un lag máximo de 3 meses, en donde las marcadas con "x" corresponden a las correlaciones significativas $(p_{value} < 0.05)$ que se dan principalmente en los meses de Abril y Noviembre los valores poseen una correlación positiva principalmente en las correlaciones con lag 0 y 1.
 
 # Discusión y Conclusiones
 
